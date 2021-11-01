@@ -30,8 +30,47 @@ stry <- function(...) {try(..., silent = T)} # Silent try
 
 
 # ------------------------
+
+sourcePartial <- function(fn,startTag = '#1', endTag = '#/1') { # Source parts of another script. Source: https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
+  lines <- scan(fn, what = character(), sep = "\n", quiet = TRUE)
+  st <- grep(startTag,lines)
+  en <- grep(endTag,lines)
+  tc <- textConnection(lines[(st + 1):(en - 1)])
+  source(tc)
+  close(tc)
+}
+
 # ------------------------
 # ------------------------
+### Distance and correlation calculations --------------
+eucl.dist.pairwise <- function(df2col) { # Calculate pairwise euclidean distance
+  dist_ = abs(df2col[,1] - df2col[,2]) / sqrt(2)
+  if (!is.null(rownames(df2col)))   names(dist_) = rownames(df2col)
+  dist_
+}
+
+sign.dist.pairwise <- function(df2col) { # Calculate absolute value of the pairwise euclidean distance
+  dist_ = abs(df2col[,1] - df2col[,2]) / sqrt(2)
+  if (!is.null(rownames(df2col)))   names(dist_) = rownames(df2col)
+  dist_
+}
+
+# Auto correlation functions
+rowACF <- function(x, na_pass = na.pass, plot = FALSE, ...) { apply(x, 1, acf, na.action = na_pass,  plot = plot, ...)} # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+colACF <- function(x, na_pass = na.pass, plot = FALSE, ...) { apply(x, 2, acf, na.action = na_pass,  plot = plot, ...)} # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+
+acf.exactLag <- function(x, lag = 1, na_pass = na.pass, plot = FALSE, ... ) { # Autocorrelation with exact lag
+  x = acf(x, na.action = na_pass,  plot = plot, ...)
+  x[['acf']][(lag + 1)]
+}
+
+rowACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { # RETURNS A Vector for the "lag" based autocorrelation. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+  signif(apply(x, 1, acf.exactLag, lag = lag, plot = plot, ...), digits = 2)
+}
+
+colACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { # RETURNS A Vector for the "lag" based autocorrelation. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+  signif(apply(x, 2, acf.exactLag, lag = lag, plot = plot, ...), digits = 2)
+}
 
 # Clipboard interaction -------------------------------------------------------------------------------------------------
 # https://github.com/vertesy/DataInCode
@@ -584,4 +623,28 @@ qHGNC <- function(vector_of_gene_symbols # Parse HGNC links to your list of gene
     write.simple.append("", ManualName = BashScriptLocation)
     write.simple.append(bash_commands, ManualName = BashScriptLocation)
   } else if (Open) { browseURL(links) }	else { return(links) }
+}
+
+# deprecated :
+NrAndPc <- function(logical_vec = idx_localised, total = TRUE, NArm = TRUE) { # Summary stat. text formatting for logical vectors (%, length)
+  x = paste0(pc_TRUE(logical_vec), " or ", sum(logical_vec, na.rm = NArm))
+  if (total) paste0(x, " of ", length(logical_vec))
+}
+
+# -------------------------------------------------------------------------------------------------------------
+#' @title jjpegA4
+#' @description Setup an A4 size jpeg
+#' @param filename PARAM_DESCRIPTION
+#' @param r PARAM_DESCRIPTION, Default: 225
+#' @param q PARAM_DESCRIPTION, Default: 90
+#' @examples
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @rdname jjpegA4
+#' @export
+jjpegA4 <- function(filename, r = 225, q = 90) { # Setup an A4 size jpeg
+  jpeg(file = filename,width = wA4, height = hA4, units = 'in', quality = q,res = r)
 }
