@@ -16,7 +16,11 @@ A collection of custom R functions. Helper functions complementing the new [Code
 ```R
 source("https://raw.githubusercontent.com/vertesy/Rocinante/main/R/Rocinante.R")
 ```
-<br><br>
+<br>
+
+### Troubleshooting
+
+*If you encounter a **bug**, something doesn't work or unclear, please let me know by raising an issue on [Rocinante](https://github.com/vertesy/Rocinante/issues) – Please check if it has been asked.*<br>
 
 ## List of functions
 
@@ -187,9 +191,7 @@ For data frames. Auxiliary function for pheatmap. Prepares the 2 variables neede
 
 - #### # RemoveFinalSlash  
   
-  
 - #### ww.set.OutDir   
-  
   
 - #### backup  
 make a backup of an object into global env. Scheme: obj > obj.bac
