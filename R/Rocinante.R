@@ -167,39 +167,8 @@ memory.biggest.objects <- function(n = 5, saveplot = F) { # Show distribution of
 
 
 # Search query links ------------------------------------------------------------------------
+library(DatabaseLinke.R, include.only = c('qHGNC','link_google', 'link_bing')) # this works
 
-# Google search URL / search query links
-# b.dbl.writeOut = F
-# b.dbl.Open = F
-
-link_google <- function(vector_of_gene_symbols #  Parse google search query links to your list of gene symbols. Strings "prefix" and ""suffix" will be searched for together with each gene ("Human ID4 neurons"). See many additional services in [DatabaseLinke.R](https://vertesy.github.io/DatabaseLinke.R/).
-                        , google = "http://www.google.com/search?as_q = ", prefix = "", suffix = ""
-                        , writeOut = b.dbl.writeOut, Open = b.dbl.Open, sleep = 0) {
-  links = paste0( google, prefix," ", vector_of_gene_symbols," ", suffix)
-  if (writeOut) {
-    bash_commands = paste0("open '", links, "'")
-    if (sleep > 0) { bash_commands = paste0(bash_commands, ' ; sleep ', sleep) } # if wait
-    write.simple.append("", ManualName = BashScriptLocation)
-    write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (linkX in links) Sys.sleep(0.3 + runif(1)); browseURL(linkX, encodeIfNeeded = T) } else {return(links)}
-}
-
-
-# link.google.clipboard = clipr::write_clip(link_google(clipr::read_clip()))
-
-
-# Bing search URL / search query links
-link_bing <- function(vector_of_gene_symbols #  Parse bing search query links to your list of gene symbols. Strings "prefix" and ""suffix" will be searched for together with each gene ("Human ID4 neurons"). See many additional services in [DatabaseLinke.R](https://vertesy.github.io/DatabaseLinke.R/).
-                      , bing = "https://www.bing.com/search?q = ", prefix = "", suffix = ""
-                      , writeOut = b.dbl.writeOut, Open = b.dbl.Open, sleep = 0) {
-  links = paste0( bing, prefix," ", vector_of_gene_symbols," ", suffix)
-  if (writeOut) {
-    bash_commands = paste0("open '", links, "'")
-    if (sleep > 0) { bash_commands = paste0(bash_commands, ' ; sleep ', sleep) } # if wait
-    write.simple.append("", ManualName = BashScriptLocation)
-    write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { for (linkX in links) Sys.sleep(0.3 + runif(1)); browseURL(linkX, encodeIfNeeded = T) } else {return(links)}
-}
 
 # Biology ------------------------------------------------------------
 
@@ -604,18 +573,7 @@ list.dirs.depth.n <- function(dir = '.' , depth = 2) { # list dirs recursive up 
 
 ### Copy
 
-# Quick lookup versioin
-HGNC_symbol_search = "http://www.genenames.org/cgi-bin/gene_search?search="
-library(DatabaseLinke.R, include.only = 'qHGNC') # this works
-# qHGNC <- function(vector_of_gene_symbols # Parse HGNC links to your list of gene symbols.
-#                   , writeOut = FALSE, Open = TRUE) {
-#   links = paste0(HGNC_symbol_search, vector_of_gene_symbols)
-#   if (writeOut) {
-#     bash_commands = paste0("open ", links)
-#     write.simple.append("", ManualName = BashScriptLocation)
-#     write.simple.append(bash_commands, ManualName = BashScriptLocation)
-#   } else if (Open) { browseURL(links) }	else { return(links) }
-# }
+
 
 # # deprecated :
 # NrAndPc <- function(logical_vec = idx_localised, total = TRUE, NArm = TRUE) { # Summary stat. text formatting for logical vectors (%, length)
