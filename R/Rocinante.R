@@ -6,14 +6,14 @@
 
 # Functions ------------------------
 require('CodeAndRoll2')
-require('MarkdownReportsDev')
+require('MarkdownReports')
 # source('~/Github/TheCorvinas/R/DatabaseLinke.r')
 
 # Setup ------------------------
 # pdf.options(title = paste0('Copyright Abel Vertesy ', Sys.Date())) # Setup to your own name
 debuggingState(on = FALSE)
 # "gtools", "readr", "gdata", "colorRamps", "grDevices", "plyr"
-print("Depends on MarkdownReports, gtools, readr, gdata, clipr. Some functions depend on other libraries.")
+print("Depends on CodeAndRoll2, MarkdownReports, gtools, readr, gdata, clipr. Some functions depend on other libraries.")
 
 
 # Params ------------------------
@@ -30,7 +30,6 @@ stry <- function(...) {try(..., silent = T)} # Silent try
 
 
 # ------------------------
-
 sourcePartial <- function(fn,startTag = '#1', endTag = '#/1') { # Source parts of another script. Source: https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
   lines <- scan(fn, what = character(), sep = "\n", quiet = TRUE)
   st <- grep(startTag,lines)
@@ -244,14 +243,6 @@ unload <- function(pkg, character.only = FALSE) { # Unload a package. Source: ht
   }
 }
 
-irequire <- function(package) { package_ = as.character(substitute(package)); print(package_); # Load a package. If it does not exist, try to install it from CRAN.
-if (!require(package = package_,  character.only = TRUE)) {
-  print("Not Installed yet.");install.packages(pkgs = package_);
-  Sys.sleep(1)
-  print("Loading package:")
-  require(package = package_, character.only = TRUE)
-}
-}  # install package if cannot be loaded
 
 ## Plotting and Graphics -----------------------------------------------------------------------------------------------------
 
@@ -560,27 +551,27 @@ sourceGitHub <- function(script = "Cell.cycle.scoring.R"
 # RemoveFinalSlash <- function(string = "stairway/to/heaven/") { #
 #   gsub(x = string, pattern = '/$', replacement = '')
 # }
-#
-
-
-
-#' ww.set.OutDir
+#' #
 #'
-#' Checks if global variable OutDir is defined. If not,
-#' it returns the current working directory
-#' @export
 #'
-#' @examples ww.set.OutDir()
-
-ww.set.OutDir <- function() {
-  if (exists("OutDir"))   iprint("OutDir not defined !!! Saving in working directory.")
-  if (dir.exists(OutDir)) iprint("OutDir defined, but folder does not exist!!! Saving in working directory.")
-  NewOutDir =
-    if (exists("OutDir")  & dir.exists(OutDir)) { OutDir
-    } else {     paste0(getwd(),"/", collapse = "")}
-  FixPath(NewOutDir)
-}
-
+#'
+#' #' ww.set.OutDir
+#' #'
+#' #' Checks if global variable OutDir is defined. If not,
+#' #' it returns the current working directory
+#' #' @export
+#' #'
+#' #' @examples ww.set.OutDir()
+#'
+#' ww.set.OutDir <- function() {
+#'   if (exists("OutDir"))   iprint("OutDir not defined !!! Saving in working directory.")
+#'   if (dir.exists(OutDir)) iprint("OutDir defined, but folder does not exist!!! Saving in working directory.")
+#'   NewOutDir =
+#'     if (exists("OutDir")  & dir.exists(OutDir)) { OutDir
+#'     } else {     paste0(getwd(),"/", collapse = "")}
+#'   FixPath(NewOutDir)
+#' }
+#'
 
 
 backup <- function(obj) { # make a backup of an object into global env. Scheme: obj > obj.bac
@@ -615,21 +606,22 @@ list.dirs.depth.n <- function(dir = '.' , depth = 2) { # list dirs recursive up 
 
 # Quick lookup versioin
 HGNC_symbol_search = "http://www.genenames.org/cgi-bin/gene_search?search="
-qHGNC <- function(vector_of_gene_symbols # Parse HGNC links to your list of gene symbols.
-                  , writeOut = FALSE, Open = TRUE) {
-  links = paste0(HGNC_symbol_search, vector_of_gene_symbols)
-  if (writeOut) {
-    bash_commands = paste0("open ", links)
-    write.simple.append("", ManualName = BashScriptLocation)
-    write.simple.append(bash_commands, ManualName = BashScriptLocation)
-  } else if (Open) { browseURL(links) }	else { return(links) }
-}
+library(DatabaseLinke.R, include.only = 'qHGNC') # this works
+# qHGNC <- function(vector_of_gene_symbols # Parse HGNC links to your list of gene symbols.
+#                   , writeOut = FALSE, Open = TRUE) {
+#   links = paste0(HGNC_symbol_search, vector_of_gene_symbols)
+#   if (writeOut) {
+#     bash_commands = paste0("open ", links)
+#     write.simple.append("", ManualName = BashScriptLocation)
+#     write.simple.append(bash_commands, ManualName = BashScriptLocation)
+#   } else if (Open) { browseURL(links) }	else { return(links) }
+# }
 
-# deprecated :
-NrAndPc <- function(logical_vec = idx_localised, total = TRUE, NArm = TRUE) { # Summary stat. text formatting for logical vectors (%, length)
-  x = paste0(pc_TRUE(logical_vec), " or ", sum(logical_vec, na.rm = NArm))
-  if (total) paste0(x, " of ", length(logical_vec))
-}
+# # deprecated :
+# NrAndPc <- function(logical_vec = idx_localised, total = TRUE, NArm = TRUE) { # Summary stat. text formatting for logical vectors (%, length)
+#   x = paste0(pc_TRUE(logical_vec), " or ", sum(logical_vec, na.rm = NArm))
+#   if (total) paste0(x, " of ", length(logical_vec))
+# }
 
 # -------------------------------------------------------------------------------------------------------------
 #' @title jjpegA4
