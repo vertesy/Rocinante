@@ -9,6 +9,10 @@ require('CodeAndRoll2')
 require('MarkdownReports')
 # source('~/Github/TheCorvinas/R/DatabaseLinke.r')
 
+
+try(source('~/GitHub/Packages/gruffi/R/AddGOGeneList.manual.R'), silent = T)
+try(source('~/GitHub/Packages/gruffi/R/IntersectWithExpressed.R'), silent = T)
+
 # Setup ------------------------
 # pdf.options(title = paste0('Copyright Abel Vertesy ', Sys.Date())) # Setup to your own name
 debuggingState(on = FALSE)
