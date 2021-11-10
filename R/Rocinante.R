@@ -495,19 +495,16 @@ list.dirs.depth.n <- function(dir = '.' , depth = 2) { # list dirs recursive up 
 
 
 # -------------------------------------------------------------------------------------------------------------
-#' @title jjpegA4
-#' @description Setup an A4 size jpeg
-#' @param filename PARAM_DESCRIPTION
-#' @param r PARAM_DESCRIPTION, Default: 225
-#' @param q PARAM_DESCRIPTION, Default: 90
-#' @examples
-#' \dontrun{
-#' if(interactive()){
-#'  #EXAMPLE1
-#'  }
-#' }
-#' @rdname jjpegA4
-#' @export
-jjpegA4 <- function(filename, r = 225, q = 90) { # Setup an A4 size jpeg
-  jpeg(file = filename,width = wA4, height = hA4, units = 'in', quality = q,res = r)
+
+
+
+
+ssh2osX <- function(shellpath=clipr::read_clip()) { # '/groups/knoblich/users/burkard/Abel.Vertesy/R12357/R12357_merged_20211108093511/README.html'
+  newpath <- gsub(x = shellpath, pattern = '/groups/', replacement = 'smb://storage.imp.ac.at/groups/')
+  clipr::write_clip(newpath)
+}
+
+osX2ssh <- function(shellpath=clipr::read_clip()) { # '/groups/knoblich/users/burkard/Abel.Vertesy/R12357/R12357_merged_20211108093511/README.html'
+  newpath <- gsub(x = shellpath, replacement = '/groups/',  pattern= 'smb://storage.imp.ac.at/groups/')
+  clipr::write_clip(newpath)
 }
