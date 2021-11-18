@@ -492,8 +492,6 @@ list.dirs.depth.n <- function(dir = '.' , depth = 2) { # list dirs recursive up 
 
 
 ### Copy
-
-
 # -------------------------------------------------------------------------------------------------------------
 
 
@@ -507,4 +505,25 @@ ssh2osX <- function(shellpath=clipr::read_clip()) { # '/groups/knoblich/users/bu
 osX2ssh <- function(shellpath=clipr::read_clip()) { # '/groups/knoblich/users/burkard/Abel.Vertesy/R12357/R12357_merged_20211108093511/README.html'
   newpath <- gsub(x = shellpath, replacement = '/groups/',  pattern= 'smb://storage.imp.ac.at/groups/')
   clipr::write_clip(newpath)
+}
+
+
+
+
+
+# TMP TMP TMP TMP -------------------------------------------------------------------------------------------------------------
+
+
+q32vA4_grid_plot <- function(plot_list, plotname = F, suffix = NULL, plot =F
+                             , nrow = 3, ncol = 2, extension = c('pdf', 'png')[2]
+                             , h = hA4 * scale, w = wA4 * scale, scale = 1
+                             , ...) { # Save 4 umaps on an A4 page.
+  print("Plot panels on 3-by-2 vertical A4 page.")
+  stopifnot(length(plot_list)<7)
+
+  if (plotname==F) plotname =  sppp(substitute(plot_list), suffix)
+  fname = kpp(plotname, extension)
+  p1 = cowplot::plot_grid(plotlist = plot_list, nrow = nrow, ncol = ncol, labels = LETTERS[1:length(plot_list)], ...  )
+  cowplot::save_plot(plot = p1, filename = fname, base_height = h, base_width = w)
+  ww.FnP_parser(fname)
 }
