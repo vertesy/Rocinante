@@ -13,6 +13,10 @@ require('MarkdownReports')
 try(source('~/GitHub/Packages/gruffi/R/AddGOGeneList.manual.R'), silent = T)
 try(source('~/GitHub/Packages/gruffi/R/IntersectWithExpressed.R'), silent = T)
 
+# Search query links ------------------------------------------------------------------------
+library(DatabaseLinke.R, include.only = c('qHGNC','link_google', 'link_bing', 'openURLs.1by1')) # this works
+
+
 # Setup ------------------------
 # pdf.options(title = paste0('Copyright Abel Vertesy ', Sys.Date())) # Setup to your own name
 debuggingState(on = FALSE)
@@ -170,8 +174,6 @@ memory.biggest.objects <- function(n = 5, saveplot = F) { # Show distribution of
 # memory.biggest.objects()
 
 
-# Search query links ------------------------------------------------------------------------
-library(DatabaseLinke.R, include.only = c('qHGNC','link_google', 'link_bing')) # this works
 
 
 # Biology ------------------------------------------------------------
@@ -527,3 +529,15 @@ q32vA4_grid_plot <- function(plot_list, plotname = F, suffix = NULL, plot =F
   cowplot::save_plot(plot = p1, filename = fname, base_height = h, base_width = w)
   ww.FnP_parser(fname)
 }
+
+
+#
+# qHGNC <- function(vector_of_gene_symbols # Parse HGNC links to your list of gene symbols.
+#                   , writeOut = FALSE, Open = TRUE, HGNC_symbol_search = "http://www.genenames.org/cgi-bin/gene_search?search=") {
+#   links = paste0(HGNC_symbol_search, vector_of_gene_symbols)
+#   if (writeOut) {
+#     bash_commands = paste0("open ", links)
+#     ReadWriter::write.simple.append("", ManualName = BashScriptLocation)
+#     ReadWriter::write.simple.append(bash_commands, ManualName = BashScriptLocation)
+#   } else if (Open) { openURLs.1by1(links) } else { return(links) }
+# }
