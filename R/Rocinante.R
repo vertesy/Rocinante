@@ -10,8 +10,8 @@ require('MarkdownReports')
 # source('~/Github/TheCorvinas/R/DatabaseLinke.r')
 
 
-try(source('~/GitHub/Packages/gruffi/R/AddGOGeneList.manual.R'), silent = T)
-try(source('~/GitHub/Packages/gruffi/R/IntersectWithExpressed.R'), silent = T)
+# try(source('~/GitHub/Packages/gruffi/R/AddGOGeneList.manual.R'), silent = T)
+# try(source('~/GitHub/Packages/gruffi/R/IntersectWithExpressed.R'), silent = T)
 
 # Search query links ------------------------------------------------------------------------
 library(DatabaseLinke.R, include.only = c('qHGNC','link_google', 'link_bing', 'openURLs.1by1')) # this works
@@ -33,6 +33,8 @@ hA4 = 11.69
 sort.natural = gtools::mixedsort
 p0 = paste0
 l = length
+toclip = clipr::write_clip
+fromclip = clipr::read_clip
 
 stry <- function(...) {try(..., silent = T)} # Silent try
 
@@ -100,10 +102,10 @@ clip2clip.commaSepString <- function() { # Read a comma separated string (e.g. l
   print(x)
 }
 
-write_clip.replace.dot <- function(var = df.markers, decimal_mark = ',') { # Clipboard export for da wonderful countries with where "," is the decimal
+write_clip.replace.dot.with.comma <- function(var = df.markers, decimal_mark = ',') { # Clipboard export for da wonderful countries where "," is the decimal...
   write_clip(format(var, decimal.mark = decimal_mark) )
 }
-# write_clip.replace.dot(df_markers)
+# write_clip.replace.dot.with.comma(df_markers)
 
 
 # Else -------------------------------------------------------------------------------------------------
