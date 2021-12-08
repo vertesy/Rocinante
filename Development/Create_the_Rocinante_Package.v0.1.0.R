@@ -24,6 +24,7 @@ if (print == TRUE) {
 
 # Setup ------------------------
 PackageName = 	"Rocinante"
+package.version =  "0.1.0"
 setwd("~/GitHub/Packages/")
 
 RepositoryDir = kollapse("~/GitHub/Packages/", PackageName, "/")
@@ -45,7 +46,7 @@ DESCRIPTION <- list("Title" = "Rocinante is the fastest way to create, annotate 
     4. Describe your figures & findings in the same report in a clear and nicely formatted way, parsed from your variables into english sentences.
     5. Share your report, by exporting your report to .pdf, .html or .docx, or via Github or a personal website."
     , "License" = "GPL-3 + file LICENSE"
-    , "Version" = "0.1.0"
+    , "Version" = package.version
     # , "Version" = "4.0.0"
     , "Packaged" =  Sys.time()
     , "Repository" =  "CRAN"
@@ -95,6 +96,12 @@ install(RepositoryDir)
 # cat("\014")
 # devtools::run_examples()
 
+{
+  "update cff version"
+  citpath <- paste0(RepositoryDir, 'CITATION.cff')
+  xfun::gsub_file(file = citpath, perl = T
+                  , "^version: v.+", paste0("version: v", package.version))
+}
 
 # Test if you can install from github ------------------------------------------------
 # devtools::install_github(repo = "vertesy/Rocinante")
