@@ -198,10 +198,10 @@ stopif2 <- function(condition, ...) { if (condition) {iprint(...); stop()} } # S
 
 say <- function(...) { # Use system voice to notify (after a long task is done)
   sys <- Sys.info()["sysname"]
-  if (sys == "Darwin") system("say Ready")
+  if (sys == "Darwin") system("say -v Samantha Ready!")
   if (sys == "Linux") system("echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'")  # For UNIX servers.
 }
-sayy <- function(...) {system("say Ready to roll")} # Use system voice to notify (after a long task is done)
+sayy <- function(...) {system("say -v Samantha 'Ready to roll!'")} # Use system voice to notify (after a long task is done)
 
 oo <- function() { # Open current working directory.
   system("open .")
