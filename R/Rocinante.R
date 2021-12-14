@@ -39,6 +39,10 @@ fromclip = clipr::read_clip
 stry <- function(...) {try(..., silent = T)} # Silent try
 
 
+load.gruffi = devtools::load_all(path = "~/GitHub/Packages/gruffi/")
+load.UVI.tools = devtools::load_all(path = "~/GitHub/Packages/UVI.tools/")
+
+
 # ------------------------
 sourcePartial <- function(fn,startTag = '#1', endTag = '#/1') { # Source parts of another script. Source: https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
   lines <- scan(fn, what = character(), sep = "\n", quiet = TRUE)
