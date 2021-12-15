@@ -169,8 +169,8 @@ memory.biggest.objects <- function(n = 5, saveplot = F) { # Show distribution of
   topX = sort(Sizes.of.objects.in.mem,decreasing = TRUE)[1:n]
 
   Memorty.usage.stat = c(topX, 'Other' = sum(sort(Sizes.of.objects.in.mem,decreasing = TRUE)[-(1:n)]))
-  pie(Memorty.usage.stat, cex = .5, sub = make.names(date()))
-  try(qpie(Memorty.usage.stat, w = 7,  ), silent = T)
+  pie(Memorty.usage.stat, cex = .5, sub = make.names(date()), col = grDevices::terrain.colors(l(Memorty.usage.stat)))
+  # try(ggExpress::qpie(Memorty.usage.stat, w = 7,  ), silent = T)
   # Use wpie if you have MarkdownReports, from https://github.com/vertesy/MarkdownReports
   dput(names(topX))
   iprint("rm(list = c( 'objectA',  'objectB'))")
@@ -178,6 +178,7 @@ memory.biggest.objects <- function(n = 5, saveplot = F) { # Show distribution of
   # Use inline_vec.char if you have DataInCode, from https://github.com/vertesy/DataInCode
 }
 # memory.biggest.objects()
+
 
 
 
