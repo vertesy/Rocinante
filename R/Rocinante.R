@@ -5,8 +5,8 @@
 # rm(list = ls(all.names = TRUE)); try(dev.off(), silent = T)
 
 # Functions ------------------------
-require('CodeAndRoll2')
-require('MarkdownReports')
+# require('CodeAndRoll2')
+# require('MarkdownReports')
 # source('~/Github/TheCorvinas/R/DatabaseLinke.r')
 
 
@@ -39,8 +39,8 @@ fromclip = clipr::read_clip
 stry <- function(...) {try(..., silent = T)} # Silent try
 
 
-load.gruffi = devtools::load_all(path = "~/GitHub/Packages/gruffi/")
-load.UVI.tools = devtools::load_all(path = "~/GitHub/Packages/UVI.tools/")
+load.gruffi <-  'devtools::load_all(path = "~/GitHub/Packages/gruffi/")'
+load.UVI.tools = 'devtools::load_all(path = "~/GitHub/Packages/UVI.tools/")'
 
 
 # ------------------------
