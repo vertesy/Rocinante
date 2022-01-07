@@ -31,7 +31,7 @@ hA4 = 11.69
 
 # Alisases ----------------
 sort.natural = gtools::mixedsort
-p0 = paste0
+paste0 = paste0
 l = length
 toclip = clipr::write_clip
 fromclip = clipr::read_clip
@@ -465,7 +465,7 @@ sourceGitHub <- function(script = "Cell.cycle.scoring.R"
                          , token = NULL, ...) { # Source from GitHub. Example https://raw.githubusercontent.com/vertesy/Seurat.Pipeline/main/elements/Cell.cycle.scoring.R
   path.part = FixPath(kpps(user, repo, suffix, folder, script))
   fullpath = RemoveFinalSlash(kpps(rawpath, path.part))
-  if (!is.null(token)) fullpath = p0(fullpath, token)
+  if (!is.null(token)) fullpath = paste0(fullpath, token)
   print(fullpath)
   source(fullpath)
 }
@@ -535,6 +535,159 @@ q32vA4_grid_plot <- function(plot_list, plotname = F, suffix = NULL, plot =F
   p1 = cowplot::plot_grid(plotlist = plot_list, nrow = nrow, ncol = ncol, labels = LETTERS[1:length(plot_list)], ...  )
   cowplot::save_plot(plot = p1, filename = fname, base_height = h, base_width = w)
   ww.FnP_parser(fname)
+}
+
+
+
+# NEW fun ------------------------------
+
+
+# _________________________________________________________________________________________________
+#' STRINGdb.reformat.ann.table.per.gene  > Databaselnker
+#'
+#' @param path_of_tsv input file
+#' @param column column name
+#' @param sep value separation
+#' @export
+#' @examples
+
+STRINGdb.reformat.ann.table.per.gene <- function(path_of_tsv = '/Users/abel.vertesy/Downloads/enrichment.DISEASES.tsv'
+                                                 , column = 'matching proteins in your network (labels)'
+                                                 , sep = ',') {
+
+  annotation_tsv <- CodeAndRoll2::read.simple.tsv(path_of_tsv)
+  stopifnot(column %in% colnames(annotation_tsv))
+  (tbl_split <- tidyr::separate_rows(data = annotation_tsv, column, sep = sep ))
+  CodeAndRoll2::write.simple.tsv(tbl_split, ManualName = paste(path_of_tsv, "per.gene.tsv", sep = ".") )
+  return(tbl_split)
+}
+
+
+
+
+# _________________________________________________________________________________________________
+#' link_SNPedia_clip2clip
+#'
+#' @param rdIDs  Should be row-by-row list of  rsID's from an Excel column
+#' @param searchQueryPrefix snpedia search query link base
+#' @param as.MarkDownLink  return as Excel link, Def: TRUE
+#' @param as.MarkDownLink  return as Markdown link, Def: FALSE
+#' @export
+#' @examples link_SNPedia_clip2clip(rdIDs = clipr::read_clip_tbl( header=F)
+
+link_SNPedia_clip2clip <- function(rdIDs = clipr::read_clip_tbl( header=F)
+                                   , searchQueryPrefix = 'https://www.snpedia.com/index.php/'
+                                   , as.ExcelLink = T
+                                   , as.MarkDownLink = F
+) {
+
+  v.rdIDs <- tibble::deframe(rdIDs)
+  links <- paste0(searchQueryPrefix, v.rdIDs)
+  tbl_link <- as.tibble(links)
+  print(head(tbl_link))
+  colnames(tbl_link) <- NULL
+  if (as.ExcelLink) {
+    tbl_link <- FormatAsExcelLink(site_name = v.rdIDs, site_url = links)
+    print("Now paste into to Execl, or google sheets")
+  } else  if (as.MarkDownLink) {
+    tbl_link <- paste0('[', v.rdIDs , '](', links , ')')
+    print("Now  paste into to typora (then text edit, then Execl, then google docs)")
+  }
+
+  clipr::write_clip(tbl_link)
+
+}
+# link_SNPedia_clip2clip()
+
+
+
+# _________________________________________________________________________________________________
+#' link_Franklin_clip2clip > Databaselnker
+#'
+#' @param coordinates Coordinates in input format 5:35162876	C/T  OR 16:7164219	T/G
+#' @param searchQueryPrefix Genoox Franklin search query link base
+#' @param as.ExcelLink  return as Excel link, Def: TRUE
+#' @export
+#' @examples link_Franklin_clip2clip(coordinates = clipr::read_clip_tbl( header=F) )
+
+link_Franklin_clip2clip <- function(coordinates = clipr::read_clip_tbl( header=F)
+                                    , searchQueryPrefix = 'https://franklin.genoox.com/clinical-db/variant/snp/'
+                                    , as.ExcelLink = T
+) {
+  stopifnot(ncol(coordinates) == 2)
+  Coord <-
+    if (idim(coordinates)[2]==2) {
+      coordinates <- paste(coordinates[,1], coordinates[,2], sep = ":")
+    } else  tibble::deframe(coordinates)
+
+  Coord.Formattes <- paste0('chr', gsub(x = Coord, pattern = ':', replacement = '-'))
+  Coord.Formattes <- gsub(x = Coord.Formattes, pattern = '/', replacement = '-')
+
+  links <- paste0(searchQueryPrefix, Coord.Formattes)
+  tbl_link <- as.tibble(links)
+  print(head(tbl_link))
+  colnames(tbl_link) <- NULL
+  if (as.ExcelLink) {
+    tbl_link <- FormatAsExcelLink(site_name = tibble::deframe(Coord.Formattes), site_url = links)
+    print("Now paste into to Execl, or google sheets")
+  }
+  clipr::write_clip(tbl_link)
+
+}
+# link_Franklin_clip2clip()
+
+
+# _________________________________________________________________________________________________
+#' link_VarSome_clip2clip
+#'
+#' @param rdIDs  Should be row-by-row list of  rsID's from an Excel column
+#' @param searchQueryPrefix Varsome search query link base
+#' @param as.MarkDownLink  return as Excel link, Def: TRUE
+#' @param as.MarkDownLink  return as Markdown link, Def: FALSE
+#' @export
+#' @examples link_VarSome_clip2clip(rdIDs = clipr::read_clip_tbl( header=F) # "https://varsome.com/variant/hg38/rs12970134?annotation-mode=germline"
+
+link_VarSome_clip2clip <- function(rdIDs = clipr::read_clip_tbl( header=F)
+                                   , searchQueryPrefix = 'https://varsome.com/variant/'
+                                   , hg = "hg19"
+                                   , suffix = "?annotation-mode=germline"
+                                   , as.ExcelLink = T
+                                   , as.MarkDownLink = F
+) {
+
+  "https://varsome.com/variant/hg38/rs12970134?annotation-mode=germline"
+  prefix_total = paste0(searchQueryPrefix, hg, "/")
+
+  v.rdIDs <- tibble::deframe(rdIDs)
+  links <- paste0(prefix_total, v.rdIDs, suffix)
+  tbl_link <- as.tibble(links)
+  print(head(tbl_link))
+  colnames(tbl_link) <- NULL
+  if (as.ExcelLink) {
+    tbl_link <- FormatAsExcelLink(site_name = paste('VS', v.rdIDs)
+                                  , site_url = links)
+    print("Now paste into to Execl, or google sheets")
+  } else  if (as.MarkDownLink) {
+    tbl_link <- paste0('[', v.rdIDs , '](', links , ')')
+    print("Now  paste into to typora (then text edit, then Execl, then google docs)")
+  }
+
+  clipr::write_clip(tbl_link)
+
+}
+# link_VarSome_clip2clip()
+
+
+# _________________________________________________________________________________________________
+#' FormatAsExcelLink > Stingendo
+#'
+#' @param site_name site_name
+#' @param site_name site_name
+#' @export
+#' @examples FormatAsExcelLink(site_name = c("Zero Hedge", "Free Software Foundation"), site_url = c("https://www.zerohedge.com", "https://www.fsf.org"))
+
+FormatAsExcelLink <- function(site_name, site_url) {
+  paste0( "=HYPERLINK(\"", site_url, "\", \"", site_name, "\")" )
 }
 
 
