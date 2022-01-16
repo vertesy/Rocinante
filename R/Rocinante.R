@@ -31,7 +31,7 @@ hA4 = 11.69
 
 # Alisases ----------------
 sort.natural = gtools::mixedsort
-paste0 = paste0
+p0 = paste0
 l = length
 toclip = clipr::write_clip
 fromclip = clipr::read_clip
