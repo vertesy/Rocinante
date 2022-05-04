@@ -14,7 +14,8 @@
 # try(source('~/GitHub/Packages/gruffi/R/IntersectWithExpressed.R'), silent = T)
 
 # Search query links ------------------------------------------------------------------------
-library(DatabaseLinke.R, include.only = c('qHGNC','link_google', 'link_bing', 'openURLs.1by1')) # this works
+try(library(DatabaseLinke.R, include.only = c('qHGNC','link_google', 'link_bing', 'openURLs.1by1')) , silent = T)
+
 
 
 # Setup ------------------------
@@ -412,7 +413,7 @@ annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names 
   print("annot [data frame] and annot_col [list] variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
 }
 
-annot_col.fix.numeric <- function(ListOfColnames) { # fix class and color annotation in pheatmap annotation data frame's and lists.
+annot_col.fix.numeric <- function(ListOfColnames, df.annot = annot, annot_col = annot_col) { # fix class and color annotation in pheatmap annotation data frame's and lists.
   for (i in 1:length(ListOfColnames) ) {
     j = ListOfColnames[i]
     annot[[j]] = as.numeric(annot[[j]])
@@ -450,6 +451,55 @@ annot_row.create.pheatmap.df <- function(data, annot_df_per_row, annot_names = N
 }
 
 
+
+
+#' val2col
+#'
+#' This function converts a vector of values("yourdata") to a vector of color levels.
+#' One must define the number of colors. The limits of the color scale("zlim") or
+#' the break points for the color changes("breaks") can also be defined.
+#' When breaks and zlim are defined, breaks overrides zlim.
+#' Source: http://menugget.blogspot.nl/2011/09/converting-values-to-color-levels.html
+#' @param yourdata The data, to what the colors will be scaled to.
+#' @param zlim Limits.
+#' @param col Color of the plot.
+#' @param breaks Number of bins.
+#' @param rename The returned color vector will be named with its previous values
+#' @export
+#' @examples val2col (yourdata = rpois(200, 20), zlim = c(0,5),col = rev(heat.colors(100)), breaks = 101  )
+
+
+### CONTAINS A QUICK FIX FOR THE NUMBER OF COLOR LEVELS. See #59 on GitHub ###
+val2col <- function(yourdata, # This function converts a vector of values("yourdata") to a vector of color levels. One must define the number of colors. The limits of the color scale("zlim") or the break points for the color changes("breaks") can also be defined. When breaks and zlim are defined, breaks overrides zlim.
+                    zlim,
+                    col = rev(heat.colors(max(12, 3 * length(unique(yourdata))))),
+                    breaks,
+                    rename = FALSE) {
+  if (!missing(breaks)) {
+    if (length(breaks) != (length(col) + 1)) {
+      stop("must have one more break than color")
+    }
+  }
+  if (missing(breaks) & !missing(zlim)) {
+    breaks <- seq(zlim[1], zlim[2], length.out = (length(col) + 1))
+  }
+  if (missing(breaks) & missing(zlim)) {
+    zlim <- range(yourdata, na.rm = TRUE)
+    zlim[2] <- zlim[2] + c(zlim[2] - zlim[1]) * (0.001)
+    zlim[1] <- zlim[1] - c(zlim[2] - zlim[1]) * (0.001)
+    breaks <- seq(zlim[1], zlim[2], length.out = (length(col) + 1))
+  }
+  colorlevels <- col[((as.vector(yourdata) - breaks[1]) /
+                        (range(breaks)[2] - range(breaks)[1])) * (length(breaks) - 1) + 1]
+  if (length(names(yourdata))) {
+    names(colorlevels) = yourdata
+  }
+
+  if (rename) {
+    names(colorlevels) = yourdata
+  } # works on vectors only"
+  colorlevels
+}
 
 
 
@@ -679,17 +729,6 @@ link_VarSome_clip2clip <- function(rdIDs = clipr::read_clip_tbl( header=F)
 
 
 # _________________________________________________________________________________________________
-#' FormatAsExcelLink > Stingendo
-#'
-#' @param site_name site_name
-#' @param site_name site_name
-#' @export
-#' @examples FormatAsExcelLink(site_name = c("Zero Hedge", "Free Software Foundation"), site_url = c("https://www.zerohedge.com", "https://www.fsf.org"))
-
-FormatAsExcelLink <- function(site_name, site_url) {
-  paste0( "=HYPERLINK(\"", site_url, "\", \"", site_name, "\")" )
-}
-
 
 #
 # qHGNC <- function(vector_of_gene_symbols # Parse HGNC links to your list of gene symbols.
@@ -701,3 +740,4 @@ FormatAsExcelLink <- function(site_name, site_url) {
 #     ReadWriter::write.simple.append(bash_commands, ManualName = BashScriptLocation)
 #   } else if (Open) { openURLs.1by1(links) } else { return(links) }
 # }
+
