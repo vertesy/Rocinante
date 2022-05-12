@@ -729,15 +729,3 @@ link_VarSome_clip2clip <- function(rdIDs = clipr::read_clip_tbl( header=F)
 
 
 # _________________________________________________________________________________________________
-
-#
-# qHGNC <- function(vector_of_gene_symbols # Parse HGNC links to your list of gene symbols.
-#                   , writeOut = FALSE, Open = TRUE, HGNC_symbol_search = "http://www.genenames.org/cgi-bin/gene_search?search=") {
-#   links = paste0(HGNC_symbol_search, vector_of_gene_symbols)
-#   if (writeOut) {
-#     bash_commands = paste0("open ", links)
-#     ReadWriter::write.simple.append("", ManualName = BashScriptLocation)
-#     ReadWriter::write.simple.append(bash_commands, ManualName = BashScriptLocation)
-#   } else if (Open) { openURLs.1by1(links) } else { return(links) }
-# }
-
