@@ -19,11 +19,3 @@ hist.XbyY <- function(dfw2col = NULL, toSplit = 1:100, splitby = rnorm(100), bre
   names(ls) = xx$breaks[-1]
   return(ls)
 }#  ll = hist.XbyY(); wbarplot(unlapply(ll, length))
-
-
-
-# # deprecated :
-# NrAndPc <- function(logical_vec = idx_localised, total = TRUE, NArm = TRUE) { # Summary stat. text formatting for logical vectors (%, length)
-#   x = paste0(pc_TRUE(logical_vec), " or ", sum(logical_vec, na.rm = NArm))
-#   if (total) paste0(x, " of ", length(logical_vec))
-# }
