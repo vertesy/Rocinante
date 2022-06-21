@@ -55,6 +55,12 @@ sourcePartial <- function(fn,startTag = '#1', endTag = '#/1') { # Source parts o
 }
 
 # ------------------------
+
+PCA.percent.var.explained <- function(prcomp.res =  sPCA) { # Determine percent of variation associated with each PC. For Seurat see: seu.PC.var.explained().
+  PCA.w.summary.added <- summary(prcomp.res)
+  PCA.w.summary.added$importance['Proportion of Variance', ]
+}
+
 # ------------------------
 ### Distance and correlation calculations --------------
 eucl.dist.pairwise <- function(df2col) { # Calculate pairwise euclidean distance
@@ -191,6 +197,19 @@ GC_content <- function(string, len = nchar(string), pattern = c("G","C")) { # GC
   tbl = table(factor(unlist(char.list), levels = c("A", "T", "G", "C")))
   sum(tbl[  pattern ]) / sum(tbl)
 }
+
+
+
+getSequences.DNAStringSet <- function(DNAStringSet.obj = dnaSS.HEK.s175239.1e4) { # For DNAStringSet objects
+  lx <- l(DNAStringSet.obj)
+  Sequences <- 1:lx
+  for (i in 1:lx) {
+    Sequences[i] <- as.character(DNAStringSet.obj[[i]])
+    printEveryN(i = i)
+  }
+  Sequences
+}
+
 
 
 # Generic ------------------------
