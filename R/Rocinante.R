@@ -387,7 +387,8 @@ annot_col.create.pheatmap.vec <- function(data, annot_vec, annot_names = "Annot"
   stopifnot( length(annot_vec) == dim(data)[2] )
   namez = as.character(if (is.null(annot_names)) substitute(annot_vec) else annot_names)
 
-  df = data.frame(x = annot_vec); df[, 1] = as.character(df[, 1])
+  df = data.frame(x = annot_vec);
+  # df[, 1] = as.character(df[, 1])
   names(df) = namez # colnames but more flexible
   rownames(df) = colnames(data)
   assign(x = "annot", value = df, envir = .GlobalEnv)
