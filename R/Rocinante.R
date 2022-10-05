@@ -382,6 +382,8 @@ Gap.Postions.calc.pheatmap <- function(annot.vec.of.categories) { # calculate ga
 
 matlabColors.pheatmap <- function(matrixx, nr = 50) {colorRamps::matlab.like(length(quantile_breaks(matrixx, n = nr)) - 1)} # Create a Matlab-like color gradient using "colorRamps".
 
+
+# ________________________________________________________________________
 "FOR VECTOR. it works"
 annot_col.create.pheatmap.vec <- function(data, annot_vec, annot_names = "Annot") { # For VECTORS. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
   stopifnot( length(annot_vec) == dim(data)[2] )
