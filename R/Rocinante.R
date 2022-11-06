@@ -1,36 +1,26 @@
-######################################################################
+# ____________________________________________________________________
 # Rocinante - A collection of custom R functions. Helper functions complementing CodeAndRoll2.
-######################################################################
+# ____________________________________________________________________
 # source('~/GitHub/Packages/Rocinante/R/Rocinante.R')
 # rm(list = ls(all.names = TRUE)); try(dev.off(), silent = T)
 
-# Functions ------------------------
-# require('CodeAndRoll2')
-# require('MarkdownReports')
-# source('~/Github/TheCorvinas/R/DatabaseLinke.r')
 
-
-# try(source('~/GitHub/Packages/gruffi/R/AddGOGeneList.manual.R'), silent = T)
-# try(source('~/GitHub/Packages/gruffi/R/IntersectWithExpressed.R'), silent = T)
-
-# Search query links ------------------------------------------------------------------------
+# Search query links _______________________________________________________________
 try(library(DatabaseLinke.R, include.only = c('qHGNC','link_google', 'link_bing', 'openURLs.1by1')) , silent = T)
 
 
-
-# Setup ------------------------
+# Setup _______________________________________________________________
 # pdf.options(title = paste0('Copyright Abel Vertesy ', Sys.Date())) # Setup to your own name
 debuggingState(on = FALSE)
-# "gtools", "readr", "gdata", "colorRamps", "grDevices", "plyr"
 print("Depends on CodeAndRoll2, MarkdownReports, gtools, readr, gdata, clipr. Some functions depend on other libraries.")
 
 
-# Params ------------------------
+# Params _______________________________________________________________
 wA4 = 8.27 # A4 inches
 hA4 = 11.69
 
 
-# Alisases ----------------
+# Alisases ____________________________________________________________ ----
 sort.natural = gtools::mixedsort
 p0 = paste0
 l = length
@@ -40,11 +30,7 @@ fromclip = clipr::read_clip
 stry <- function(...) {try(..., silent = T)} # Silent try
 
 
-load.gruffi <-  'devtools::load_all(path = "~/GitHub/Packages/gruffi/")'
-load.UVI.tools = 'devtools::load_all(path = "~/GitHub/Packages/UVI.tools/")'
-
-
-# ------------------------
+# ____________________________________________________________
 sourcePartial <- function(fn,startTag = '#1', endTag = '#/1') { # Source parts of another script. Source: https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
   lines <- scan(fn, what = character(), sep = "\n", quiet = TRUE)
   st <- grep(startTag,lines)
@@ -54,74 +40,84 @@ sourcePartial <- function(fn,startTag = '#1', endTag = '#/1') { # Source parts o
   close(tc)
 }
 
-# ------------------------
-
-PCA.percent.var.explained <- function(prcomp.res =  sPCA) { # Determine percent of variation associated with each PC. For Seurat see: seu.PC.var.explained().
-  PCA.w.summary.added <- summary(prcomp.res)
-  PCA.w.summary.added$importance['Proportion of Variance', ]
-}
-
-# ------------------------
-### Distance and correlation calculations --------------
-eucl.dist.pairwise <- function(df2col) { # Calculate pairwise euclidean distance
-  dist_ = abs(df2col[,1] - df2col[,2]) / sqrt(2)
-  if (!is.null(rownames(df2col)))   names(dist_) = rownames(df2col)
-  dist_
-}
-
-sign.dist.pairwise <- function(df2col) { # Calculate absolute value of the pairwise euclidean distance
-  dist_ = abs(df2col[,1] - df2col[,2]) / sqrt(2)
-  if (!is.null(rownames(df2col)))   names(dist_) = rownames(df2col)
-  dist_
-}
-
-# Auto correlation functions
-rowACF <- function(x, na_pass = na.pass, plot = FALSE, ...) { apply(x, 1, acf, na.action = na_pass,  plot = plot, ...)} # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
-colACF <- function(x, na_pass = na.pass, plot = FALSE, ...) { apply(x, 2, acf, na.action = na_pass,  plot = plot, ...)} # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
-
-acf.exactLag <- function(x, lag = 1, na_pass = na.pass, plot = FALSE, ... ) { # Autocorrelation with exact lag
-  x = acf(x, na.action = na_pass,  plot = plot, ...)
-  x[['acf']][(lag + 1)]
-}
-
-rowACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { # RETURNS A Vector for the "lag" based autocorrelation. Calculates the autocorrelation of each row of a numeric matrix / data frame.
-  signif(apply(x, 1, acf.exactLag, lag = lag, plot = plot, ...), digits = 2)
-}
-
-colACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { # RETURNS A Vector for the "lag" based autocorrelation. Calculates the autocorrelation of each row of a numeric matrix / data frame.
-  signif(apply(x, 2, acf.exactLag, lag = lag, plot = plot, ...), digits = 2)
-}
-
-# Clipboard interaction -------------------------------------------------------------------------------------------------
-# https://github.com/vertesy/DataInCode
-# try(source("~/Github/TheCorvinas/R/DataInCode/DataInCode.R"), silent = FALSE)
-
-clip2clip.vector <- function() { # Copy from clipboard (e.g. excel) to a R-formatted vector to the  clipboard
-  x = dput(clipr::read_clip() )
-  clipr::write_clip(
-    utils::capture.output(x)
-  )
-  print(x)
+sourceGitHub <- function(script = "Cell.cycle.scoring.R"
+                         , repo = "Seurat.Pipeline"
+                         , folder = "elements"
+                         , user = "vertesy"
+                         , rawpath = "https://raw.githubusercontent.com"
+                         , suffix = "master"
+                         , token = NULL, ...) { # Source from GitHub. Example https://raw.githubusercontent.com/vertesy/Seurat.Pipeline/main/elements/Cell.cycle.scoring.R
+  path.part = FixPath(kpps(user, repo, suffix, folder, script))
+  fullpath = RemoveFinalSlash(kpps(rawpath, path.part))
+  if (!is.null(token)) fullpath = paste0(fullpath, token)
+  print(fullpath)
+  source(fullpath)
 }
 
 
-clip2clip.commaSepString <- function() { # Read a comma separated string (e.g. list of gene names) and properly format it for R.
-  x = unlist(strsplit(clipr::read_clip(), split = ','))
-  clipr::write_clip(
-    utils::capture.output(x)
-  )
-  print(x)
+
+# Generic ____________________________________________________________ ----
+# printEveryN <- function(i, N = 1000) { if ((i %% N) == 0 ) iprint(i) } # Report at every e.g. 1000
+
+
+'%!in%' <- function(x,y)!('%in%'(x,y))
+
+stopif2 <- function(condition, ...) { if (condition) {iprint(...); stop()} } # Stop script if the condition is met. You can parse anything (e.g. variables) in the message
+
+
+say <- function(...) { # Use system voice to notify (after a long task is done)
+  sys <- Sys.info()["sysname"]
+  if (sys == "Darwin") system("say -v Samantha Ready!")
+  if (sys == "Linux") system("echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'")  # For UNIX servers.
+}
+sayy <- function(...) {system("say -v Samantha 'Ready to roll!'")} # Use system voice to notify (after a long task is done)
+
+oo <- function() { # Open current working directory.
+  system("open .")
 }
 
-write_clip.replace.dot.with.comma <- function(var = df.markers, decimal_mark = ',') { # Clipboard export for da wonderful countries where "," is the decimal...
-  write_clip(format(var, decimal.mark = decimal_mark) )
-}
-# write_clip.replace.dot.with.comma(df_markers)
-
-
-# Else -------------------------------------------------------------------------------------------------
 view.head <- function(matrix, enn = 10) { matrix[1:min(NROW(matrix), enn), 1:min(NCOL(matrix), enn)] } # view the head of an object by console.
 view.head2 <- function(matrix, enn = 10) { View(head(matrix, n = min(NROW(matrix), NCOL(matrix), enn))) } # view the head of an object by View().
+
+
+# detach_package <-
+unload <- function(pkg, character.only = FALSE) { # Unload a package. Source: https://stackoverflow.com/questions/6979917/how-to-unload-a-package-without-restarting-r
+  if (!character.only)
+  {
+    pkg <- deparse(substitute(pkg))
+  }
+  search_item <- paste("package", pkg, sep = ":")
+  while (search_item %in% search())
+  {
+    detach(search_item, unload = TRUE, character.only = TRUE)
+  }
+}
+
+backup <- function(obj) { # make a backup of an object into global env. Scheme: obj > obj.bac
+  varname <- as.character(substitute(obj))
+  bac.varname <- ppp(varname, "bac")
+  if (exists(bac.varname)) {
+    print(" Backup already exists.")
+  } else {
+    iprint(varname, "is backep up into:", bac.varname)
+    assign(x = bac.varname, value = obj, envir= as.environment(1) )
+  }
+}
+# backup(combined.obj)
+
+
+list.dirs.depth.n <- function(dir = '.' , depth = 2) { # list dirs recursive up to a certain level in R https://stackoverflow.com/questions/48297440/list-files-recursive-up-to-a-certain-level-in-r
+  iprint("Scanning directories. Depth:", depth)
+  res <- list.dirs(dir, recursive = FALSE)
+  if (depth > 1) {
+    add <- list.dirs.depth.n(res, depth - 1)
+    c(res, add)
+  } else {
+    res
+  }
+}
+
+
 
 iidentical.names <- function(v1, v2) { # Test if names of two objects for being exactly equal
   nv1 = names(v1)
@@ -190,7 +186,36 @@ memory.biggest.objects <- function(n = 5, saveplot = F) { # Show distribution of
 
 
 
-# Biology ------------------------------------------------------------
+# Clipboard interaction ____________________________________________________________ ----
+# https://github.com/vertesy/DataInCode
+# try(source("~/Github/TheCorvinas/R/DataInCode/DataInCode.R"), silent = FALSE)
+
+clip2clip.vector <- function() { # Copy from clipboard (e.g. excel) to a R-formatted vector to the  clipboard
+  x = dput(clipr::read_clip() )
+  clipr::write_clip(
+    utils::capture.output(x)
+  )
+  print(x)
+}
+
+
+clip2clip.commaSepString <- function() { # Read a comma separated string (e.g. list of gene names) and properly format it for R.
+  x = unlist(strsplit(clipr::read_clip(), split = ','))
+  clipr::write_clip(
+    utils::capture.output(x)
+  )
+  print(x)
+}
+
+write_clip.replace.dot.with.comma <- function(var = df.markers, decimal_mark = ',') { # Clipboard export for da wonderful countries where "," is the decimal...
+  write_clip(format(var, decimal.mark = decimal_mark) )
+}
+# write_clip.replace.dot.with.comma(df_markers)
+
+
+
+
+# Biology ____________________________________________________________ ----
 
 GC_content <- function(string, len = nchar(string), pattern = c("G","C")) { # GC-content of a string (frequency of G and C letters among all letters).
   char.list <- stringr::str_split_fixed(string, pattern = "", n = nchar(string))
@@ -210,43 +235,87 @@ getSequences.DNAStringSet <- function(DNAStringSet.obj = dnaSS.HEK.s175239.1e4) 
   Sequences
 }
 
-
-
-# Generic ------------------------
-printEveryN <- function(i, N = 1000) { if ((i %% N) == 0 ) iprint(i) } # Report at every e.g. 1000
-
-
-'%!in%' <- function(x,y)!('%in%'(x,y))
-
-stopif2 <- function(condition, ...) { if (condition) {iprint(...); stop()} } # Stop script if the condition is met. You can parse anything (e.g. variables) in the message
-
-
-say <- function(...) { # Use system voice to notify (after a long task is done)
-  sys <- Sys.info()["sysname"]
-  if (sys == "Darwin") system("say -v Samantha Ready!")
-  if (sys == "Linux") system("echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'")  # For UNIX servers.
-}
-sayy <- function(...) {system("say -v Samantha 'Ready to roll!'")} # Use system voice to notify (after a long task is done)
-
-oo <- function() { # Open current working directory.
-  system("open .")
-}
-
-# detach_package <-
-unload <- function(pkg, character.only = FALSE) { # Unload a package. Source: https://stackoverflow.com/questions/6979917/how-to-unload-a-package-without-restarting-r
-  if (!character.only)
-  {
-    pkg <- deparse(substitute(pkg))
-  }
-  search_item <- paste("package", pkg, sep = ":")
-  while (search_item %in% search())
-  {
-    detach(search_item, unload = TRUE, character.only = TRUE)
-  }
+# _______________________________________________________________
+PCA.percent.var.explained <- function(prcomp.res =  sPCA) { # Determine percent of variation associated with each PC. For Seurat see: seu.PC.var.explained().
+  PCA.w.summary.added <- summary(prcomp.res)
+  PCA.w.summary.added$importance['Proportion of Variance', ]
 }
 
 
-## Plotting and Graphics -----------------------------------------------------------------------------------------------------
+
+# __________________________________________________________________________________________________
+# Distance and correlation calculations _____________________________________________________ ----
+eucl.dist.pairwise <- function(df2col) { # Calculate pairwise euclidean distance
+  dist_ = abs(df2col[,1] - df2col[,2]) / sqrt(2)
+  if (!is.null(rownames(df2col)))   names(dist_) = rownames(df2col)
+  dist_
+}
+
+sign.dist.pairwise <- function(df2col) { # Calculate absolute value of the pairwise euclidean distance
+  dist_ = abs(df2col[,1] - df2col[,2]) / sqrt(2)
+  if (!is.null(rownames(df2col)))   names(dist_) = rownames(df2col)
+  dist_
+}
+
+# Auto correlation functions
+rowACF <- function(x, na_pass = na.pass, plot = FALSE, ...) { apply(x, 1, acf, na.action = na_pass,  plot = plot, ...)} # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+colACF <- function(x, na_pass = na.pass, plot = FALSE, ...) { apply(x, 2, acf, na.action = na_pass,  plot = plot, ...)} # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+
+acf.exactLag <- function(x, lag = 1, na_pass = na.pass, plot = FALSE, ... ) { # Autocorrelation with exact lag
+  x = acf(x, na.action = na_pass,  plot = plot, ...)
+  x[['acf']][(lag + 1)]
+}
+
+rowACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { # RETURNS A Vector for the "lag" based autocorrelation. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+  signif(apply(x, 1, acf.exactLag, lag = lag, plot = plot, ...), digits = 2)
+}
+
+colACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { # RETURNS A Vector for the "lag" based autocorrelation. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+  signif(apply(x, 2, acf.exactLag, lag = lag, plot = plot, ...), digits = 2)
+}
+
+
+# Plotting and Graphics ____________________________________________________________ ----
+
+colSums.barplot <- function(df, col = "seagreen2", na_rm = TRUE, ...) { barplot(colSums(df, na.rm = na_rm), col = col, ...) } # Draw a barplot from ColSums of a matrix.
+
+lm_equation_formatter <- function(lm) { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
+  eq = signif(lm$coefficients);
+  kollapse("Intercept: ", eq[1], " Slope: ", eq[2]);
+}
+
+lm_equation_formatter2 <- function(lm) { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
+  eq = signif(lm$coefficients, digits = 3);
+  kollapse("y = ", eq[2], "* x + ", eq[1]);
+}
+
+lm_equation_formatter3 <- function(lm, y.var.name = "y", x.var.name = "x") { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
+  eq = signif(lm$coefficients, digits = 3);
+  plusSign = if (sign(eq[1] == 1)) "" else "-"
+  kollapse(y.var.name, " = ", eq[2], "*",x.var.name," ",plusSign,"", eq[1]);
+}
+
+
+
+## Colors ____________________________________________________________ ----
+richColors <- function(n = 3) { gplots::rich.colors(n) } # Alias for rich.colors in gplots
+
+
+Color_Check <- function(..., incrBottMarginBy = 0, savefile = FALSE ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
+  if (incrBottMarginBy) { .ParMarDefault <- par("mar");   par(mar = c(par("mar")[1] + incrBottMarginBy, par("mar")[2:4]) ) }  # Tune the margin
+  Numbers = c(...)
+  if (length(names(Numbers)) == length(Numbers)) {labelz = names(Numbers)} else {labelz = Numbers}
+  barplot(rep(10, length(Numbers)), col = Numbers, names.arg = labelz, las = 2 )
+  if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
+
+  fname = substitute(...)
+  if (savefile) { dev.copy2pdf(file = ww.FnP_parser(fname, "ColorCheck.pdf")) }
+}
+
+HeatMapCol_BGR <- grDevices::colorRampPalette(c("blue", "cyan", "yellow", "red"), bias = 1)
+# HeatMapCol_BWR <- grDevices::colorRampPalette(c("blue", "white", "red"), bias = 1)
+HeatMapCol_RedBlackGreen <- grDevices::colorRampPalette(c("red", "black", "green"), bias = 1)
+
 
 legend.col <- function(col, lev) { # Legend color. # Source: https://aurelienmadouasse.wordpress.com/2012/01/13/legend-for-a-continuous-color-scale-in-r/
   opar <- par
@@ -279,46 +348,8 @@ legend.col <- function(col, lev) { # Legend color. # Source: https://aurelienmad
 }
 
 
-### Colors -----------------------------------------------------------------------------------------------------
-richColors <- function(n = 3) { gplots::rich.colors(n) } # Alias for rich.colors in gplots
 
-
-Color_Check <- function(..., incrBottMarginBy = 0, savefile = FALSE ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
-  if (incrBottMarginBy) { .ParMarDefault <- par("mar");   par(mar = c(par("mar")[1] + incrBottMarginBy, par("mar")[2:4]) ) }  # Tune the margin
-  Numbers = c(...)
-  if (length(names(Numbers)) == length(Numbers)) {labelz = names(Numbers)} else {labelz = Numbers}
-  barplot(rep(10, length(Numbers)), col = Numbers, names.arg = labelz, las = 2 )
-  if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
-
-  fname = substitute(...)
-  if (savefile) { dev.copy2pdf(file = ww.FnP_parser(fname, "ColorCheck.pdf")) }
-}
-
-HeatMapCol_BGR <- grDevices::colorRampPalette(c("blue", "cyan", "yellow", "red"), bias = 1)
-# HeatMapCol_BWR <- grDevices::colorRampPalette(c("blue", "white", "red"), bias = 1)
-HeatMapCol_RedBlackGreen <- grDevices::colorRampPalette(c("red", "black", "green"), bias = 1)
-
-
-colSums.barplot <- function(df, col = "seagreen2", na_rm = TRUE, ...) { barplot(colSums(df, na.rm = na_rm), col = col, ...) } # Draw a barplot from ColSums of a matrix.
-
-lm_equation_formatter <- function(lm) { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
-  eq = signif(lm$coefficients);
-  kollapse("Intercept: ", eq[1], " Slope: ", eq[2]);
-}
-
-lm_equation_formatter2 <- function(lm) { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
-  eq = signif(lm$coefficients, digits = 3);
-  kollapse("y = ", eq[2], "* x + ", eq[1]);
-}
-
-lm_equation_formatter3 <- function(lm, y.var.name = "y", x.var.name = "x") { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
-  eq = signif(lm$coefficients, digits = 3);
-  plusSign = if (sign(eq[1] == 1)) "" else "-"
-  kollapse(y.var.name, " = ", eq[2], "*",x.var.name," ",plusSign,"", eq[1]);
-}
-
-
-### Functions for pairs() plots  -----------------------------------------------------------------------------------------------------
+## Functions for pairs() plots ____________________________________________________________ ----
 panel.cor.pearson <- function(x, y, digits = 2, prefix = "", cex.cor = 2, method = "pearson") { # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
   usr <- par("usr"); on.exit(par(usr))
   par(usr = c(0, 1, 0, 1))
@@ -362,7 +393,7 @@ quantile_breaks <- function(xs, n = 10, na.Rm = FALSE) { # Quantile breakpoints 
 
 
 
-## Clustering heatmap tools -----------------------------------------------------------------------------------------------------
+## Clustering heatmap tools ____________________________________________________________ ----
 
 hclust.getOrder.row <- function(pheatmapObject) pheatmapObject$tree_row$labels[pheatmapObject$tree_row$order] # Extract ROW order from a pheatmap object.
 hclust.getOrder.col <- function(pheatmapObject) pheatmapObject$tree_col$labels[pheatmapObject$tree_col$order] # Extract COLUMN order from a pheatmap object.
@@ -525,57 +556,7 @@ val2col <- function(yourdata, # This function converts a vector of values("yourd
 
 
 
-# TMP ------------------------------------------------------------------------------------------------
-
-
-sourceGitHub <- function(script = "Cell.cycle.scoring.R"
-                         , repo = "Seurat.Pipeline"
-                         , folder = "elements"
-                         , user = "vertesy"
-                         , rawpath = "https://raw.githubusercontent.com"
-                         , suffix = "master"
-                         , token = NULL, ...) { # Source from GitHub. Example https://raw.githubusercontent.com/vertesy/Seurat.Pipeline/main/elements/Cell.cycle.scoring.R
-  path.part = FixPath(kpps(user, repo, suffix, folder, script))
-  fullpath = RemoveFinalSlash(kpps(rawpath, path.part))
-  if (!is.null(token)) fullpath = paste0(fullpath, token)
-  print(fullpath)
-  source(fullpath)
-}
-
-
-
-backup <- function(obj) { # make a backup of an object into global env. Scheme: obj > obj.bac
-  varname <- as.character(substitute(obj))
-  bac.varname <- ppp(varname, "bac")
-  if (exists(bac.varname)) {
-    print(" Backup already exists.")
-  } else {
-    iprint(varname, "is backep up into:", bac.varname)
-    assign(x = bac.varname, value = obj, envir= as.environment(1) )
-  }
-}
-# backup(combined.obj)
-
-
-
-list.dirs.depth.n <- function(dir = '.' , depth = 2) { # list dirs recursive up to a certain level in R https://stackoverflow.com/questions/48297440/list-files-recursive-up-to-a-certain-level-in-r
-  iprint("Scanning directories. Depth:", depth)
-  res <- list.dirs(dir, recursive = FALSE)
-  if (depth > 1) {
-    add <- list.dirs.depth.n(res, depth - 1)
-    c(res, add)
-  } else {
-    res
-  }
-}
-# list.dirs.depth.n(depth = 3)
-
-
-
-### Copy
-# -------------------------------------------------------------------------------------------------------------
-
-
+# New FUN ____________________________________________________________ ----
 
 
 ssh2osX <- function(shellpath=clipr::read_clip()) { # '/groups/knoblich/users/burkard/Abel.Vertesy/R12357/R12357_merged_20211108093511/README.html'
@@ -587,31 +568,6 @@ osX2ssh <- function(shellpath=clipr::read_clip()) { # '/groups/knoblich/users/bu
   newpath <- gsub(x = shellpath, replacement = '/groups/',  pattern= 'smb://storage.imp.ac.at/groups/')
   clipr::write_clip(newpath)
 }
-
-
-
-
-
-# TMP TMP TMP TMP -------------------------------------------------------------------------------------------------------------
-
-
-q32vA4_grid_plot <- function(plot_list, plotname = F, suffix = NULL, plot =F
-                             , nrow = 3, ncol = 2, extension = c('pdf', 'png')[2]
-                             , h = hA4 * scale, w = wA4 * scale, scale = 1
-                             , ...) { # Save 4 umaps on an A4 page.
-  print("Plot panels on 3-by-2 vertical A4 page.")
-  stopifnot(length(plot_list)<7)
-
-  if (plotname==F) plotname =  sppp(substitute(plot_list), suffix)
-  fname = kpp(plotname, extension)
-  p1 = cowplot::plot_grid(plotlist = plot_list, nrow = nrow, ncol = ncol, labels = LETTERS[1:length(plot_list)], ...  )
-  cowplot::save_plot(plot = p1, filename = fname, base_height = h, base_width = w)
-  ww.FnP_parser(fname)
-}
-
-
-
-# NEW fun ------------------------------
 
 
 # _________________________________________________________________________________________________
@@ -633,6 +589,10 @@ STRINGdb.reformat.ann.table.per.gene <- function(path_of_tsv = '/Users/abel.vert
   CodeAndRoll2::write.simple.tsv(tbl_split, ManualName = paste(path_of_tsv, "per.gene.tsv", sep = ".") )
   return(tbl_split)
 }
+
+
+
+# _________________________________________________________________________________________________
 
 
 
@@ -750,4 +710,20 @@ link_VarSome_clip2clip <- function(rdIDs = clipr::read_clip_tbl( header=F)
 # link_VarSome_clip2clip()
 
 
-# _________________________________________________________________________________________________
+# load.gruffi <-  'devtools::load_all(path = "~/GitHub/Packages/gruffi/")'
+# load.UVI.tools = 'devtools::load_all(path = "~/GitHub/Packages/UVI.tools/")'
+
+
+# q32vA4_grid_plot <- function(plot_list, plotname = F, suffix = NULL, plot =F
+#                              , nrow = 3, ncol = 2, extension = c('pdf', 'png')[2]
+#                              , h = hA4 * scale, w = wA4 * scale, scale = 1
+#                              , ...) { # Save 4 umaps on an A4 page.
+#   print("Plot panels on 3-by-2 vertical A4 page.")
+#   stopifnot(length(plot_list)<7)
+#
+#   if (plotname==F) plotname =  sppp(substitute(plot_list), suffix)
+#   fname = kpp(plotname, extension)
+#   p1 = cowplot::plot_grid(plotlist = plot_list, nrow = nrow, ncol = ncol, labels = LETTERS[1:length(plot_list)], ...  )
+#   cowplot::save_plot(plot = p1, filename = fname, base_height = h, base_width = w)
+#   ww.FnP_parser(fname)
+# }
