@@ -727,3 +727,8 @@ link_VarSome_clip2clip <- function(rdIDs = clipr::read_clip_tbl( header=F)
 #   cowplot::save_plot(plot = p1, filename = fname, base_height = h, base_width = w)
 #   ww.FnP_parser(fname)
 # }
+
+
+# TMP code and roll
+fractions <- function(vec, na_rm = TRUE) vec/ sum(vec, na.rm = na_rm)
+
