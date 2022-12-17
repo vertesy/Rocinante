@@ -729,6 +729,12 @@ link_VarSome_clip2clip <- function(rdIDs = clipr::read_clip_tbl( header=F)
 # }
 
 
-# TMP code and roll
+
+
+# TMP code and roll -------------------- ----------------------------------------------------------------- 
 fractions <- function(vec, na_rm = TRUE) vec/ sum(vec, na.rm = na_rm)
+
+
+unique.wNames <- function(x) { x[!duplicated(x)] }
+
 
