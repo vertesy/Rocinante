@@ -22,6 +22,8 @@ hA4 = 11.69
 
 # Alisases ____________________________________________________________ ----
 sort.natural = gtools::mixedsort
+comma = scales::comma
+
 p0 = paste0
 l = length
 toclip = clipr::write_clip
