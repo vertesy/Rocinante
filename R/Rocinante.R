@@ -56,6 +56,22 @@ sourceGitHub <- function(script = "Cell.cycle.scoring.R"
   source(fullpath)
 }
 
+# ____________________________________________________________
+args.2.global <- function(overwrite = FALSE, ...) {
+  args <- list(...)
+  namez <- names(args)
+  for (i in 1:length(args)) {
+    print(namez[i])
+    print(args[[i]])
+    if(exists(namez[i])) {
+      iprint(namez[i], "already exists, overwritten only if specified in arg 1.")
+      if (overwrite) assign(x = names(args)[i], value = args[[i]], envir = .GlobalEnv)
+    } else {
+      assign(x = names(args)[i], value = args[[i]], envir = .GlobalEnv)
+    }
+  }
+  print(names(args))
+}
 
 
 # Generic ____________________________________________________________ ----
@@ -733,7 +749,7 @@ link_VarSome_clip2clip <- function(rdIDs = clipr::read_clip_tbl( header=F)
 
 
 
-# TMP code and roll -------------------- ----------------------------------------------------------------- 
+# TMP code and roll -------------------- -----------------------------------------------------------------
 fractions <- function(vec, na_rm = TRUE) vec/ sum(vec, na.rm = na_rm)
 
 
