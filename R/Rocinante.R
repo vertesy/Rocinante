@@ -57,12 +57,13 @@ sourceGitHub <- function(script = "Cell.cycle.scoring.R"
 }
 
 # ____________________________________________________________
-args.2.global <- function(overwrite = FALSE, ...) {
+args.2.global <- ass <- function(overwrite = FALSE, ...) {
   args <- list(...)
   namez <- names(args)
-  for (i in 1:length(args)) {
+  for (i in 1:length(args)) { print("------------------------------------")
     print(namez[i])
     print(args[[i]])
+
     if(exists(namez[i])) {
       iprint(namez[i], "already exists, overwritten only if specified in arg 1.")
       if (overwrite) assign(x = names(args)[i], value = args[[i]], envir = .GlobalEnv)
