@@ -86,10 +86,10 @@ stopif2 <- function(condition, ...) { if (condition) {iprint(...); stop()} } # S
 
 say <- function(...) { # Use system voice to notify (after a long task is done)
   sys <- Sys.info()["sysname"]
-  if (sys == "Darwin") system("say -v Samantha Ready!")
+  if (sys == "Darwin") system("say Ready!") # say -v Samantha 'Ready!'
   if (sys == "Linux") system("echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'")  # For UNIX servers.
 }
-sayy <- function(...) {system("say -v Samantha 'Ready to roll!'")} # Use system voice to notify (after a long task is done)
+sayy <- function(...) {system("say 'Ready to roll!'")} # Use system voice to notify (after a long task is done)
 
 oo <- function() { # Open current working directory.
   system("open .")
@@ -747,6 +747,30 @@ link_VarSome_clip2clip <- function(rdIDs = clipr::read_clip_tbl( header=F)
 #   ww.FnP_parser(fname)
 # }
 
+# _________________________________________________________________________________________________
+# _________________________________________________________________________________________________
+
+
+getVennOverlaps <- function(lsvenn = list(A = sort(sample(LETTERS, 15)),
+                                          B = sort(sample(LETTERS, 15)),
+                                          C = sort(sample(LETTERS, 15)),
+                                          D = sort(sample(LETTERS, 15)))
+) {
+
+  ItemsList <- gplots::venn(lsvenn, show.plot = FALSE)
+  print(lengths(attributes(ItemsList)$intersections))
+  return(attributes(ItemsList)$intersections)
+}
+
+
+
+
+# _________________________________________________________________________________________________
+ww.randomize <- function(vec = nm.trunk) {
+  old <- unique(vec)
+  new <- sample(1:l(vec))
+  as.numeric(CodeAndRoll2::translate(vec = vec, oldvalues = old, newvalues = new))
+}
 
 
 
