@@ -772,6 +772,14 @@ ww.randomize <- function(vec = nm.trunk) {
   as.numeric(CodeAndRoll2::translate(vec = vec, oldvalues = old, newvalues = new))
 }
 
+# _________________________________________________________________________________________________
+append_non_na <- function(vec1.core, vec2.suffix) {
+  stopifnot(length(vec1.core) == length(vec2.suffix))
+  not_na <- !is.na(vec1.core)
+  vec1.core[not_na] <- paste(vec1.core[not_na], vec2.suffix[not_na], sep = '.')
+  return(vec1.core)
+}
+
 
 
 # TMP code and roll -------------------- -----------------------------------------------------------------
