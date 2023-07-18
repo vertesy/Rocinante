@@ -91,9 +91,10 @@ say <- function(...) { # Use system voice to notify (after a long task is done)
 }
 sayy <- function(...) {system("say 'Ready to roll!'")} # Use system voice to notify (after a long task is done)
 
-oo <- function() { # Open current working directory.
-  system("open .")
+oo <- function(path = '.') { # Open current working directory, or any directory.
+  system(paste("open", path))
 }
+
 
 view.head <- function(matrix, enn = 10) { matrix[1:min(NROW(matrix), enn), 1:min(NCOL(matrix), enn)] } # view the head of an object by console.
 view.head2 <- function(matrix, enn = 10) { View(head(matrix, n = min(NROW(matrix), NCOL(matrix), enn))) } # view the head of an object by View().
