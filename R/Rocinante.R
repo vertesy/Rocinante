@@ -95,6 +95,16 @@ oo <- function(path = '.') { # Open current working directory, or any directory.
   system(paste("open", path))
 }
 
+# make_bash_compatible <- function(x) {
+#   special_chars <- c("\\$", "\\\\", "\\ ", "\\\"", "\\'", "\\|", "\\&", "\\;", "\\<", "\\>"
+#                      , "\\(", "\\)", "\\{", "\\}", "\\[", "\\]", "\\*", "\\?", "\\~", "\\#", "\\%", "\\^")
+#   for (char in special_chars) {
+#     x <- gsub(pattern = char, paste0('\\', substr(char, 3, 3)), x)
+#   }
+#   return(x)
+# }
+#
+
 
 view.head <- function(matrix, enn = 10) { matrix[1:min(NROW(matrix), enn), 1:min(NCOL(matrix), enn)] } # view the head of an object by console.
 view.head2 <- function(matrix, enn = 10) { View(head(matrix, n = min(NROW(matrix), NCOL(matrix), enn))) } # view the head of an object by View().
