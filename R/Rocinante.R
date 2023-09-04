@@ -148,6 +148,17 @@ list.dirs.depth.n <- function(dir = '.' , depth = 2) { # list dirs recursive up 
 }
 
 
+list_subdirectories_at_depth <- function(path = '.', depth = 2) {
+  path <- path.expand(path)
+  num_slashes <- stringr::str_count(path, "/")
+  target_depth <- depth + num_slashes
+
+  subdirs <- list.dirs(path, recursive = TRUE)
+  subdirs[stringr::str_count(subdirs, "/") == target_depth]
+
+}
+# list_subdirectories_at_depth(path = '~/Downloads', depth = 2)
+
 
 iidentical.names <- function(v1, v2) { # Test if names of two objects for being exactly equal
   nv1 = names(v1)
