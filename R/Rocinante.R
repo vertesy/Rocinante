@@ -4,7 +4,7 @@
 # source('~/GitHub/Packages/Rocinante/R/Rocinante.R')
 # rm(list = ls(all.names = TRUE)); try(dev.off(), silent = T)
 
-
+print("Loading Rocinante custom function library.")
 # Search query links _______________________________________________________________
 try(library(DatabaseLinke.R, include.only = c('qHGNC','link_google', 'link_bing', 'openURLs.1by1')) , silent = T)
 
