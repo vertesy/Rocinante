@@ -805,9 +805,7 @@ append_non_na <- function(vec1.core, vec2.suffix) {
 
 
 # TMP code and roll -------------------- -----------------------------------------------------------------
-fractions <- function(vec, na_rm = TRUE) vec/ sum(vec, na.rm = na_rm)
-
-
-unique.wNames <- function(x) { x[!duplicated(x)] }
+# fractions <- function(vec, na_rm = TRUE) vec/ sum(vec, na.rm = na_rm)
+# unique.wNames <- function(x) { x[!duplicated(x)] }
 
 
