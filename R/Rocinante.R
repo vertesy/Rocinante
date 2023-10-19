@@ -186,6 +186,7 @@ iidentical <- function(v1, v2) { # Test if two objects for being exactly equal
   Check
 }
 
+
 iidentical.all <- function(li) all(sapply(li, identical, li[[1]])) # Test if two objects for being exactly equal.
 
 #' IfExistsAndTrue
@@ -203,6 +204,8 @@ IfExistsAndTrue <- function(name = "pi" ) { # Internal function. Checks if a var
   return(x)
 }
 
+
+
 memory.biggest.objects <- function(n = 5, saveplot = F) { # Show distribution of the largest objects and return their names. # https://stackoverflow.com/questions/17218404/should-i-get-a-habit-of-removing-unused-variables-in-r
   try.dev.off()
   gc()
@@ -217,13 +220,13 @@ memory.biggest.objects <- function(n = 5, saveplot = F) { # Show distribution of
   # try(ggExpress::qpie(Memorty.usage.stat, w = 7,  ), silent = T)
   # Use wpie if you have MarkdownReports, from https://github.com/vertesy/MarkdownReports
   dput(names(topX))
-  iprint("rm(list = c( 'objectA',  'objectB'))")
-  # inline_vec.char(names(topX))
-  # Use inline_vec.char if you have DataInCode, from https://github.com/vertesy/DataInCode
+
+  strX <- as.character(capture.output(dput(head(names(topX), n = 5))))
+  strX <- gsub('[^A-Za-z0-9 ,._/()]', '', strX)
+  iprint("rm(list = ", strX,")")
+
 }
 # memory.biggest.objects()
-
-
 
 
 
