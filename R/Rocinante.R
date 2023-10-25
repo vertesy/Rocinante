@@ -123,10 +123,10 @@ unload <- function(pkg, character.only = FALSE) { # Unload a package. Source: ht
   }
 }
 
-backup <- function(obj) { # make a backup of an object into global env. Scheme: obj > obj.bac
+backup <- function(obj, overwrite = FALSE) { # make a backup of an object into global env. Scheme: obj > obj.bac
   varname <- as.character(substitute(obj))
   bac.varname <- ppp(varname, "bac")
-  if (exists(bac.varname)) {
+  if (exists(bac.varname) & !overwrite ) {
     print(" Backup already exists.")
   } else {
     iprint(varname, "is backep up into:", bac.varname)
