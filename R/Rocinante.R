@@ -258,6 +258,16 @@ write_clip.replace.dot.with.comma <- function(var = df.markers, decimal_mark = '
 
 
 
+cbepath <- function(str = "/groups/knoblich/bioinfo/Projects/connectomics/SNP_demux/classifications/v2") { # Parse path for CBE
+  x = gsub(x = str, pattern = "/groups/knoblich/", replacement = '/Volumes/knoblich/')
+  print("1. Mount:")
+  print("smb://storage.imp.ac.at/groups/knoblich/")
+  print("2. Go:")
+  print(x)
+}
+
+
+
 
 # Biology ____________________________________________________________ ----
 
