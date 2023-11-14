@@ -3,6 +3,7 @@
 # ____________________________________________________________________
 # source('~/GitHub/Packages/Rocinante/R/Rocinante.R')
 # rm(list = ls(all.names = TRUE)); try(dev.off(), silent = T)
+# source('~/.pack.R')
 
 print("Loading Rocinante custom function library.")
 # Search query links _______________________________________________________________
@@ -19,6 +20,9 @@ print("Depends on CodeAndRoll2, MarkdownReports, gtools, readr, gdata, clipr. So
 wA4 = 8.27 # A4 inches
 hA4 = 11.69
 
+.namechanges <- c("Deprecated function names")
+.namechanges <- append(x = .namechanges, values = c('reorder.list' = 'reorderList'))
+
 
 # Alisases ____________________________________________________________ ----
 sort.natural = gtools::mixedsort
@@ -31,6 +35,49 @@ fromclip = clipr::read_clip
 
 stry <- function(...) {try(..., silent = T)} # Silent try
 
+
+# ____________________________________________________________
+#' @title Get Current Script Name in RStudio
+#'
+#' @description Retrieves the file name of the current script open in the RStudio source editor.
+#' This function is specific to RStudio and will not work in other environments.
+#'
+#' @return A character string with the file name of the current R script open in RStudio.
+#' If not running in RStudio or if no script is open, it returns NULL.
+#' @export
+#'
+#' @examples
+#' getCurrentScriptName() # Returns the name of the script currently open in RStudio
+getCurrentScriptName <- function() {
+  # Ensure that rstudioapi is available
+  if (!requireNamespace("rstudioapi", quietly = TRUE)) {
+    stop("rstudioapi package is required.")
+  }
+  # Retrieve the file name of the current script
+  file_name <- basename(rstudioapi::getSourceEditorContext()$path)
+  return(file_name)
+}
+
+
+# ____________________________________________________________
+# https://stackoverflow.com/questions/6216968/r-force-local-scope
+
+# findGlobals2 <- function(x) {
+#   codetools::findGlobals(x)
+#
+# }
+#
+# checkStrict <- function(f, silent=FALSE) {
+#   vars <- codetools::findGlobals(f)
+#   found <- !vapply(vars, exists, logical(1), envir=as.environment(2))
+#   if (!silent && any(found)) {
+#     warning("global variables used: ", paste(names(found)[found], collapse=', '))
+#     return(invisible(FALSE))
+#   }
+#
+#   !any(found)
+# }
+#
 
 # ____________________________________________________________
 sourcePartial <- function(fn,startTag = '#1', endTag = '#/1') { # Source parts of another script. Source: https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
@@ -74,12 +121,17 @@ args.2.global <- ass <- function(overwrite = FALSE, ...) {
   print(names(args))
 }
 
+#  ____________________________________________________________
+rnd4l <- function(set = c(LETTERS, 0:9), n = 4) {
+  print(paste0(paste0( sample(x = set, size = n), collapse = ''), '__'))
+}
+
 
 # Generic ____________________________________________________________ ----
 # printEveryN <- function(i, N = 1000) { if ((i %% N) == 0 ) iprint(i) } # Report at every e.g. 1000
 
 
-'%!in%' <- function(x,y)!('%in%'(x,y))
+'%!in%' <- function(x, y) !('%in%'(x, y))
 
 stopif2 <- function(condition, ...) { if (condition) {iprint(...); stop()} } # Stop script if the condition is met. You can parse anything (e.g. variables) in the message
 
@@ -762,25 +814,6 @@ link_VarSome_clip2clip <- function(rdIDs = clipr::read_clip_tbl( header=F)
 
 }
 # link_VarSome_clip2clip()
-
-
-# load.gruffi <-  'devtools::load_all(path = "~/GitHub/Packages/gruffi/")'
-# load.UVI.tools = 'devtools::load_all(path = "~/GitHub/Packages/UVI.tools/")'
-
-
-# q32vA4_grid_plot <- function(plot_list, plotname = F, suffix = NULL, plot =F
-#                              , nrow = 3, ncol = 2, extension = c('pdf', 'png')[2]
-#                              , h = hA4 * scale, w = wA4 * scale, scale = 1
-#                              , ...) { # Save 4 umaps on an A4 page.
-#   print("Plot panels on 3-by-2 vertical A4 page.")
-#   stopifnot(length(plot_list)<7)
-#
-#   if (plotname==F) plotname =  sppp(substitute(plot_list), suffix)
-#   fname = kpp(plotname, extension)
-#   p1 = cowplot::plot_grid(plotlist = plot_list, nrow = nrow, ncol = ncol, labels = LETTERS[1:length(plot_list)], ...  )
-#   cowplot::save_plot(plot = p1, filename = fname, base_height = h, base_width = w)
-#   ww.FnP_parser(fname)
-# }
 
 # _________________________________________________________________________________________________
 # _________________________________________________________________________________________________
