@@ -39,7 +39,11 @@ stry <- function(...) {try(..., silent = T)} # Silent try
 
 {
   openRocinante <-          function() file.edit('~/GitHub/Packages/Rocinante/R/Rocinante.R')
+  openStringendo <-         function() file.edit('~/GitHub/Packages/Stringendo/R/Stringendo.R')
+  openCodeAndRoll2 <-       function() file.edit('~/GitHub/Packages/CodeAndRoll2/R/CodeAndRoll2.R')
+
   openSeuratUtils <-        function() file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.R')
+
   openUVITools <-           function() file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.R')
   openUVIToolsBulk <-       function() file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.Bulk.R')
   openConnectomeTools <-    function() file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.R')
@@ -52,6 +56,7 @@ stry <- function(...) {try(..., silent = T)} # Silent try
 #'
 #' @description Retrieves the file name of the current script open in the RStudio source editor.
 #' This function is specific to RStudio and will not work in other environments.
+#' @param toclipboard Copy to clipboard? Def: TRUE.
 #'
 #' @return A character string with the file name of the current R script open in RStudio.
 #' If not running in RStudio or if no script is open, it returns NULL.
@@ -59,13 +64,16 @@ stry <- function(...) {try(..., silent = T)} # Silent try
 #'
 #' @examples
 #' getCurrentScriptName() # Returns the name of the script currently open in RStudio
-getCurrentScriptName <- function() {
+getCurrentScriptName <- function(toclipboard = T) {
   # Ensure that rstudioapi is available
   if (!requireNamespace("rstudioapi", quietly = TRUE)) {
     stop("rstudioapi package is required.")
   }
   # Retrieve the file name of the current script
   file_name <- basename(rstudioapi::getSourceEditorContext()$path)
+
+  if (toclipboard & require(clipr)) try(clipr::write_clip(file_name), silent = T)
+
   return(file_name)
 }
 
@@ -861,6 +869,8 @@ append_non_na <- function(vec1.core, vec2.suffix) {
 
 
 # _________________________________________________________________________________________________
+dateOK <- function() format(Sys.Date(), "%Y.%m.%d")
+
 backupRprofile <- function(dest_dir = "~/GitHub/pipatorium/R/Rprofile/Local/", backup.dir.create =F) {
 
   # Define the source file (assuming .Rprofile is in the home directory)
@@ -872,7 +882,6 @@ backupRprofile <- function(dest_dir = "~/GitHub/pipatorium/R/Rprofile/Local/", b
     return()
   }
 
-
   # Create the destination directory if it does not exist
   if (!dir.exists(dest_dir)) {
     warning(paste(dest_dir, "
@@ -882,8 +891,7 @@ backupRprofile <- function(dest_dir = "~/GitHub/pipatorium/R/Rprofile/Local/", b
   }
 
   # Create the destination file name with date
-  date_stamp <- format(Sys.Date(), "%Y.%m.%d")
-  dest_file <- file.path(dest_dir, paste0("Rprofile.", date_stamp))
+  dest_file <- file.path(dest_dir, paste0("Rprofile.", dateOK()))
 
   # Copy the file
   file.copy(source_file, dest_file, overwrite = TRUE)
