@@ -35,6 +35,18 @@ fromclip = clipr::read_clip
 
 stry <- function(...) {try(..., silent = T)} # Silent try
 
+# ____________________________________________________________
+
+{
+  openRocinante <-          function() file.edit('~/GitHub/Packages/Rocinante/R/Rocinante.R')
+  openSeuratUtils <-        function() file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.R')
+  openUVITools <-    function() file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.R')
+  openUVIToolsBulk <-    function() file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.Bulk.R')
+  openConnectomeTools <-    function() file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.R')
+  openConnectomeToolsAAV <- function() file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.AAV.R')
+}
+
+
 
 # ____________________________________________________________
 #' @title Get Current Script Name in RStudio
