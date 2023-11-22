@@ -40,12 +40,11 @@ stry <- function(...) {try(..., silent = T)} # Silent try
 {
   openRocinante <-          function() file.edit('~/GitHub/Packages/Rocinante/R/Rocinante.R')
   openSeuratUtils <-        function() file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.R')
-  openUVITools <-    function() file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.R')
-  openUVIToolsBulk <-    function() file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.Bulk.R')
+  openUVITools <-           function() file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.R')
+  openUVIToolsBulk <-       function() file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.Bulk.R')
   openConnectomeTools <-    function() file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.R')
   openConnectomeToolsAAV <- function() file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.AAV.R')
 }
-
 
 
 # ____________________________________________________________
@@ -858,6 +857,39 @@ append_non_na <- function(vec1.core, vec2.suffix) {
   not_na <- !is.na(vec1.core)
   vec1.core[not_na] <- paste(vec1.core[not_na], vec2.suffix[not_na], sep = '.')
   return(vec1.core)
+}
+
+
+# _________________________________________________________________________________________________
+backupRprofile <- function(dest_dir = "~/GitHub/pipatorium/R/Rprofile/Local/", backup.dir.create =F) {
+
+  # Define the source file (assuming .Rprofile is in the home directory)
+  source_file <- file.path(Sys.getenv("HOME"), ".Rprofile")
+
+  # Check if the source file exists
+  if (!file.exists(source_file)) {
+    stop("The .Rprofile file does not exist in the home directory.")
+    return()
+  }
+
+
+  # Create the destination directory if it does not exist
+  if (!dir.exists(dest_dir)) {
+    warning(paste(dest_dir, "
+    destination directory does not exist!
+    You can set backup.dir.create = TRUE"))
+    if(backup.dir.create) dir.create(dest_dir, recursive = TRUE)
+  }
+
+  # Create the destination file name with date
+  date_stamp <- format(Sys.Date(), "%Y.%m.%d")
+  dest_file <- file.path(dest_dir, paste0("Rprofile.", date_stamp))
+
+  # Copy the file
+  file.copy(source_file, dest_file, overwrite = TRUE)
+
+  # Confirmation message
+  cat("Backup of .Rprofile created at:", dest_file, "\n")
 }
 
 
