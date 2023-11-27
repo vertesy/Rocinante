@@ -426,7 +426,7 @@ lm_equation_formatter3 <- function(lm, y.var.name = "y", x.var.name = "x") { # R
 richColors <- function(n = 3) { gplots::rich.colors(n) } # Alias for rich.colors in gplots
 
 
-Color_Check <- function(..., incrBottMarginBy = 0, savefile = FALSE ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
+MarkdownHelpers::color_check <- function(..., incrBottMarginBy = 0, savefile = FALSE ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
   if (incrBottMarginBy) { .ParMarDefault <- par("mar");   par(mar = c(par("mar")[1] + incrBottMarginBy, par("mar")[2:4]) ) }  # Tune the margin
   Numbers = c(...)
   if (length(names(Numbers)) == length(Numbers)) {labelz = names(Numbers)} else {labelz = Numbers}
