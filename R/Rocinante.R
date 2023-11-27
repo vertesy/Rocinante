@@ -704,7 +704,7 @@ osX2ssh <- function(shellpath=clipr::read_clip()) { # '/groups/knoblich/users/bu
 #' @export
 #' @examples
 
-STRINGdb.reformat.ann.table.per.gene <- function(path_of_tsv = '/Users/abel.vertesy/Downloads/enrichment.DISEASES.tsv'
+STRINGdb.reformat.ann.table.per.gene <- function(path_of_tsv = '~/Downloads/enrichment.DISEASES.tsv'
                                                  , column = 'matching proteins in your network (labels)'
                                                  , sep = ',') {
 
