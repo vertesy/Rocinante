@@ -426,16 +426,6 @@ lm_equation_formatter3 <- function(lm, y.var.name = "y", x.var.name = "x") { # R
 richColors <- function(n = 3) { gplots::rich.colors(n) } # Alias for rich.colors in gplots
 
 
-MarkdownHelpers::color_check <- function(..., incrBottMarginBy = 0, savefile = FALSE ) { # Display the colors encoded by the numbers / color-ID-s you pass on to this function
-  if (incrBottMarginBy) { .ParMarDefault <- par("mar");   par(mar = c(par("mar")[1] + incrBottMarginBy, par("mar")[2:4]) ) }  # Tune the margin
-  Numbers = c(...)
-  if (length(names(Numbers)) == length(Numbers)) {labelz = names(Numbers)} else {labelz = Numbers}
-  barplot(rep(10, length(Numbers)), col = Numbers, names.arg = labelz, las = 2 )
-  if (incrBottMarginBy) { par("mar" = .ParMarDefault )}
-
-  fname = substitute(...)
-  if (savefile) { dev.copy2pdf(file = ww.FnP_parser(fname, "ColorCheck.pdf")) }
-}
 
 HeatMapCol_BGR <- grDevices::colorRampPalette(c("blue", "cyan", "yellow", "red"), bias = 1)
 # HeatMapCol_BWR <- grDevices::colorRampPalette(c("blue", "white", "red"), bias = 1)
