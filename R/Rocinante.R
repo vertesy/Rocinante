@@ -20,9 +20,6 @@ print("Depends on CodeAndRoll2, MarkdownReports, gtools, readr, gdata, clipr. So
 wA4 = 8.27 # A4 inches
 hA4 = 11.69
 
-.namechanges <- c("Deprecated function names")
-.namechanges <- append(x = .namechanges, values = c('reorder.list' = 'reorderList'))
-
 
 # Alisases ____________________________________________________________ ----
 sort.natural = gtools::mixedsort
