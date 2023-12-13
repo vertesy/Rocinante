@@ -34,17 +34,66 @@ stry <- function(...) {try(..., silent = T)} # Silent try
 
 # ____________________________________________________________
 
-{
-  openRocinante <-          function() file.edit('~/GitHub/Packages/Rocinante/R/Rocinante.R')
-  openStringendo <-         function() file.edit('~/GitHub/Packages/Stringendo/R/Stringendo.R')
-  openCodeAndRoll2 <-       function() file.edit('~/GitHub/Packages/CodeAndRoll2/R/CodeAndRoll2.R')
 
-  openSeuratUtils <-        function() file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.R')
+pOpen <- list(
+  Rocinante =          function() file.edit('~/GitHub/Packages/Rocinante/R/Rocinante.R'),
+  Stringendo =         function() file.edit('~/GitHub/Packages/Stringendo/R/Stringendo.R'),
+  CodeAndRoll2 =       function() file.edit('~/GitHub/Packages/CodeAndRoll2/R/CodeAndRoll2.R'),
+  PackageTools =       function() file.edit('~/GitHub/Packages/PackageTools/R/PackageTools.R'),
 
-  openUVITools <-           function() file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.R')
-  openUVIToolsBulk <-       function() file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.Bulk.R')
-  openConnectomeTools <-    function() file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.R')
-  openConnectomeToolsAAV <- function() file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.AAV.R')
+  MarkdownHelpers =    function() file.edit('~/GitHub/Packages/MarkdownHelpers/R/MarkdownHelpers.R'),
+  MarkdownReports =    function() file.edit('~/GitHub/Packages/MarkdownReports/R/MarkdownReports.R'),
+  ggExpress =          function() file.edit('~/GitHub/Packages/ggExpress/R/ggExpress.R'),
+
+  SeuratUtils =        function() file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.R'),
+  isoENV =             function() file.edit('~/GitHub/Packages/isoENV/R/isoENV.R'),
+  isoENV.other =       function() file.edit('~/GitHub/Packages/isoENV/R/isoENV.other.R'),
+
+  UVITools =           function() file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.R'),
+  UVIToolsBulk =       function() file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.Bulk.R'),
+  ConnectomeTools =    function() file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.R'),
+  ConnectomeToolsAAV = function() file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.AAV.R'),
+  NestedMultiplexer =  function() file.edit('~/GitHub/Packages/NestedMultiplexer/R/NestedMultiplexer.R')
+
+)
+
+pDocAndLoad <- list(
+  Stringendo =       function(path = "~/GitHub/Packages/Stringendo") { devtools::document(path); devtools::load_all(path) },
+  ReadWriter =       function(path = "~/GitHub/Packages/ReadWriter") { devtools::document(path); devtools::load_all(path) },
+  CodeAndRoll2 =     function(path = "~/GitHub/Packages/CodeAndRoll2") { devtools::document(path); devtools::load_all(path) },
+  PackageTools =     function(path = "~/GitHub/Packages/PackageTools") { devtools::document(path); devtools::load_all(path) },
+
+  MarkdownHelpers =  function(path = "~/GitHub/Packages/MarkdownHelpers/") { devtools::document(path); devtools::load_all(path) },
+  MarkdownReports =  function(path = "~/GitHub/Packages/MarkdownReports/") { devtools::document(path); devtools::load_all(path) },
+  ggExpress =        function(path = "~/GitHub/Packages/ggExpress/") { devtools::document(path); devtools::load_all(path) },
+
+  Seurat.utils =     function(path = "~/GitHub/Packages/Seurat.utils") { devtools::document(path); devtools::load_all(path) },
+  isoENV =           function(path = "~/GitHub/Packages/isoENV") { devtools::document(path); devtools::load_all(path) },
+
+  UVI.tools =         function(path = "~/GitHub/Packages/UVI.tools") { devtools::document(path); devtools::load_all(path) },
+  Connectome.tools =  function(path = "~/GitHub/Packages/Connectome.tools") { devtools::document(path); devtools::load_all(path) },
+  NestedMultiplexer = function(path = "~/GitHub/Packages/NestedMultiplexer") { devtools::document(path); devtools::load_all(path) }
+)
+
+pReload <- list(
+  MarkdownHelpers = function(path = "~/GitHub/Packages/MarkdownHelpers/") { devtools::load_all(path) },
+  Stringendo =      function(path = "~/GitHub/Packages/Stringendo") { devtools::load_all(path) },
+  ReadWriter =      function(path = "~/GitHub/Packages/ReadWriter") { devtools::load_all(path) },
+  CodeAndRoll2 =    function(path = "~/GitHub/Packages/CodeAndRoll2") { devtools::load_all(path) },
+
+  Seurat.utils =   function(path = "~/GitHub/Packages/Seurat.utils") { devtools::load_all(path) },
+  isoENV =         function(path = "~/GitHub/Packages/isoENV") { devtools::load_all(path) },
+
+  UVI.tools =         function(path = "~/GitHub/Packages/UVI.tools") { devtools::load_all(path) },
+  Connectome.tools =  function(path = "~/GitHub/Packages/Connectome.tools") { devtools::load_all(path) },
+  NestedMultiplexer = function(path = "~/GitHub/Packages/NestedMultiplexer") { devtools::load_all(path) }
+)
+
+
+
+helpPak <- function(x) {
+  pkg <- deparse(substitute(x))
+  browseURL(paste0("https://www.rdocumentation.org/packages/", pkg))
 }
 
 
@@ -149,7 +198,7 @@ rnd4l <- function(set = c(LETTERS, 0:9), n = 4) {
 
 '%!in%' <- function(x, y) !('%in%'(x, y))
 
-stopif2 <- function(condition, ...) { if (condition) {iprint(...); stop()} } # Stop script if the condition is met. You can parse anything (e.g. variables) in the message
+# stopif <- function(condition, ...) { if (condition) {iprint(...); stop()} } # Stop script if the condition is met. You can parse anything (e.g. variables) in the message
 
 
 say <- function(...) { # Use system voice to notify (after a long task is done)
