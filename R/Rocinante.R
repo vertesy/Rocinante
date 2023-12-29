@@ -32,6 +32,8 @@ fromclip = clipr::read_clip
 
 stry <- function(...) {try(..., silent = T)} # Silent try
 
+warnings.erase <- function() assign("last.warning", NULL, envir = baseenv())
+
 # ____________________________________________________________
 
 
@@ -333,7 +335,8 @@ memory.biggest.objects <- function(n = 5, saveplot = F) { # Show distribution of
   topX = sort(Sizes.of.objects.in.mem,decreasing = TRUE)[1:n]
 
   Memorty.usage.stat = c(topX, 'Other' = sum(sort(Sizes.of.objects.in.mem,decreasing = TRUE)[-(1:n)]))
-  pie(Memorty.usage.stat, cex = .5, sub = make.names(date()), col = grDevices::terrain.colors(l(Memorty.usage.stat)))
+  pie(x = Memorty.usage.stat, cex = .5, sub = date(),
+      col = grDevices::terrain.colors(length(Memorty.usage.stat)))
   # try(ggExpress::qpie(Memorty.usage.stat, w = 7,  ), silent = T)
   # Use wpie if you have MarkdownReports, from https://github.com/vertesy/MarkdownReports
   dput(names(topX))
@@ -905,7 +908,9 @@ append_non_na <- function(vec1.core, vec2.suffix) {
 
 
 # _________________________________________________________________________________________________
-dateOK <- function() format(Sys.Date(), "%Y.%m.%d")
+date()
+dateOK <- function() format(Sys.Date(), "%Y.%m.%d"); dateOK()
+dateAndTime <- function() format(Sys.time(), "%Y_%m_%d-%H.%M"); dateAndTime()
 
 backupRprofile <- function(dest_dir = "~/GitHub/pipatorium/R/Rprofile/Local/", backup.dir.create =F) {
 
