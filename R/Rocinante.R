@@ -25,10 +25,11 @@ hA4 = 11.69
 sort.natural = gtools::mixedsort
 comma = scales::comma
 
-p0 = paste0
-l = length
-toclip = clipr::write_clip
-fromclip = clipr::read_clip
+b <- browser
+p0 <- paste0
+l <- length
+toclip <- clipr::write_clip
+fromclip <- clipr::read_clip
 
 stry <- function(...) {try(..., silent = T)} # Silent try
 
@@ -59,7 +60,7 @@ pOpen <- list(
 
 )
 
-pDocAndLoad <- list(
+d <- pDocAndLoad <- list(
   Stringendo =       function(path = "~/GitHub/Packages/Stringendo") { devtools::document(path); devtools::load_all(path) },
   ReadWriter =       function(path = "~/GitHub/Packages/ReadWriter") { devtools::document(path); devtools::load_all(path) },
   CodeAndRoll2 =     function(path = "~/GitHub/Packages/CodeAndRoll2") { devtools::document(path); devtools::load_all(path) },
@@ -77,7 +78,7 @@ pDocAndLoad <- list(
   NestedMultiplexer = function(path = "~/GitHub/Packages/NestedMultiplexer") { devtools::document(path); devtools::load_all(path) }
 )
 
-pReload <- list(
+r <- pReload <- list(
   MarkdownHelpers = function(path = "~/GitHub/Packages/MarkdownHelpers/") { devtools::load_all(path) },
   Stringendo =      function(path = "~/GitHub/Packages/Stringendo") { devtools::load_all(path) },
   ReadWriter =      function(path = "~/GitHub/Packages/ReadWriter") { devtools::load_all(path) },
