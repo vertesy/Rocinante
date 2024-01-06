@@ -66,9 +66,9 @@ d <- pDocAndLoad <- list(
   CodeAndRoll2 =     function(path = "~/GitHub/Packages/CodeAndRoll2") { devtools::document(path); devtools::load_all(path) },
   PackageTools =     function(path = "~/GitHub/Packages/PackageTools") { devtools::document(path); devtools::load_all(path) },
 
-  MarkdownHelpers =  function(path = "~/GitHub/Packages/MarkdownHelpers/") { devtools::document(path); devtools::load_all(path) },
-  MarkdownReports =  function(path = "~/GitHub/Packages/MarkdownReports/") { devtools::document(path); devtools::load_all(path) },
-  ggExpress =        function(path = "~/GitHub/Packages/ggExpress/") { devtools::document(path); devtools::load_all(path) },
+  MarkdownHelpers =  function(path = "~/GitHub/Packages/MarkdownHelpers") { devtools::document(path); devtools::load_all(path) },
+  MarkdownReports =  function(path = "~/GitHub/Packages/MarkdownReports") { devtools::document(path); devtools::load_all(path) },
+  ggExpress =        function(path = "~/GitHub/Packages/ggExpress") { devtools::document(path); devtools::load_all(path) },
 
   Seurat.utils =     function(path = "~/GitHub/Packages/Seurat.utils") { devtools::document(path); devtools::load_all(path) },
   isoENV =           function(path = "~/GitHub/Packages/isoENV") { devtools::document(path); devtools::load_all(path) },
@@ -83,6 +83,10 @@ r <- pReload <- list(
   Stringendo =      function(path = "~/GitHub/Packages/Stringendo") { devtools::load_all(path) },
   ReadWriter =      function(path = "~/GitHub/Packages/ReadWriter") { devtools::load_all(path) },
   CodeAndRoll2 =    function(path = "~/GitHub/Packages/CodeAndRoll2") { devtools::load_all(path) },
+
+  MarkdownHelpers =  function(path = "~/GitHub/Packages/MarkdownHelpers") { devtools::load_all(path) },
+  MarkdownReports =  function(path = "~/GitHub/Packages/MarkdownReports") { devtools::load_all(path) },
+  ggExpress =        function(path = "~/GitHub/Packages/ggExpress") { devtools::load_all(path) },
 
   Seurat.utils =   function(path = "~/GitHub/Packages/Seurat.utils") { devtools::load_all(path) },
   isoENV =         function(path = "~/GitHub/Packages/isoENV") { devtools::load_all(path) },
