@@ -97,7 +97,6 @@ r <- pReload <- list(
 )
 
 
-
 helpPak <- function(x) {
   pkg <- deparse(substitute(x))
   browseURL(paste0("https://www.rdocumentation.org/packages/", pkg))
@@ -203,9 +202,6 @@ rnd4l <- function(set = c(LETTERS, 0:9), n = 4) {
 # printEveryN <- function(i, N = 1000) { if ((i %% N) == 0 ) iprint(i) } # Report at every e.g. 1000
 
 
-'%!in%' <- function(x, y) !('%in%'(x, y))
-
-# stopif <- function(condition, ...) { if (condition) {iprint(...); stop()} } # Stop script if the condition is met. You can parse anything (e.g. variables) in the message
 
 
 say <- function(...) { # Use system voice to notify (after a long task is done)
