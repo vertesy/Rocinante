@@ -318,7 +318,7 @@ plotMemoryUsage <- function() {
   require(gridExtra)
   require(scales)
 
-  mem_info <- getMemoryInfo3()
+  mem_info <- getMemoryInfo()
   mem_df <- data.frame(Type = names(mem_info$memory), Memory = mem_info$memory)
   obj_df <- data.frame(Object = names(mem_info$objects), Usage = mem_info$objects)
 
@@ -367,6 +367,109 @@ plotMemoryUsage <- function() {
   grid.arrange(p1, p2, ncol = 2)
 }
 # plotMemoryUsage()
+
+
+
+
+
+# _________________________________________________________________________________________________
+#' @title Retrieve SLURM Job Details
+#'
+#' @description This function fetches details of the current SLURM job for a specified user.
+#' It returns information such as the job's hostname, ID, memory allocation (in GB),
+#' number of CPUs, nodes, and runtime.
+#'
+#' @param user_name A string representing the username for which to retrieve job information.
+#'                  The default value is "abel.vertesy".
+#' @return A list containing the following elements:
+#'         - `hostname`: The cleaned hostname of the node.
+#'         - `job_id`: The ID of the job.
+#'         - `mem_in_gb`: The amount of memory allocated to the job in gigabytes.
+#'         - `cpus`: The number of CPUs allocated to the job.
+#'         - `nodes`: The number of nodes allocated to the job.
+#'         - `runtime`: The runtime of the job in either "HH:MM" or "H:MM:SS" format.
+#' @importFrom stats setNames
+#' @examples
+#' slurm_details <- get_slurm_job_details(user_name = "your_username")
+#' print(slurm_details)
+#' @note This function is intended to be used in a SLURM managed HPC environment.
+#'       The availability and correctness of the information depend on the SLURM
+#'       configuration and the user's permissions.
+#'
+#' @export
+get_slurm_job_details <- function(user_name = "abel.vertesy") {
+  # Define a helper function to run a command and return its output
+  run_command <- function(cmd) {
+    output <- system(cmd, intern = TRUE)
+    if (length(output) == 0) {
+      return(NA)
+    }
+    return(output)
+  }
+
+  # Extract the hostname
+  hostname_clean <- run_command("hostname | sed 's/\\.cbe\\.vbc\\.ac\\.at//'")
+
+  # Get job information
+  job_info <- run_command(paste("squeue -u", user_name, "| grep", hostname_clean))
+  if (is.na(job_info) || length(job_info) == 0) {
+    return(list(hostname = hostname_clean, job_id = NA, mem = NA, cpus = NA, nodes = NA))
+  }
+
+  # Extract job ID
+  job_id <-  sub("^\\s*(\\S+).*", "\\1", job_info)
+  job_runtime <- sub(".*R\\s+((\\d+:)?\\d{2}:\\d{2}).*", "\\1", job_info)
+
+  # Get job details
+  job_details <- run_command(paste("scontrol show job", job_id))
+
+  # browser()
+  # Extract AllocTRES
+  alloc_tres <- grep("AllocTRES", job_details, value = TRUE)
+
+  # Initialize variables
+  cpus <- NA
+  mem <- NA
+  nodes <- NA
+
+  # Check if AllocTRES line is found
+  if (length(alloc_tres) > 0) {
+    tres_parts <- strsplit(alloc_tres, ",")[[1]]
+    for (part in tres_parts) {
+      if (grepl("cpu=", part)) {
+        cpus <- sub(".*cpu=([0-9]+).*", "\\1", part)
+      } else if (grepl("mem=", part)) {
+        # Extract memory allocation (assuming it's in MB or GB)
+        mem_string <- sub(".*mem=([0-9]+[MG]?).*", "\\1", part)
+
+        # Extract the numeric part and the unit (M or G)
+        if (grepl("M$", mem_string)) { # Memory in MB
+          mem_value <- as.numeric(sub("M$", "", mem_string))
+          mem_in_gb <- mem_value / 1024
+        } else if (grepl("G$", mem_string)) { # Memory in GB
+          mem_in_gb <- as.numeric(sub("G$", "", mem_string))
+        } else {
+          mem_in_gb <- NA # Default or unknown unit
+        }
+
+      } else if (grepl("node=", part)) {
+        nodes <- sub(".*node=([0-9]+).*", "\\1", part)
+      }
+    }
+  } else {
+    warning("AllocTRES not found")
+  }
+
+  # Return the details
+  list(hostname = hostname_clean, job_id = job_id, mem_in_gb = iround(mem_in_gb),
+       cpus = cpus, nodes = nodes, runtime = job_runtime)
+}
+
+
+
+# _________________________________________________________________________________________________
+
+# _________________________________________________________________________________________________
 
 
 # Generic ____________________________________________________________ ----
