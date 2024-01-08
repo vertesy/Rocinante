@@ -260,22 +260,31 @@ getMemoryInfo <- function() {
     mem_free <- as.numeric(mem_lines[4])
 
   } else if (os_type == "Darwin") { # Implementation for macOS
-    warning("Probably does not work correctly on macOS yet.")
-
+    warning("Maybe does not work correctly on macOS yet.")
     mem_info <- system("vm_stat", intern = TRUE)
 
-    # Corrected regex pattern for page size
+    # Extract page size in bytes
     page_size_info <- mem_info[grep("page size of", mem_info)]
     page_size <- as.numeric(gsub(".*page size of ([0-9]+) bytes.*", "\\1", page_size_info))
 
-    pages_free_info <- mem_info[grep("Pages free", mem_info)]
-    pages_free <- as.numeric(gsub(".*: +([0-9]+).*$", "\\1", pages_free_info))
-    stopifnot(all(is.numeric(c(pages_free, page_size))))
+    # Function to extract the number of pages
+    extract_pages <- function(pattern) {
+      value <- mem_info[grep(pattern, mem_info)]
+      as.numeric(gsub(".*: +([0-9]+).*$", "\\1", value))
+    }
 
-    mem_free <- pages_free * page_size / 1024^2
+    # Calculate free, inactive, and speculative pages
+    pages_free <- extract_pages("Pages free")
+    pages_inactive <- extract_pages("Pages inactive")
+    pages_speculative <- extract_pages("Pages speculative")
 
-    object_sizes <- sapply(ls(envir = .GlobalEnv), function(x) object.size(get(x)))
-    mem_used <- sum(object_sizes) / 1024^2
+    # Calculate active and wired pages
+    pages_active <- extract_pages("Pages active")
+    pages_wired <- extract_pages("Pages wired down")
+
+    # Convert pages to MB
+    mem_free <- (pages_free + pages_inactive + pages_speculative) * page_size / 1024^2
+    mem_used <- (pages_active + pages_wired) * page_size / 1024^2
 
   } else {
     stop("Unsupported OS")
