@@ -221,6 +221,7 @@ memory.biggest.objects <- function(n = 5, saveplot = F) { # Show distribution of
 #' @examples
 #' mem_info <- getMemoryInfo()
 #' print(mem_info)
+
 getMemoryInfo <- function() {
   os_type <- Sys.info()["sysname"]
   gc()
@@ -232,10 +233,26 @@ getMemoryInfo <- function() {
 
   } else if (os_type == "Linux") {
     warning("Not tested on Linux", immediate. = TRUE)
-    mem_info <- system("free -m", intern = TRUE)
-    mem_lines <- strsplit(mem_info, " +")[[2]]
-    mem_used <- as.numeric(mem_lines[3]) / 1024  # Convert MB to GB
-    mem_free <- as.numeric(mem_lines[4]) / 1024  # Convert MB to GB
+
+    if(exists("onCBE") )  { if (isTRUE(onCBE)) {
+      message("on CBE")
+      job.details <- getSLURMjobDetails(user_name = "abel.vertesy")
+      print("job.details")
+      print(job.details)
+      print("")
+
+      total_memory <- job.details$mem_in_gb
+      mem_used <- sum(sapply(ls(envir = .GlobalEnv), function(x) object.size(get(x))))/1e9
+      mem_free <- total_memory - mem_used
+
+    }} else {
+      stop()
+      # mem_info <- system("free -m", intern = TRUE)
+      # mem_lines <- strsplit(mem_info, " +")[[2]]
+      # mem_used <- as.numeric(mem_lines[3]) / 1024  # Convert MB to GB
+      # mem_free <- as.numeric(mem_lines[4]) / 1024  # Convert MB to GB
+    }
+
 
   } else if (os_type == "Darwin") {
     mem_info <- system("vm_stat", intern = TRUE)
@@ -262,9 +279,9 @@ getMemoryInfo <- function() {
   } else {
     stop("Unsupported OS")
   }
+
   # Calculate memory usage of objects in the global environment
   # browser()
-  # object_sizes <- sapply(ls(envir = .GlobalEnv), function(x) format(object.size(get(x)), units = "GB"))
   object_sizes <- sapply(ls(envir = .GlobalEnv), function(x) object.size(get(x)))
   object_sizes <- sort(object_sizes, decreasing = TRUE)
   total_size <- sum(object_sizes)
@@ -280,18 +297,14 @@ getMemoryInfo <- function() {
     significant_objects <- c(significant_objects, used.other = other_usage)
   }
 
-  return(list(memory = ceiling(c(Used = mem_used, Free = mem_free)),
-              objects = significant_objects))
-
   stopifnot(is.numeric(mem_used), is.numeric(mem_free))
   stopifnot(length(significant_objects) < 21) # 20*0.05 =1
-  stopifnot(all(c(mem_used, mem_free,total_size) <32))
-  stopifnot(all(c(mem_used, mem_free,total_size) >0.01))
+  print(c(mem_used, mem_free,total_size) )
 
-  return(list(memory = ceiling(c(Used = mem_used, Free = mem_free)),
+  return(list(memory = signif(c(Used = mem_used, Free = mem_free), digits = 2),
               objects = significant_objects))
 }
-# getMemoryInfo()
+
 
 
 
@@ -397,7 +410,7 @@ plotMemoryUsage <- function() {
 #'       configuration and the user's permissions.
 #'
 #' @export
-get_slurm_job_details <- function(user_name = "abel.vertesy") {
+getSLURMjobDetails <- function(user_name = "abel.vertesy") {
   # Define a helper function to run a command and return its output
   run_command <- function(cmd) {
     output <- system(cmd, intern = TRUE)
@@ -461,7 +474,7 @@ get_slurm_job_details <- function(user_name = "abel.vertesy") {
   }
 
   # Return the details
-  list(hostname = hostname_clean, job_id = job_id, mem_in_gb = iround(mem_in_gb),
+  list(hostname = hostname_clean, job_id = job_id, mem_in_gb = round(mem_in_gb,2),
        cpus = cpus, nodes = nodes, runtime = job_runtime)
 }
 
