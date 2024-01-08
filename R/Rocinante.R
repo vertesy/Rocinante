@@ -197,6 +197,141 @@ rnd4l <- function(set = c(LETTERS, 0:9), n = 4) {
   print(paste0(paste0( sample(x = set, size = n), collapse = ''), '__'))
 }
 
+# Memory ____________________________________________________________ ----
+
+
+memory.biggest.objects <- function(n = 5, saveplot = F) { # Show distribution of the largest objects and return their names. # https://stackoverflow.com/questions/17218404/should-i-get-a-habit-of-removing-unused-variables-in-r
+  try.dev.off()
+  gc()
+  ls.mem <- ls( envir = .GlobalEnv)
+  ls.obj <- lapply(ls.mem, get)
+  Sizes.of.objects.in.mem <- unlapply(ls.obj, object.size)
+  names(Sizes.of.objects.in.mem) <- ls.mem
+  topX = sort(Sizes.of.objects.in.mem,decreasing = TRUE)[1:n]
+
+  Memorty.usage.stat = c(topX, 'Other' = sum(sort(Sizes.of.objects.in.mem,decreasing = TRUE)[-(1:n)]))
+  pie(x = Memorty.usage.stat, cex = .5, sub = date(),
+      col = grDevices::terrain.colors(length(Memorty.usage.stat)))
+  # try(ggExpress::qpie(Memorty.usage.stat, w = 7,  ), silent = T)
+  # Use wpie if you have MarkdownReports, from https://github.com/vertesy/MarkdownReports
+  dput(names(topX))
+
+  strX <- as.character(capture.output(dput(head(names(topX), n = 5))))
+  strX <- gsub('[^A-Za-z0-9 ,._/()]', '', strX)
+  iprint("rm(list = ", strX,")")
+
+}
+
+
+# _________________________________________________________________________________________________
+#' @title Retrieve Memory Information
+#'
+#' @description
+#' Fetches and calculates the used and free memory information for the current system.
+#' Supports Windows, Linux, and macOS (Darwin), with specific implementations for each.
+#'
+#' @details
+#' On Windows, it uses `memory.size` and `memory.limit` to calculate memory usage.
+#' On Linux, it parses the output of `free -m` command.
+#' On macOS, it uses `vm_stat` command and calculates memory based on page size.
+#' Note: The function might not work correctly on macOS.
+#'
+#' @return A named numeric vector with the ceiling values of used and free memory in MB.
+#' @export
+#' @examples
+#' mem_info <- getMemoryInfo()
+#' print(mem_info)
+
+
+getMemoryInfo <- function() {
+  os_type <- Sys.info()["sysname"]
+  print(os_type)
+
+
+  if (os_type == "Windows") { # Implementation for Windows
+    message("Windows not tested.")
+    mem_used <- memory.size()
+    mem_free <- memory.limit() - mem_used
+
+  } else if (os_type == "Linux") { # Implementation for Linux
+    mem_info <- system("free -m", intern = TRUE)
+    mem_lines <- strsplit(mem_info, " +")[[2]]
+    mem_used <- as.numeric(mem_lines[3])
+    mem_free <- as.numeric(mem_lines[4])
+
+  } else if (os_type == "Darwin") { # Implementation for macOS
+    warning("Probably does not work correctly on macOS yet.")
+
+    mem_info <- system("vm_stat", intern = TRUE)
+
+    # Corrected regex pattern for page size
+    page_size_info <- mem_info[grep("page size of", mem_info)]
+    page_size <- as.numeric(gsub(".*page size of ([0-9]+) bytes.*", "\\1", page_size_info))
+
+    pages_free_info <- mem_info[grep("Pages free", mem_info)]
+    pages_free <- as.numeric(gsub(".*: +([0-9]+).*$", "\\1", pages_free_info))
+    stopifnot(all(is.numeric(c(pages_free, page_size))))
+
+    mem_free <- pages_free * page_size / 1024^2
+
+    object_sizes <- sapply(ls(envir = .GlobalEnv), function(x) object.size(get(x)))
+    mem_used <- sum(object_sizes) / 1024^2
+
+  } else {
+    stop("Unsupported OS")
+  }
+
+  stopifnot(all(is.numeric(c(mem_used, mem_free))))
+  return(ceiling(c(Used = mem_used, Free = mem_free)))
+
+}
+
+
+# _________________________________________________________________________________________________
+#' @title Plot Memory Usage
+#'
+#' @description
+#' Plots the used and free memory as a stacked barplot. The memory values are displayed in gigabytes.
+#' The plot includes the total memory as a subtitle and the operating system with the current time/date as a caption.
+#'
+#' @details
+#' The function calls `getMemoryInfo` to retrieve memory information and then uses `ggplot2` to plot the data.
+#' Memory values are converted to GB and percentages are calculated for plotting.
+#'
+#' @importFrom ggplot2 ggplot geom_bar geom_text aes labs theme_minimal scale_fill_brewer
+#' @export
+#' @examples
+#' plotMemoryUsage()
+
+
+plotMemoryUsage <- function() {
+  require(ggplot2)
+
+  mem_info <- getMemoryInfo()
+  mem_df <- data.frame(Type = names(mem_info), Memory = mem_info / 1024)  # Convert MB to GB
+
+  # Calculate total memory and the percentage for each type
+  total_memory <- sum(mem_df$Memory)
+  mem_df$Percentage <- (mem_df$Memory / total_memory) * 100
+
+  # Operating system and current time/date
+  os_info <- Sys.info()["sysname"]
+  current_time <- format(Sys.time(), "%Y-%m-%d %H:%M")
+
+  ggplot(mem_df, aes(x = "", y = Memory, fill = Type)) +
+    geom_bar(stat = "identity", position = "stack") +
+    geom_text(aes(label = paste0(round(Percentage, 1), "%")),
+              position = position_stack(vjust = 0.5), size = 3.5) +
+    labs(title = "Memory Usage",
+         subtitle = paste("Total Memory:", round(total_memory, 2), "GB"),
+         caption = paste(os_info, current_time),
+         y = "Memory (GB)", x = "") +
+    theme_minimal() +
+    scale_fill_brewer(palette = "Set3")
+}
+
+
+
 
 # Generic ____________________________________________________________ ----
 # printEveryN <- function(i, N = 1000) { if ((i %% N) == 0 ) iprint(i) } # Report at every e.g. 1000
@@ -323,31 +458,6 @@ IfExistsAndTrue <- function(name = "pi" ) { # Internal function. Checks if a var
   }
   return(x)
 }
-
-
-
-memory.biggest.objects <- function(n = 5, saveplot = F) { # Show distribution of the largest objects and return their names. # https://stackoverflow.com/questions/17218404/should-i-get-a-habit-of-removing-unused-variables-in-r
-  try.dev.off()
-  gc()
-  ls.mem <- ls( envir = .GlobalEnv)
-  ls.obj <- lapply(ls.mem, get)
-  Sizes.of.objects.in.mem <- unlapply(ls.obj, object.size)
-  names(Sizes.of.objects.in.mem) <- ls.mem
-  topX = sort(Sizes.of.objects.in.mem,decreasing = TRUE)[1:n]
-
-  Memorty.usage.stat = c(topX, 'Other' = sum(sort(Sizes.of.objects.in.mem,decreasing = TRUE)[-(1:n)]))
-  pie(x = Memorty.usage.stat, cex = .5, sub = date(),
-      col = grDevices::terrain.colors(length(Memorty.usage.stat)))
-  # try(ggExpress::qpie(Memorty.usage.stat, w = 7,  ), silent = T)
-  # Use wpie if you have MarkdownReports, from https://github.com/vertesy/MarkdownReports
-  dput(names(topX))
-
-  strX <- as.character(capture.output(dput(head(names(topX), n = 5))))
-  strX <- gsub('[^A-Za-z0-9 ,._/()]', '', strX)
-  iprint("rm(list = ", strX,")")
-
-}
-# memory.biggest.objects()
 
 
 
@@ -944,8 +1054,11 @@ backupRprofile <- function(dest_dir = "~/GitHub/pipatorium/R/Rprofile/Local/", b
 
 
 
+
+
 # TMP code and roll -------------------- -----------------------------------------------------------------
 # fractions <- function(vec, na_rm = TRUE) vec/ sum(vec, na.rm = na_rm)
 # unique.wNames <- function(x) { x[!duplicated(x)] }
+
 
 
