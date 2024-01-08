@@ -131,26 +131,6 @@ getCurrentScriptName <- function(toclipboard = T) {
 
 
 # ____________________________________________________________
-# https://stackoverflow.com/questions/6216968/r-force-local-scope
-
-# findGlobals2 <- function(x) {
-#   codetools::findGlobals(x)
-#
-# }
-#
-# checkStrict <- function(f, silent=FALSE) {
-#   vars <- codetools::findGlobals(f)
-#   found <- !vapply(vars, exists, logical(1), envir=as.environment(2))
-#   if (!silent && any(found)) {
-#     warning("global variables used: ", paste(names(found)[found], collapse=', '))
-#     return(invisible(FALSE))
-#   }
-#
-#   !any(found)
-# }
-#
-
-# ____________________________________________________________
 sourcePartial <- function(fn,startTag = '#1', endTag = '#/1') { # Source parts of another script. Source: https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
   lines <- scan(fn, what = character(), sep = "\n", quiet = TRUE)
   st <- grep(startTag,lines)
@@ -201,11 +181,11 @@ rnd4l <- function(set = c(LETTERS, 0:9), n = 4) {
 
 
 memory.biggest.objects <- function(n = 5, saveplot = F) { # Show distribution of the largest objects and return their names. # https://stackoverflow.com/questions/17218404/should-i-get-a-habit-of-removing-unused-variables-in-r
-  try.dev.off()
+  try(dev.off(), silent = TRUE)
   gc()
   ls.mem <- ls( envir = .GlobalEnv)
   ls.obj <- lapply(ls.mem, get)
-  Sizes.of.objects.in.mem <- unlapply(ls.obj, object.size)
+  Sizes.of.objects.in.mem <- CodeAndRoll2::unlapply(ls.obj, object.size)
   names(Sizes.of.objects.in.mem) <- ls.mem
   topX = sort(Sizes.of.objects.in.mem,decreasing = TRUE)[1:n]
 
@@ -221,7 +201,7 @@ memory.biggest.objects <- function(n = 5, saveplot = F) { # Show distribution of
   iprint("rm(list = ", strX,")")
 
 }
-
+# memory.biggest.objects()
 
 # _________________________________________________________________________________________________
 #' @title Retrieve Memory Information
@@ -241,59 +221,78 @@ memory.biggest.objects <- function(n = 5, saveplot = F) { # Show distribution of
 #' @examples
 #' mem_info <- getMemoryInfo()
 #' print(mem_info)
-
-
 getMemoryInfo <- function() {
   os_type <- Sys.info()["sysname"]
-  print(os_type)
+  gc()
 
+  if (os_type == "Windows") {
+    warning("Not tested on Windows", immediate. = TRUE)
+    mem_used <- memory.size(max = FALSE) / 1024  # Convert MB to GB
+    mem_free <- (memory.limit() - memory.size(max = FALSE)) / 1024  # Convert MB to GB
 
-  if (os_type == "Windows") { # Implementation for Windows
-    message("Windows not tested.")
-    mem_used <- memory.size()
-    mem_free <- memory.limit() - mem_used
-
-  } else if (os_type == "Linux") { # Implementation for Linux
+  } else if (os_type == "Linux") {
+    warning("Not tested on Linux", immediate. = TRUE)
     mem_info <- system("free -m", intern = TRUE)
     mem_lines <- strsplit(mem_info, " +")[[2]]
-    mem_used <- as.numeric(mem_lines[3])
-    mem_free <- as.numeric(mem_lines[4])
+    mem_used <- as.numeric(mem_lines[3]) / 1024  # Convert MB to GB
+    mem_free <- as.numeric(mem_lines[4]) / 1024  # Convert MB to GB
 
-  } else if (os_type == "Darwin") { # Implementation for macOS
-    warning("Maybe does not work correctly on macOS yet.")
+  } else if (os_type == "Darwin") {
     mem_info <- system("vm_stat", intern = TRUE)
 
-    # Extract page size in bytes
     page_size_info <- mem_info[grep("page size of", mem_info)]
-    page_size <- as.numeric(gsub(".*page size of ([0-9]+) bytes.*", "\\1", page_size_info))
+    page_size <- as.numeric(gsub(".*page size of ([0-9]+) bytes.*", "\\1", page_size_info)) / 1024^3  # Convert bytes to GB
 
-    # Function to extract the number of pages
+    total_memory <- system2("sysctl", "hw.memsize", stdout = TRUE)
+    total_memory <- as.numeric(gsub("hw.memsize: ([0-9]+)", "\\1", total_memory)) / 1024^3  # Convert bytes to GB
+
     extract_pages <- function(pattern) {
       value <- mem_info[grep(pattern, mem_info)]
       as.numeric(gsub(".*: +([0-9]+).*$", "\\1", value))
     }
 
-    # Calculate free, inactive, and speculative pages
     pages_free <- extract_pages("Pages free")
+    pages_active <- extract_pages("Pages active")
     pages_inactive <- extract_pages("Pages inactive")
     pages_speculative <- extract_pages("Pages speculative")
-
-    # Calculate active and wired pages
-    pages_active <- extract_pages("Pages active")
     pages_wired <- extract_pages("Pages wired down")
 
-    # Convert pages to MB
-    mem_free <- (pages_free + pages_inactive + pages_speculative) * page_size / 1024^2
-    mem_used <- (pages_active + pages_wired) * page_size / 1024^2
-
+    mem_free <- (pages_free + pages_inactive + pages_speculative) * page_size  # Convert pages to GB
+    mem_used <- total_memory - mem_free  # Calculate used memory as total minus free
   } else {
     stop("Unsupported OS")
   }
+  # Calculate memory usage of objects in the global environment
+  # browser()
+  # object_sizes <- sapply(ls(envir = .GlobalEnv), function(x) format(object.size(get(x)), units = "GB"))
+  object_sizes <- sapply(ls(envir = .GlobalEnv), function(x) object.size(get(x)))
+  object_sizes <- sort(object_sizes, decreasing = TRUE)
+  total_size <- sum(object_sizes)
+  relative_object_sizes <- object_sizes / total_size
 
-  stopifnot(all(is.numeric(c(mem_used, mem_free))))
-  return(ceiling(c(Used = mem_used, Free = mem_free)))
+  # Filter objects that use more than 5% of total memory
+  significant_objects <- object_sizes[relative_object_sizes > 0.05] / 1e9 # Convert bytes to GB
 
+  if (length(significant_objects) < 1) {
+    significant_objects <- c(used.other = sum(relative_object_sizes))
+  } else {
+    other_usage <- sum(relative_object_sizes[!names(relative_object_sizes) %in% names(significant_objects)])
+    significant_objects <- c(significant_objects, used.other = other_usage)
+  }
+
+  return(list(memory = ceiling(c(Used = mem_used, Free = mem_free)),
+              objects = significant_objects))
+
+  stopifnot(is.numeric(mem_used), is.numeric(mem_free))
+  stopifnot(length(significant_objects) < 21) # 20*0.05 =1
+  stopifnot(all(c(mem_used, mem_free,total_size) <32))
+  stopifnot(all(c(mem_used, mem_free,total_size) >0.01))
+
+  return(list(memory = ceiling(c(Used = mem_used, Free = mem_free)),
+              objects = significant_objects))
 }
+# getMemoryInfo()
+
 
 
 # _________________________________________________________________________________________________
@@ -313,33 +312,61 @@ getMemoryInfo <- function() {
 #' plotMemoryUsage()
 
 
+
 plotMemoryUsage <- function() {
   require(ggplot2)
+  require(gridExtra)
+  require(scales)
 
-  mem_info <- getMemoryInfo()
-  mem_df <- data.frame(Type = names(mem_info), Memory = mem_info / 1024)  # Convert MB to GB
+  mem_info <- getMemoryInfo3()
+  mem_df <- data.frame(Type = names(mem_info$memory), Memory = mem_info$memory)
+  obj_df <- data.frame(Object = names(mem_info$objects), Usage = mem_info$objects)
 
   # Calculate total memory and the percentage for each type
   total_memory <- sum(mem_df$Memory)
-  mem_df$Percentage <- (mem_df$Memory / total_memory) * 100
+  mem_df$Percentage <- mem_df$Memory / total_memory * 100
 
-  # Operating system and current time/date
+  # Calculate total objects usage and the percentage for each object
+  total_objects <- sum(obj_df$Usage)
+  obj_df$Percentage <- obj_df$Usage / total_objects * 100
+
   os_info <- Sys.info()["sysname"]
-  current_time <- format(Sys.time(), "%Y-%m-%d %H:%M")
+  current_time <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
 
-  ggplot(mem_df, aes(x = "", y = Memory, fill = Type)) +
+  # Plot for overall memory usage
+  subt <- paste("Total System Memory:", round(total_memory, 2), "GB",
+                "\nUsed:", mem_info$memory["Used"], "GB")
+
+  p1 <- ggplot(mem_df, aes(x = "", y = Memory, fill = Type)) +
     geom_bar(stat = "identity", position = "stack") +
     geom_text(aes(label = paste0(round(Percentage, 1), "%")),
               position = position_stack(vjust = 0.5), size = 3.5) +
     labs(title = "Memory Usage",
-         subtitle = paste("Total Memory:", round(total_memory, 2), "GB"),
-         caption = paste(os_info, current_time),
-         y = "Memory (GB)", x = "") +
+         subtitle = subt,
+         y = "System Memory Found (GB)", x = "") +
     theme_minimal() +
     scale_fill_brewer(palette = "Set3")
+
+  # Plot for object memory usage
+  subt <- paste("Used Memory in R:", round(total_objects, 2), "GB",
+                "\nLargest Obj:", round(mem_info$objects[1], 3), "GB",
+                names(mem_info$objects)[1])
+
+  p2 <- ggplot(obj_df, aes(x = "", y = Usage, fill = Object)) +
+    geom_bar(stat = "identity", position = "stack") +
+    geom_text(aes(label = paste0(round(Percentage, 1), "%")),
+              position = position_stack(vjust = 0.5), size = 3.5) +
+    labs(title = "Detailed Object Usage",
+         subtitle = subt,
+         caption = paste(os_info, current_time),
+         y = "Memory by R objects (GB)", x = "") +
+    theme_minimal() +
+    scale_fill_brewer(palette = "Set2")
+
+  # Arrange the two plots side by side
+  grid.arrange(p1, p2, ncol = 2)
 }
-
-
+# plotMemoryUsage()
 
 
 # Generic ____________________________________________________________ ----
@@ -1071,3 +1098,23 @@ backupRprofile <- function(dest_dir = "~/GitHub/pipatorium/R/Rprofile/Local/", b
 
 
 
+
+# ____________________________________________________________
+# https://stackoverflow.com/questions/6216968/r-force-local-scope
+
+# findGlobals2 <- function(x) {
+#   codetools::findGlobals(x)
+#
+# }
+#
+# checkStrict <- function(f, silent=FALSE) {
+#   vars <- codetools::findGlobals(f)
+#   found <- !vapply(vars, exists, logical(1), envir=as.environment(2))
+#   if (!silent && any(found)) {
+#     warning("global variables used: ", paste(names(found)[found], collapse=', '))
+#     return(invisible(FALSE))
+#   }
+#
+#   !any(found)
+# }
+#
