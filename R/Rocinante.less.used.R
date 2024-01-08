@@ -93,7 +93,7 @@ getMemoryInfoSimple <- function() {
   return(ceiling(c(Used = mem_used, Free = mem_free)))
 
 }
-getMemoryInfoSimple()
+# getMemoryInfoSimple()
 
 # _________________________________________________________________________________________________
 #' @title Plot Memory Usage
