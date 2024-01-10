@@ -198,7 +198,7 @@ memory.biggest.objects <- function(n = 5, saveplot = F) { # Show distribution of
 
   strX <- as.character(capture.output(dput(head(names(topX), n = 5))))
   strX <- gsub('[^A-Za-z0-9 ,._/()]', '', strX)
-  iprint("rm(list = ", strX,")")
+  Stringendo::iprint("rm(list = ", strX,")")
 
 }
 # memory.biggest.objects()
