@@ -611,6 +611,46 @@ IfExistsAndTrue <- function(name = "pi" ) { # Internal function. Checks if a var
   return(x)
 }
 
+#' @title Find Function Package
+#' @description Determines the package that a given function is defined in.
+#'
+#' @param functionName The name of the function (character or function object).
+#' @param searchInstalled If TRUE, searches all installed packages (default FALSE).
+#' @return The name of the package containing the function, or NULL if not found.
+#' @export
+
+findFunctionPackage <- function(functionName, searchInstalled = FALSE) {
+  # Handle different types of input (character or function)
+  if (is.function(functionName)) {
+    functionName <- deparse(substitute(functionName))
+  }
+
+  stopifnot(
+    "functionName must be a character" = is.character(functionName),
+    "searchInstalled must be logical" = is.logical(searchInstalled)
+  )
+
+  # Search in loaded namespaces
+  searchSpaces <- search()
+  for (space in searchSpaces) {
+    if (exists(functionName, envir = asNamespace(space), inherits = FALSE)) {
+      return(substring(space, 9)) # Remove "package:" prefix
+    }
+  }
+
+  # Optionally search in installed packages
+  if (searchInstalled) {
+    installedPkgs <- installed.packages()[, "Package"]
+    for (pkg in installedPkgs) {
+      if (exists(functionName, envir = asNamespace(pkg), inherits = FALSE)) {
+        return(pkg)
+      }
+    }
+  }
+
+  return(NULL)
+}
+
 
 
 # Clipboard interaction ____________________________________________________________ ----
