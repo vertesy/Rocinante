@@ -131,6 +131,39 @@ getCurrentScriptName <- function(toclipboard = T) {
 
 
 # ____________________________________________________________
+# Wrapper function to create a list of functions and their corresponding package names
+listFunctionsByPackage <- function(packageNames) {
+  stopifnot(is.vector(packageNames), all(sapply(packageNames, is.character))) # Validate input
+
+  # Initialize an empty list to store results
+  functionsList <- list()
+
+  # Iterate over each package
+  for (pkg in packageNames) {
+    print(pkg)
+    # Get functions from the package
+    funcs <- all_funs(pkg)
+
+    # Add to the functions list with package name as value
+    for (func in funcs) {
+      functionsList[[func]] <- pkg
+    }
+  }
+
+  return(functionsList)
+}
+
+# Example usage
+# Replace with actual package names
+myPaks <- c('CodeAndRoll2', 'Connectome.tools', 'ggExpress', 'isoENV', 'MarkdownHelpers',
+            'MarkdownReports', 'NestedMultiplexer', 'PackageTools', 'ReadWriter',
+            'Seurat.utils', 'Stringendo', 'UVI.tools')
+# , 'DatabaseLinke.R', 'DataInCode', 'FLIPR.tools', 'SCP.tools', 'gruffi', 'RoxygenReady'
+# , 'Rocinante' "breaks on this"
+ls.funs <- listFunctionsByPackage(packageNames = myPaks)
+warning('ls.funs <<<< now contains the name and package of all my custom functions!', immediate. = T)
+
+# ____________________________________________________________
 sourcePartial <- function(fn,startTag = '#1', endTag = '#/1') { # Source parts of another script. Source: https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
   lines <- scan(fn, what = character(), sep = "\n", quiet = TRUE)
   st <- grep(startTag,lines)
