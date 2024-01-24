@@ -142,7 +142,7 @@ listFunctionsByPackage <- function(packageNames) {
   for (pkg in packageNames) {
     print(pkg)
     # Get functions from the package
-    funcs <- all_funs(pkg)
+    funcs <- PackageTools::all_funs(pkg)
 
     # Add to the functions list with package name as value
     for (func in funcs) {
