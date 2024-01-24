@@ -2,12 +2,12 @@
 # Rocinante - A collection of custom R functions. Helper functions complementing CodeAndRoll2.
 # ____________________________________________________________________
 # source('~/GitHub/Packages/Rocinante/R/Rocinante.R')
-# rm(list = ls(all.names = TRUE)); try(dev.off(), silent = T)
+# rm(list = ls(all.names = TRUE)); try(dev.off(), silent = TRUE)
 # source('~/.pack.R')
 
 print("Loading Rocinante custom function library.")
 # Search query links _______________________________________________________________
-try(library(DatabaseLinke.R, include.only = c('qHGNC','link_google', 'link_bing', 'openURLs.1by1')) , silent = T)
+try(library(DatabaseLinke.R, include.only = c('qHGNC','link_google', 'link_bing', 'openURLs.1by1')) , silent = TRUE)
 
 
 # Setup _______________________________________________________________
@@ -31,7 +31,7 @@ l <- length
 toclip <- clipr::write_clip
 fromclip <- clipr::read_clip
 
-stry <- function(...) {try(..., silent = T)} # Silent try
+stry <- function(...) {try(..., silent = TRUE)} # Silent try
 
 warnings.erase <- function() assign("last.warning", NULL, envir = baseenv())
 
@@ -116,7 +116,7 @@ helpPak <- function(x) {
 #'
 #' @examples
 #' getCurrentScriptName() # Returns the name of the script currently open in RStudio
-getCurrentScriptName <- function(toclipboard = T) {
+getCurrentScriptName <- function(toclipboard = TRUE) {
   # Ensure that rstudioapi is available
   if (!requireNamespace("rstudioapi", quietly = TRUE)) {
     stop("rstudioapi package is required.")
@@ -124,7 +124,7 @@ getCurrentScriptName <- function(toclipboard = T) {
   # Retrieve the file name of the current script
   file_name <- basename(rstudioapi::getSourceEditorContext()$path)
 
-  if (toclipboard & require(clipr)) try(clipr::write_clip(file_name), silent = T)
+  if (toclipboard & require(clipr)) try(clipr::write_clip(file_name), silent = TRUE)
 
   return(file_name)
 }
@@ -161,7 +161,7 @@ myPaks <- c('CodeAndRoll2', 'Connectome.tools', 'ggExpress', 'isoENV', 'Markdown
 # , 'DatabaseLinke.R', 'DataInCode', 'FLIPR.tools', 'SCP.tools', 'gruffi', 'RoxygenReady'
 # , 'Rocinante' "breaks on this"
 ls.funs <- listFunctionsByPackage(packageNames = myPaks)
-warning('ls.funs <<<< now contains the name and package of all my custom functions!', immediate. = T)
+warning('ls.funs <<<< now contains the name and package of all my custom functions!', immediate. = TRUE)
 
 # ____________________________________________________________
 sourcePartial <- function(fn,startTag = '#1', endTag = '#/1') { # Source parts of another script. Source: https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
@@ -213,7 +213,7 @@ rnd4l <- function(set = c(LETTERS, 0:9), n = 4) {
 # Memory ____________________________________________________________ ----
 
 
-memory.biggest.objects <- function(n = 5, saveplot = F) { # Show distribution of the largest objects and return their names. # https://stackoverflow.com/questions/17218404/should-i-get-a-habit-of-removing-unused-variables-in-r
+memory.biggest.objects <- function(n = 5, saveplot = FALSE) { # Show distribution of the largest objects and return their names. # https://stackoverflow.com/questions/17218404/should-i-get-a-habit-of-removing-unused-variables-in-r
   try(dev.off(), silent = TRUE)
   gc()
   ls.mem <- ls( envir = .GlobalEnv)
@@ -225,7 +225,7 @@ memory.biggest.objects <- function(n = 5, saveplot = F) { # Show distribution of
   Memorty.usage.stat = c(topX, 'Other' = sum(sort(Sizes.of.objects.in.mem,decreasing = TRUE)[-(1:n)]))
   pie(x = Memorty.usage.stat, cex = .5, sub = date(),
       col = grDevices::terrain.colors(length(Memorty.usage.stat)))
-  # try(ggExpress::qpie(Memorty.usage.stat, w = 7,  ), silent = T)
+  # try(ggExpress::qpie(Memorty.usage.stat, w = 7,  ), silent = TRUE)
   # Use wpie if you have MarkdownReports, from https://github.com/vertesy/MarkdownReports
   dput(names(topX))
 
@@ -736,7 +736,7 @@ GC_content <- function(string, len = nchar(string), pattern = c("G","C")) { # GC
 
 
 getSequences.DNAStringSet <- function(DNAStringSet.obj = dnaSS.HEK.s175239.1e4) { # For DNAStringSet objects
-  lx <- l(DNAStringSet.obj)
+  lx <- length(DNAStringSet.obj)
   Sequences <- 1:lx
   for (i in 1:lx) {
     Sequences[i] <- as.character(DNAStringSet.obj[[i]])
@@ -1230,7 +1230,7 @@ getVennOverlaps <- function(lsvenn = list(A = sort(sample(LETTERS, 15)),
 # _________________________________________________________________________________________________
 ww.randomize <- function(vec = nm.trunk) {
   old <- unique(vec)
-  new <- sample(1:l(vec))
+  new <- sample(1:length(vec))
   as.numeric(CodeAndRoll2::translate(vec = vec, oldvalues = old, newvalues = new))
 }
 
