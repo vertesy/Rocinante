@@ -43,6 +43,10 @@ pOpen <- list(
   Stringendo =         function() file.edit('~/GitHub/Packages/Stringendo/R/Stringendo.R'),
   CodeAndRoll2 =       function() file.edit('~/GitHub/Packages/CodeAndRoll2/R/CodeAndRoll2.R'),
   PackageTools =       function() file.edit('~/GitHub/Packages/PackageTools/R/PackageTools.R'),
+    PackageToolsREPL =       function() file.edit('~/GitHub/Packages/PackageTools/R/ReplacementTools.R'),
+    PackageToolsDOC =       function() file.edit('~/GitHub/Packages/PackageTools/R/DocumentationTools.R'),
+    PackageToolsDEP =       function() file.edit('~/GitHub/Packages/PackageTools/R/DependencyTools.R'),
+    PackageToolsMISC =       function() file.edit('~/GitHub/Packages/PackageTools/R/Miscellaneous.R'),
 
   MarkdownHelpers =    function() file.edit('~/GitHub/Packages/MarkdownHelpers/R/MarkdownHelpers.R'),
   MarkdownReports =    function() file.edit('~/GitHub/Packages/MarkdownReports/R/MarkdownReports.R'),
@@ -53,9 +57,9 @@ pOpen <- list(
   isoENV.other =       function() file.edit('~/GitHub/Packages/isoENV/R/isoENV.other.R'),
 
   UVITools =           function() file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.R'),
-  UVIToolsBulk =       function() file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.Bulk.R'),
+    UVIToolsBulk =       function() file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.Bulk.R'),
   ConnectomeTools =    function() file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.R'),
-  ConnectomeToolsAAV = function() file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.AAV.R'),
+    ConnectomeToolsAAV = function() file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.AAV.R'),
   NestedMultiplexer =  function() file.edit('~/GitHub/Packages/NestedMultiplexer/R/NestedMultiplexer.R')
 
 )
@@ -79,10 +83,10 @@ d <- pDocAndLoad <- list(
 )
 
 r <- pReload <- list(
-  MarkdownHelpers = function(path = "~/GitHub/Packages/MarkdownHelpers/") { devtools::load_all(path) },
   Stringendo =      function(path = "~/GitHub/Packages/Stringendo") { devtools::load_all(path) },
   ReadWriter =      function(path = "~/GitHub/Packages/ReadWriter") { devtools::load_all(path) },
   CodeAndRoll2 =    function(path = "~/GitHub/Packages/CodeAndRoll2") { devtools::load_all(path) },
+  PackageTools = function(path = "~/GitHub/Packages/PackageTools") { devtools::load_all(path) },
 
   MarkdownHelpers =  function(path = "~/GitHub/Packages/MarkdownHelpers") { devtools::load_all(path) },
   MarkdownReports =  function(path = "~/GitHub/Packages/MarkdownReports") { devtools::load_all(path) },
@@ -142,7 +146,8 @@ listFunctionsByPackage <- function(packageNames) {
   for (pkg in packageNames) {
     print(pkg)
     # Get functions from the package
-    funcs <- PackageTools::all_funs(pkg)
+    # funcs <- PackageTools::all_funs(pkg)
+    funcs <- all_funs(pkg)
 
     # Add to the functions list with package name as value
     for (func in funcs) {
@@ -153,15 +158,6 @@ listFunctionsByPackage <- function(packageNames) {
   return(functionsList)
 }
 
-# Example usage
-# Replace with actual package names
-myPaks <- c('CodeAndRoll2', 'Connectome.tools', 'ggExpress', 'isoENV', 'MarkdownHelpers',
-            'MarkdownReports', 'NestedMultiplexer', 'PackageTools', 'ReadWriter',
-            'Seurat.utils', 'Stringendo', 'UVI.tools')
-# , 'DatabaseLinke.R', 'DataInCode', 'FLIPR.tools', 'SCP.tools', 'gruffi', 'RoxygenReady'
-# , 'Rocinante' "breaks on this"
-ls.funs <- listFunctionsByPackage(packageNames = myPaks)
-warning('ls.funs <<<< now contains the name and package of all my custom functions!', immediate. = TRUE)
 
 # ____________________________________________________________
 sourcePartial <- function(fn,startTag = '#1', endTag = '#/1') { # Source parts of another script. Source: https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
