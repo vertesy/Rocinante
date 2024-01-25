@@ -35,10 +35,13 @@ stry <- function(...) {try(..., silent = TRUE)} # Silent try
 
 warnings.erase <- function() assign("last.warning", NULL, envir = baseenv())
 
+pDocAndLoad_ALL <- function() x <- lapply(pDocAndLoad, function(f) f())
+
+
 # ____________________________________________________________
 
 
-pOpen <- list(
+o <- pOpen <- list(
   Rocinante =          function() file.edit('~/GitHub/Packages/Rocinante/R/Rocinante.R'),
   Stringendo =         function() file.edit('~/GitHub/Packages/Stringendo/R/Stringendo.R'),
   CodeAndRoll2 =       function() file.edit('~/GitHub/Packages/CodeAndRoll2/R/CodeAndRoll2.R'),
@@ -100,6 +103,7 @@ r <- pReload <- list(
   NestedMultiplexer = function(path = "~/GitHub/Packages/NestedMultiplexer") { devtools::load_all(path) }
 )
 
+# ____________________________________________________________
 
 helpPak <- function(x) {
   pkg <- deparse(substitute(x))
