@@ -10,6 +10,7 @@ print("Loading Rocinante custom function library.")
 try(library(DatabaseLinke.R, include.only = c('qHGNC','link_google', 'link_bing', 'openURLs.1by1')) , silent = TRUE)
 
 
+
 # Setup _______________________________________________________________
 # pdf.options(title = paste0('Copyright Abel Vertesy ', Sys.Date())) # Setup to your own name
 debuggingState(on = FALSE)
@@ -37,6 +38,8 @@ warnings.erase <- function() assign("last.warning", NULL, envir = baseenv())
 
 pDocAndLoad_ALL <- function() x <- lapply(pDocAndLoad, function(f) f())
 
+rprofile <-  function() file.edit('~/.Rprofile')
+rocinanteSource <- function() source('~/GitHub/Packages/Rocinante/R/Rocinante.R')
 
 # ____________________________________________________________
 
@@ -56,6 +59,8 @@ o <- pOpen <- list(
   ggExpress =          function() file.edit('~/GitHub/Packages/ggExpress/R/ggExpress.R'),
 
   SeuratUtils =        function() file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.R'),
+    SeuratUtils_META =        function() file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Metadata.R'),
+    SeuratUtils_VIZ =        function() file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Visualization.R'),
   isoENV =             function() file.edit('~/GitHub/Packages/isoENV/R/isoENV.R'),
   isoENV.other =       function() file.edit('~/GitHub/Packages/isoENV/R/isoENV.other.R'),
 
