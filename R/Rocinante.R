@@ -255,11 +255,10 @@ memory.biggest.objects <- function(n = 5, saveplot = FALSE) { # Show distributio
 #' Note: The function might not work correctly on macOS.
 #'
 #' @return A named numeric vector with the ceiling values of used and free memory in MB.
-#' @export
 #' @examples
 #' mem_info <- getMemoryInfo()
 #' print(mem_info)
-
+#' @export
 getMemoryInfo <- function() {
   os_type <- Sys.info()["sysname"]
   gc()
@@ -358,12 +357,8 @@ getMemoryInfo <- function() {
 #' Memory values are converted to GB and percentages are calculated for plotting.
 #'
 #' @importFrom ggplot2 ggplot geom_bar geom_text aes labs theme_minimal scale_fill_brewer
+#' @examples plotMemoryUsage()
 #' @export
-#' @examples
-#' plotMemoryUsage()
-
-
-
 plotMemoryUsage <- function() {
   require(ggplot2)
   require(gridExtra)
@@ -463,7 +458,7 @@ getSLURMjobDetails <- function(user_name = "abel.vertesy") {
 
   # Get job information
   job_info <- run_command(paste("squeue -u", user_name, "| grep", hostname_clean))
-  if (is.na(job_info) || length(job_info) == 0) {
+  if (all(is.na(job_info)) || length(job_info) == 0) {
     return(list(hostname = hostname_clean, job_id = NA, mem = NA, cpus = NA, nodes = NA))
   }
 
