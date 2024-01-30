@@ -48,6 +48,8 @@ o <- pOpen <- list(
   Rocinante =          function() file.edit('~/GitHub/Packages/Rocinante/R/Rocinante.R'),
   Stringendo =         function() file.edit('~/GitHub/Packages/Stringendo/R/Stringendo.R'),
   CodeAndRoll2 =       function() file.edit('~/GitHub/Packages/CodeAndRoll2/R/CodeAndRoll2.R'),
+  ReadWriter =         function() file.edit('~/GitHub/Packages/ReadWriter/R/ReadWriter.R'),
+
   PackageTools =       function() file.edit('~/GitHub/Packages/PackageTools/R/PackageTools.R'),
     PackageToolsREPL =       function() file.edit('~/GitHub/Packages/PackageTools/R/ReplacementTools.R'),
     PackageToolsDOC =       function() file.edit('~/GitHub/Packages/PackageTools/R/DocumentationTools.R'),
@@ -76,6 +78,7 @@ d <- pDocAndLoad <- list(
   Stringendo =       function(path = "~/GitHub/Packages/Stringendo") { devtools::document(path); devtools::load_all(path) },
   ReadWriter =       function(path = "~/GitHub/Packages/ReadWriter") { devtools::document(path); devtools::load_all(path) },
   CodeAndRoll2 =     function(path = "~/GitHub/Packages/CodeAndRoll2") { devtools::document(path); devtools::load_all(path) },
+  ReadWriter =       function(path = "~/GitHub/Packages/ReadWriter") { devtools::document(path); devtools::load_all(path) },
   PackageTools =     function(path = "~/GitHub/Packages/PackageTools") { devtools::document(path); devtools::load_all(path) },
 
   MarkdownHelpers =  function(path = "~/GitHub/Packages/MarkdownHelpers") { devtools::document(path); devtools::load_all(path) },
@@ -94,6 +97,7 @@ r <- pReload <- list(
   Stringendo =      function(path = "~/GitHub/Packages/Stringendo") { devtools::load_all(path) },
   ReadWriter =      function(path = "~/GitHub/Packages/ReadWriter") { devtools::load_all(path) },
   CodeAndRoll2 =    function(path = "~/GitHub/Packages/CodeAndRoll2") { devtools::load_all(path) },
+  ReadWriter =    function(path = "~/GitHub/Packages/ReadWriter") { devtools::load_all(path) },
   PackageTools = function(path = "~/GitHub/Packages/PackageTools") { devtools::load_all(path) },
 
   MarkdownHelpers =  function(path = "~/GitHub/Packages/MarkdownHelpers") { devtools::load_all(path) },
@@ -508,7 +512,8 @@ getSLURMjobDetails <- function(user_name = "abel.vertesy") {
 
   # Return the details
   list(hostname = hostname_clean, job_id = job_id, mem_in_gb = round(mem_in_gb,2),
-       cpus = cpus, nodes = nodes, runtime = job_runtime)
+       cpus = as.numeric(cpus), nodes = as.numeric(nodes)
+       , runtime = job_runtime)
 }
 
 
