@@ -72,7 +72,9 @@ o <- pOpen <- list(
     ConnectomeToolsAAV = function() file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.AAV.R'),
   NestedMultiplexer =  function() file.edit('~/GitHub/Packages/NestedMultiplexer/R/NestedMultiplexer.R'),
 
-  gruffi =             function() file.edit('~/GitHub/Packages/gruffi/R/gruffi.R')
+  gruffi =             function() file.edit('~/GitHub/Packages/gruffi/R/gruffi.R'),
+  ppp =             function() file.edit('~/ppp')
+
 
 )
 
