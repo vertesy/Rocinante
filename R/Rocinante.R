@@ -72,6 +72,7 @@ o <- pOpen <- list(
     ConnectomeToolsAAV = function() file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.AAV.R'),
   NestedMultiplexer =  function() file.edit('~/GitHub/Packages/NestedMultiplexer/R/NestedMultiplexer.R'),
 
+  gruffiDev =          function() file.edit('~/GitHub/Packages/gruffiDev/R/gruffi.R'),
   gruffi =             function() file.edit('~/GitHub/Packages/gruffi/R/gruffi.R')
 
 )
@@ -94,6 +95,7 @@ d <- pDocAndLoad <- list(
   Connectome.tools =  function(path = "~/GitHub/Packages/Connectome.tools") { devtools::document(path); devtools::load_all(path) },
   NestedMultiplexer = function(path = "~/GitHub/Packages/NestedMultiplexer") { devtools::document(path); devtools::load_all(path) },
 
+  gruffiDev = function(path = "~/GitHub/Packages/gruffiDev") { devtools::document(path); devtools::load_all(path) },
   gruffi = function(path = "~/GitHub/Packages/gruffi") { devtools::document(path); devtools::load_all(path) }
 )
 
@@ -115,6 +117,7 @@ r <- pReload <- list(
   Connectome.tools =  function(path = "~/GitHub/Packages/Connectome.tools") { devtools::load_all(path) },
   NestedMultiplexer = function(path = "~/GitHub/Packages/NestedMultiplexer") { devtools::load_all(path) },
 
+  gruffiDev = function(path = "~/GitHub/Packages/gruffiDev") { devtools::document(path); devtools::load_all(path) },
   gruffi = function(path = "~/GitHub/Packages/gruffi") { devtools::load_all(path) }
 )
 
