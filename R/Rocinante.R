@@ -16,7 +16,6 @@ try(library(DatabaseLinke.R, include.only = c('qHGNC','link_google', 'link_bing'
 debuggingState(on = FALSE)
 print("Depends on CodeAndRoll2, MarkdownReports, gtools, readr, gdata, clipr. Some functions depend on other libraries.")
 
-
 # Params _______________________________________________________________
 wA4 = 8.27 # A4 inches
 hA4 = 11.69
@@ -41,8 +40,7 @@ pDocAndLoad_ALL <- function() x <- lapply(pDocAndLoad, function(f) f())
 rprofile <-  function() file.edit('~/.Rprofile')
 rocinanteSource <- function() source('~/GitHub/Packages/Rocinante/R/Rocinante.R')
 
-# ____________________________________________________________
-
+# Package Loaders ____________________________________________________________ ----
 
 o <- pOpen <- list(
   Rocinante =          function() file.edit('~/GitHub/Packages/Rocinante/R/Rocinante.R'),
@@ -121,12 +119,38 @@ r <- pReload <- list(
   gruffi = function(path = "~/GitHub/Packages/gruffi") { devtools::load_all(path) }
 )
 
-# ____________________________________________________________
+# Package and script helpers ____________________________________________________________ ----
 
 helpPak <- function(x) {
   pkg <- deparse(substitute(x))
   browseURL(paste0("https://www.rdocumentation.org/packages/", pkg))
 }
+
+
+# ____________________________________________________________
+osXpath <- function(x = "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
+                    # attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis",
+                    cbe = "/groups/knoblich/Projects/connectomics/") {
+  # last.folder <- basename(attach)
+  gsub(x, pattern = cbe, replacement = "/Volumes/")
+}
+
+# ____________________________________________________________
+cbepath <- function(x = "/Volumes/Analysis/sc6_21.v5/preMerge.v2.Correct.CBC/Gruffi.Stress.annotation.v4/combined.obj_1_gruffi.complete.full_CON_2024.02.27_14.21.qs",
+                     cbe = "/groups/knoblich/Projects/connectomics/") {
+  # last.folder <- basename(attach)
+  gsub(x, pattern = "/Volumes/", replacement = cbe)
+}
+
+
+osXpath2 <- function(str = "/groups/knoblich/bioinfo/Projects/connectomics/SNP_demux/classifications/v2") { # Parse path for CBE
+  x = gsub(x = str, pattern = "/groups/knoblich/", replacement = '/Volumes/knoblich/')
+  print("1. Mount:")
+  print("smb://storage.imp.ac.at/groups/knoblich/")
+  print("2. Go:")
+  print(x)
+}
+
 
 
 # ____________________________________________________________
@@ -182,15 +206,6 @@ listFunctionsByPackage <- function(packageNames) {
 
 
 # ____________________________________________________________
-sourcePartial <- function(fn,startTag = '#1', endTag = '#/1') { # Source parts of another script. Source: https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
-  lines <- scan(fn, what = character(), sep = "\n", quiet = TRUE)
-  st <- grep(startTag,lines)
-  en <- grep(endTag,lines)
-  tc <- textConnection(lines[(st + 1):(en - 1)])
-  source(tc)
-  close(tc)
-}
-
 sourceGitHub <- function(script = "Cell.cycle.scoring.R"
                          , repo = "Seurat.Pipeline"
                          , folder = "elements"
@@ -203,6 +218,17 @@ sourceGitHub <- function(script = "Cell.cycle.scoring.R"
   if (!is.null(token)) fullpath = paste0(fullpath, token)
   print(fullpath)
   source(fullpath)
+}
+
+
+# ____________________________________________________________
+sourcePartial <- function(fn,startTag = '#1', endTag = '#/1') { # Source parts of another script. Source: https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
+  lines <- scan(fn, what = character(), sep = "\n", quiet = TRUE)
+  st <- grep(startTag,lines)
+  en <- grep(endTag,lines)
+  tc <- textConnection(lines[(st + 1):(en - 1)])
+  source(tc)
+  close(tc)
 }
 
 # ____________________________________________________________
@@ -223,10 +249,6 @@ args.2.global <- ass <- function(overwrite = FALSE, ...) {
   print(names(args))
 }
 
-#  ____________________________________________________________
-rnd4l <- function(set = c(LETTERS, 0:9), n = 4) {
-  print(paste0(paste0( sample(x = set, size = n), collapse = ''), '__'))
-}
 
 # Memory ____________________________________________________________ ----
 
@@ -726,15 +748,6 @@ write_clip.replace.dot.with.comma <- function(var = df.markers, decimal_mark = '
 }
 # write_clip.replace.dot.with.comma(df_markers)
 
-
-
-cbepath <- function(str = "/groups/knoblich/bioinfo/Projects/connectomics/SNP_demux/classifications/v2") { # Parse path for CBE
-  x = gsub(x = str, pattern = "/groups/knoblich/", replacement = '/Volumes/knoblich/')
-  print("1. Mount:")
-  print("smb://storage.imp.ac.at/groups/knoblich/")
-  print("2. Go:")
-  print(x)
-}
 
 
 
@@ -1292,6 +1305,10 @@ backupRprofile <- function(dest_dir = "~/GitHub/pipatorium/R/Rprofile/Local/", b
 }
 
 
+#  ____________________________________________________________
+rnd4l <- function(set = c(LETTERS, 0:9), n = 4) {
+  print(paste0(paste0( sample(x = set, size = n), collapse = ''), '__'))
+}
 
 
 
