@@ -35,8 +35,6 @@ stry <- function(...) {try(..., silent = TRUE)} # Silent try
 
 warnings.erase <- function() assign("last.warning", NULL, envir = baseenv())
 
-pDocAndLoad_ALL <- function() x <- lapply(pDocAndLoad, function(f) f())
-
 rprofile <-  function() file.edit('~/.Rprofile')
 rocinanteSource <- function() source('~/GitHub/Packages/Rocinante/R/Rocinante.R')
 
@@ -120,6 +118,8 @@ r <- pReload <- list(
 )
 
 # Package and script helpers ____________________________________________________________ ----
+
+doc_all_packages <- function() x <- lapply(d, function(f) f())
 
 helpPak <- function(x) {
   pkg <- deparse(substitute(x))
