@@ -126,6 +126,7 @@ helpPak <- function(x) {
   browseURL(paste0("https://www.rdocumentation.org/packages/", pkg))
 }
 
+ooo <- function(...) osXpath(getwd(), ...)
 
 # ____________________________________________________________
 osXpath <- function(x = "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
