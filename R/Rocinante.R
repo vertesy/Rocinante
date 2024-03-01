@@ -127,6 +127,7 @@ helpPak <- function(x) {
 }
 
 ooo <- function(...) osXpath(getwd(), ...)
+ccc <- function(...) clipr::write_clip(cbepath(clipr::read_clip()))
 
 # ____________________________________________________________
 osXpath <- function(x = "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
