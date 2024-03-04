@@ -253,9 +253,12 @@ args.2.global <- ass <- function(overwrite = FALSE, ...) {
 
 
 # Memory ____________________________________________________________ ----
+#' @title Show biggest object in memory
+#'
+#' @description Show distribution of the largest objects and return their names.
+#' Based on https://stackoverflow.com/questions/17218404/should-i-get-a-habit-of-removing-unused-variables-in-r
 
-
-memory.biggest.objects <- function(n = 5, saveplot = FALSE) { # Show distribution of the largest objects and return their names. # https://stackoverflow.com/questions/17218404/should-i-get-a-habit-of-removing-unused-variables-in-r
+memory.biggest.objects <- function(n = 5, plot = T, saveplot = FALSE) {
   try(dev.off(), silent = TRUE)
   gc()
   ls.mem <- ls( envir = .GlobalEnv)
@@ -265,11 +268,11 @@ memory.biggest.objects <- function(n = 5, saveplot = FALSE) { # Show distributio
   topX = sort(Sizes.of.objects.in.mem,decreasing = TRUE)[1:n]
 
   Memorty.usage.stat = c(topX, 'Other' = sum(sort(Sizes.of.objects.in.mem,decreasing = TRUE)[-(1:n)]))
-  pie(x = Memorty.usage.stat, cex = .5, sub = date(),
-      col = grDevices::terrain.colors(length(Memorty.usage.stat)))
-  # try(ggExpress::qpie(Memorty.usage.stat, w = 7,  ), silent = TRUE)
-  # Use wpie if you have MarkdownReports, from https://github.com/vertesy/MarkdownReports
-  dput(names(topX))
+  if(plot) {
+    pie(x = Memorty.usage.stat, cex = .5, sub = date(),
+        col = grDevices::terrain.colors(length(Memorty.usage.stat)))
+    dput(names(topX))
+  }
 
   strX <- as.character(capture.output(dput(head(names(topX), n = 5))))
   strX <- gsub('[^A-Za-z0-9 ,._/()]', '', strX)
@@ -299,6 +302,8 @@ memory.biggest.objects <- function(n = 5, saveplot = FALSE) { # Show distributio
 getMemoryInfo <- function() {
   os_type <- Sys.info()["sysname"]
   gc()
+
+  memory.biggest.objects(plot = F)
 
   if (os_type == "Windows") {
     warning("Not tested on Windows", immediate. = TRUE)
