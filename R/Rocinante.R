@@ -128,7 +128,9 @@ helpPak <- function(x) {
 
 ooo <- function(...) osXpath(getwd(), ...)
 ccc <- function(...) clipr::write_clip(cbepath(clipr::read_clip()))
+oofix <- function(...) clipr::write_clip(gsub(pattern = '\\[1\\] ', replacement = '', x = clipr::read_clip()))
 
+oofix()
 # ____________________________________________________________
 osXpath <- function(x = "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
                     # attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis",
