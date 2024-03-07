@@ -119,7 +119,8 @@ r <- pReload <- list(
 
 # Package and script helpers ____________________________________________________________ ----
 
-doc_all_packages <- function() x <- lapply(d, function(f) f())
+d.all <- function() x <- lapply(d, function(f) f())
+r.all <- function() x <- lapply(r, function(f) f())
 
 helpPak <- function(x) {
   pkg <- deparse(substitute(x))
