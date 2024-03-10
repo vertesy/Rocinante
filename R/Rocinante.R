@@ -782,7 +782,7 @@ getSequences.DNAStringSet <- function(DNAStringSet.obj = dnaSS.HEK.s175239.1e4) 
 }
 
 # _______________________________________________________________
-PCA.percent.var.explained <- function(prcomp.res =  sPCA) { # Determine percent of variation associated with each PC. For Seurat see: seu.PC.var.explained().
+PCA.percent.var.explained <- function(prcomp.res =  sPCA) { # Determine percent of variation associated with each PC. For Seurat see: scCalcPCAVarExplained().
   PCA.w.summary.added <- summary(prcomp.res)
   PCA.w.summary.added$importance['Proportion of Variance', ]
 }
