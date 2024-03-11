@@ -3,6 +3,9 @@
 
 "https://docs.posit.co/ide/server-pro/1.4.1102-1/server-management.html#suspending-sessions"
 
+paste0('source("',rstudioapi::getSourceEditorContext()$path,'")')
+
+
 {
   source('~/GitHub/Packages/Rocinante/R/Rocinante.R'); (CBE.params <- getSLURMjobDetails())
   source("~/GitHub/Projects/CON/_sc6_21/Parameters.CON.sc6_21.R")
