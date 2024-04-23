@@ -204,7 +204,7 @@ listFunctionsByPackage <- function(packageNames) {
 
     # Add to the functions list with package name as value
     for (func in funcs) {
-      functionsList[[func]] <- pkg
+      functionsList[[func]] <- paste0(pkg, "::", func)
     }
   }
 
