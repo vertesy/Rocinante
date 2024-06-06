@@ -279,12 +279,14 @@ memory.biggest.objects <- function(n = 5, plot = T, saveplot = FALSE) {
     dput(names(topX))
   }
 
-  strX <- as.character(capture.output(dput(head(names(topX), n = 5))))
-  strX <- gsub('[^A-Za-z0-9 ,._/()]', '', strX)
-  Stringendo::iprint("rm(list = ", strX,")")
+  top.names <- head(names(topX), n = 5)
+  # strX <- as.character(capture.output(dput(top.names)))
+  strX <- kollapse(top.names, collapseby = "', '")
+  # strX <- gsub('[^A-Za-z0-9 ,._/()]', '', strX)
+  message("rm(list = '", strX, "')")
 
 }
-# memory.biggest.objects()
+memory.biggest.objects()
 
 # _________________________________________________________________________________________________
 #' @title Retrieve Memory Information
