@@ -286,7 +286,7 @@ memory.biggest.objects <- function(n = 5, plot = T, saveplot = FALSE) {
   message("rm(list = '", strX, "')")
 
 }
-memory.biggest.objects()
+# memory.biggest.objects()
 
 # _________________________________________________________________________________________________
 #' @title Retrieve Memory Information
