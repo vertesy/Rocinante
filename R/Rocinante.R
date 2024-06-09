@@ -273,17 +273,20 @@ memory.biggest.objects <- function(n = 5, plot = T, saveplot = FALSE) {
   topX = sort(Sizes.of.objects.in.mem,decreasing = TRUE)[1:n]
 
   Memorty.usage.stat = c(topX, 'Other' = sum(sort(Sizes.of.objects.in.mem,decreasing = TRUE)[-(1:n)]))
-  if(plot) {
-    pie(x = Memorty.usage.stat, cex = .5, sub = date(),
-        col = grDevices::terrain.colors(length(Memorty.usage.stat)))
-    dput(names(topX))
-  }
 
   top.names <- head(names(topX), n = 5)
   # strX <- as.character(capture.output(dput(top.names)))
   strX <- kollapse(top.names, collapseby = "', '")
   # strX <- gsub('[^A-Za-z0-9 ,._/()]', '', strX)
   message("rm(list = '", strX, "')")
+
+  if(plot) {
+    pie(x = Memorty.usage.stat, cex = .5, sub = date(),
+        col = grDevices::terrain.colors(length(Memorty.usage.stat)))
+    # dput(names(topX))
+  }
+
+
 
 }
 # memory.biggest.objects()
