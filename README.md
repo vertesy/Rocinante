@@ -75,7 +75,7 @@ Test if two objects for being exactly equal
 - #### iidentical.all  
 Test if two objects for being exactly equal.
 
-- #### IfExistsAndTrue   
+- #### ifExistsAndTrue   
 Internal function. Checks if a variable is defined, and its value is TRUE.
 
 - #### memory.biggest.objects  

@@ -135,12 +135,15 @@ ccc <- function(...) clipr::write_clip(cbepath(clipr::read_clip()))
 oofix <- function(...) clipr::write_clip(gsub(pattern = '\\[1\\] ', replacement = '', x = clipr::read_clip()))
 
 # ____________________________________________________________
-osXpath <- function(x = "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
-                    # attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis",
+osXpath <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/users/abel.vertesy/Analysis/"),
+                      # "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
+                    attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis",
                     cbe = "/groups/knoblich/Projects/connectomics/") {
   # last.folder <- basename(attach)
-  gsub(x, pattern = cbe, replacement = "/Volumes/")
+  message("designed attach: ", attach, " in finder.\n")
+  message(paste("open", gsub(x, pattern = cbe, replacement = "/Volumes/")))
 }
+# osXpath()
 
 # ____________________________________________________________
 cbepath <- function(x = "/Volumes/Analysis/sc6_21.v5/preMerge.v2.Correct.CBC/Gruffi.Stress.annotation.v4/combined.obj_1_gruffi.complete.full_CON_2024.02.27_14.21.qs",
@@ -682,20 +685,36 @@ iidentical <- function(v1, v2) { # Test if two objects for being exactly equal
 
 iidentical.all <- function(li) all(sapply(li, identical, li[[1]])) # Test if two objects for being exactly equal.
 
-#' IfExistsAndTrue
+#' ifExistsElse
+#'
+#' Internal function. Checks if a variable is defined, else returns an
+#' @param varname Name of the varaible
+#' @param alternative Alternative value to return if the variable is not defined
+#' @param verbose Print messages. Default is FALSE.
+#' @export
+#' @examples ifExistsElse()
+
+ifExistsElse <- function(varname, alternative = "define an alternative", verbose = F ) {
+  if(!is.character(varname)) varname <- substitute(varname)
+  if(verbose) message("Checking if ", varname, " exists.")
+  if(exists(varname)) get(varname) else alternative
+}
+
+#' ifExistsAndTrue
 #'
 #' Internal function. Checks if a variable is defined, and its value is TRUE.
-#' @param name Name of the varaible
+#' @param varname Name of the varaible
 #' @export
-#' @examples IfExistsAndTrue()
+#' @examples ifExistsAndTrue()
 
-IfExistsAndTrue <- function(name = "pi" ) { # Internal function. Checks if a variable is defined, and its value is TRUE.
+ifExistsAndTrue <- function(varname = "pi" ) {
   x = FALSE
-  if (exists(name)) {
-    if (isTRUE(get(name)))  {x = TRUE} else {x = FALSE; iprint(name, " exists, but != TRUE; ", get(name))}
+  if (exists(varname)) {
+    if (isTRUE(get(varname)))  {x = TRUE} else {x = FALSE; iprint(varname, " exists, but != TRUE; ", get(varname))}
   }
   return(x)
 }
+
 
 #' @title Find Function Package
 #' @description Determines the package that a given function is defined in.
