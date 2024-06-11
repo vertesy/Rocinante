@@ -35,89 +35,89 @@ stry <- function(...) {try(..., silent = TRUE)} # Silent try
 
 warnings.erase <- function() assign("last.warning", NULL, envir = baseenv())
 
-rprofile <-  function() file.edit('~/.Rprofile')
+rprofile <-  function(...) file.edit('~/.Rprofile')
 rocinanteSource <- function() source('~/GitHub/Packages/Rocinante/R/Rocinante.R')
 
 # Package Loaders ____________________________________________________________ ----
 
 o <- pOpen <- list(
-  Rocinante =          function() file.edit('~/GitHub/Packages/Rocinante/R/Rocinante.R'),
-  Stringendo =         function() file.edit('~/GitHub/Packages/Stringendo/R/Stringendo.R'),
-  CodeAndRoll2 =       function() file.edit('~/GitHub/Packages/CodeAndRoll2/R/CodeAndRoll2.R'),
-  ReadWriter =         function() file.edit('~/GitHub/Packages/ReadWriter/R/ReadWriter.R'),
+  Rocinante =          function(...) file.edit('~/GitHub/Packages/Rocinante/R/Rocinante.R'),
+  Stringendo =         function(...) file.edit('~/GitHub/Packages/Stringendo/R/Stringendo.R'),
+  CodeAndRoll2 =       function(...) file.edit('~/GitHub/Packages/CodeAndRoll2/R/CodeAndRoll2.R'),
+  ReadWriter =         function(...) file.edit('~/GitHub/Packages/ReadWriter/R/ReadWriter.R'),
 
-  PackageTools =       function() file.edit('~/GitHub/Packages/PackageTools/R/PackageTools.R'),
-    PackageToolsREPL =       function() file.edit('~/GitHub/Packages/PackageTools/R/ReplacementTools.R'),
-    PackageToolsDOC =       function() file.edit('~/GitHub/Packages/PackageTools/R/DocumentationTools.R'),
-    PackageToolsDEP =       function() file.edit('~/GitHub/Packages/PackageTools/R/DependencyTools.R'),
-    PackageToolsMISC =       function() file.edit('~/GitHub/Packages/PackageTools/R/Miscellaneous.R'),
+  PackageTools =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/PackageTools.R'),
+    PackageToolsREPL =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/ReplacementTools.R'),
+    PackageToolsDOC =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/DocumentationTools.R'),
+    PackageToolsDEP =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/DependencyTools.R'),
+    PackageToolsMISC =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/Miscellaneous.R'),
 
-  MarkdownHelpers =    function() file.edit('~/GitHub/Packages/MarkdownHelpers/R/MarkdownHelpers.R'),
-  MarkdownReports =    function() file.edit('~/GitHub/Packages/MarkdownReports/R/MarkdownReports.R'),
-  ggExpress =          function() file.edit('~/GitHub/Packages/ggExpress/R/ggExpress.R'),
+  MarkdownHelpers =    function(...) file.edit('~/GitHub/Packages/MarkdownHelpers/R/MarkdownHelpers.R'),
+  MarkdownReports =    function(...) file.edit('~/GitHub/Packages/MarkdownReports/R/MarkdownReports.R'),
+  ggExpress =          function(...) file.edit('~/GitHub/Packages/ggExpress/R/ggExpress.R'),
 
-  SeuratUtils =        function() file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.R'),
-    SeuratUtils_META =        function() file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Metadata.R'),
-    SeuratUtils_VIZ =        function() file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Visualization.R'),
-  isoENV =             function() file.edit('~/GitHub/Packages/isoENV/R/isoENV.R'),
-  isoENV.other =       function() file.edit('~/GitHub/Packages/isoENV/R/isoENV.other.R'),
+  SeuratUtils =        function(...) file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.R'),
+    SeuratUtils_META =        function(...) file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Metadata.R'),
+    SeuratUtils_VIZ =        function(...) file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Visualization.R'),
+  isoENV =             function(...) file.edit('~/GitHub/Packages/isoENV/R/isoENV.R'),
+  isoENV.other =       function(...) file.edit('~/GitHub/Packages/isoENV/R/isoENV.other.R'),
 
-  UVITools =           function() file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.R'),
-    UVIToolsBulk =       function() file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.Bulk.R'),
-  ConnectomeTools =    function() file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.R'),
-    ConnectomeToolsAAV = function() file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.AAV.R'),
-  NestedMultiplexer =  function() file.edit('~/GitHub/Packages/NestedMultiplexer/R/NestedMultiplexer.R'),
+  UVITools =           function(...) file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.R'),
+    UVIToolsBulk =       function(...) file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.Bulk.R'),
+  ConnectomeTools =    function(...) file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.R'),
+    ConnectomeToolsAAV = function(...) file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.AAV.R'),
+  NestedMultiplexer =  function(...) file.edit('~/GitHub/Packages/NestedMultiplexer/R/NestedMultiplexer.R'),
 
-  DatabaseLinke.R =          function() file.edit('~/GitHub/Packages/DatabaseLinke.R/R/DatabaseLinke.R'),
-  # gruffiDev =          function() file.edit('~/GitHub/Packages/gruffiDev/R/gruffi.R'),
-  gruffi =             function() file.edit('~/GitHub/Packages/gruffi/R/gruffi.R')
+  DatabaseLinke.R =          function(...) file.edit('~/GitHub/Packages/DatabaseLinke.R/R/DatabaseLinke.R'),
+  # gruffiDev =          function(...) file.edit('~/GitHub/Packages/gruffiDev/R/gruffi.R'),
+  gruffi =             function(...) file.edit('~/GitHub/Packages/gruffi/R/gruffi.R')
 
 )
 
 d <- pDocAndLoad <- list(
-  Stringendo =       function(path = "~/GitHub/Packages/Stringendo") { devtools::document(path); devtools::load_all(path) },
-  ReadWriter =       function(path = "~/GitHub/Packages/ReadWriter") { devtools::document(path); devtools::load_all(path) },
-  CodeAndRoll2 =     function(path = "~/GitHub/Packages/CodeAndRoll2") { devtools::document(path); devtools::load_all(path) },
-  ReadWriter =       function(path = "~/GitHub/Packages/ReadWriter") { devtools::document(path); devtools::load_all(path) },
-  PackageTools =     function(path = "~/GitHub/Packages/PackageTools") { devtools::document(path); devtools::load_all(path) },
+  Stringendo =       function(..., path = "~/GitHub/Packages/Stringendo") { devtools::document(path); devtools::load_all(path) },
+  ReadWriter =       function(..., path = "~/GitHub/Packages/ReadWriter") { devtools::document(path); devtools::load_all(path) },
+  CodeAndRoll2 =     function(..., path = "~/GitHub/Packages/CodeAndRoll2") { devtools::document(path); devtools::load_all(path) },
+  ReadWriter =       function(..., path = "~/GitHub/Packages/ReadWriter") { devtools::document(path); devtools::load_all(path) },
+  PackageTools =     function(..., path = "~/GitHub/Packages/PackageTools") { devtools::document(path); devtools::load_all(path) },
 
-  MarkdownHelpers =  function(path = "~/GitHub/Packages/MarkdownHelpers") { devtools::document(path); devtools::load_all(path) },
-  MarkdownReports =  function(path = "~/GitHub/Packages/MarkdownReports") { devtools::document(path); devtools::load_all(path) },
-  ggExpress =        function(path = "~/GitHub/Packages/ggExpress") { devtools::document(path); devtools::load_all(path) },
+  MarkdownHelpers =  function(..., path = "~/GitHub/Packages/MarkdownHelpers") { devtools::document(path); devtools::load_all(path) },
+  MarkdownReports =  function(..., path = "~/GitHub/Packages/MarkdownReports") { devtools::document(path); devtools::load_all(path) },
+  ggExpress =        function(..., path = "~/GitHub/Packages/ggExpress") { devtools::document(path); devtools::load_all(path) },
 
-  Seurat.utils =     function(path = "~/GitHub/Packages/Seurat.utils") { devtools::document(path); devtools::load_all(path) },
-  isoENV =           function(path = "~/GitHub/Packages/isoENV") { devtools::document(path); devtools::load_all(path) },
+  Seurat.utils =     function(..., path = "~/GitHub/Packages/Seurat.utils") { devtools::document(path); devtools::load_all(path) },
+  isoENV =           function(..., path = "~/GitHub/Packages/isoENV") { devtools::document(path); devtools::load_all(path) },
 
-  UVI.tools =         function(path = "~/GitHub/Packages/UVI.tools") { devtools::document(path); devtools::load_all(path) },
-  Connectome.tools =  function(path = "~/GitHub/Packages/Connectome.tools") { devtools::document(path); devtools::load_all(path) },
-  NestedMultiplexer = function(path = "~/GitHub/Packages/NestedMultiplexer") { devtools::document(path); devtools::load_all(path) },
+  UVI.tools =         function(..., path = "~/GitHub/Packages/UVI.tools") { devtools::document(path); devtools::load_all(path) },
+  Connectome.tools =  function(..., path = "~/GitHub/Packages/Connectome.tools") { devtools::document(path); devtools::load_all(path) },
+  NestedMultiplexer = function(..., path = "~/GitHub/Packages/NestedMultiplexer") { devtools::document(path); devtools::load_all(path) },
 
-  DatabaseLinke.R = function(path = "~/GitHub/Packages/DatabaseLinke.R") { devtools::document(path); devtools::load_all(path) },
-  # gruffiDev = function(path = "~/GitHub/Packages/gruffiDev") { devtools::document(path); devtools::load_all(path) },
-  gruffi = function(path = "~/GitHub/Packages/gruffi") { devtools::document(path); devtools::load_all(path) }
+  DatabaseLinke.R = function(..., path = "~/GitHub/Packages/DatabaseLinke.R") { devtools::document(path); devtools::load_all(path) },
+  # gruffiDev = function(..., path = "~/GitHub/Packages/gruffiDev") { devtools::document(path); devtools::load_all(path) },
+  gruffi = function(..., path = "~/GitHub/Packages/gruffi") { devtools::document(path); devtools::load_all(path) }
 )
 
 r <- pReload <- list(
-  Stringendo =      function(path = "~/GitHub/Packages/Stringendo") { devtools::load_all(path) },
-  ReadWriter =      function(path = "~/GitHub/Packages/ReadWriter") { devtools::load_all(path) },
-  CodeAndRoll2 =    function(path = "~/GitHub/Packages/CodeAndRoll2") { devtools::load_all(path) },
-  ReadWriter =    function(path = "~/GitHub/Packages/ReadWriter") { devtools::load_all(path) },
-  PackageTools = function(path = "~/GitHub/Packages/PackageTools") { devtools::load_all(path) },
+  Stringendo =      function(..., path = "~/GitHub/Packages/Stringendo") { devtools::load_all(path) },
+  ReadWriter =      function(..., path = "~/GitHub/Packages/ReadWriter") { devtools::load_all(path) },
+  CodeAndRoll2 =    function(..., path = "~/GitHub/Packages/CodeAndRoll2") { devtools::load_all(path) },
+  ReadWriter =    function(..., path = "~/GitHub/Packages/ReadWriter") { devtools::load_all(path) },
+  PackageTools = function(..., path = "~/GitHub/Packages/PackageTools") { devtools::load_all(path) },
 
-  MarkdownHelpers =  function(path = "~/GitHub/Packages/MarkdownHelpers") { devtools::load_all(path) },
-  MarkdownReports =  function(path = "~/GitHub/Packages/MarkdownReports") { devtools::load_all(path) },
-  ggExpress =        function(path = "~/GitHub/Packages/ggExpress") { devtools::load_all(path) },
+  MarkdownHelpers =  function(..., path = "~/GitHub/Packages/MarkdownHelpers") { devtools::load_all(path) },
+  MarkdownReports =  function(..., path = "~/GitHub/Packages/MarkdownReports") { devtools::load_all(path) },
+  ggExpress =        function(..., path = "~/GitHub/Packages/ggExpress") { devtools::load_all(path) },
 
-  Seurat.utils =   function(path = "~/GitHub/Packages/Seurat.utils") { devtools::load_all(path) },
-  isoENV =         function(path = "~/GitHub/Packages/isoENV") { devtools::load_all(path) },
+  Seurat.utils =   function(..., path = "~/GitHub/Packages/Seurat.utils") { devtools::load_all(path) },
+  isoENV =         function(..., path = "~/GitHub/Packages/isoENV") { devtools::load_all(path) },
 
-  UVI.tools =         function(path = "~/GitHub/Packages/UVI.tools") { devtools::load_all(path) },
-  Connectome.tools =  function(path = "~/GitHub/Packages/Connectome.tools") { devtools::load_all(path) },
-  NestedMultiplexer = function(path = "~/GitHub/Packages/NestedMultiplexer") { devtools::load_all(path) },
+  UVI.tools =         function(..., path = "~/GitHub/Packages/UVI.tools") { devtools::load_all(path) },
+  Connectome.tools =  function(..., path = "~/GitHub/Packages/Connectome.tools") { devtools::load_all(path) },
+  NestedMultiplexer = function(..., path = "~/GitHub/Packages/NestedMultiplexer") { devtools::load_all(path) },
 
-  DatabaseLinke.R = function(path = "~/GitHub/Packages/DatabaseLinke.R") { devtools::load_all(path) },
-  # gruffiDev = function(path = "~/GitHub/Packages/gruffiDev") { devtools::document(path); devtools::load_all(path) },
-  gruffi = function(path = "~/GitHub/Packages/gruffi") { devtools::load_all(path) }
+  DatabaseLinke.R = function(..., path = "~/GitHub/Packages/DatabaseLinke.R") { devtools::load_all(path) },
+  # gruffiDev = function(..., path = "~/GitHub/Packages/gruffiDev") { devtools::document(path); devtools::load_all(path) },
+  gruffi = function(..., path = "~/GitHub/Packages/gruffi") { devtools::load_all(path) }
 )
 
 # Package and script helpers ____________________________________________________________ ----
@@ -149,17 +149,17 @@ osXpath <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/
 cbepath <- function(x = "/Volumes/Analysis/sc6_21.v5/preMerge.v2.Correct.CBC/Gruffi.Stress.annotation.v4/combined.obj_1_gruffi.complete.full_CON_2024.02.27_14.21.qs",
                      cbe = "/groups/knoblich/Projects/connectomics/") {
   # last.folder <- basename(attach)
-  gsub(x, pattern = "/Volumes/", replacement = cbe)
+  message(gsub(x, pattern = "/Volumes/", replacement = cbe))
 }
 
 
-osXpath2 <- function(str = "/groups/knoblich/bioinfo/Projects/connectomics/SNP_demux/classifications/v2") { # Parse path for CBE
-  x = gsub(x = str, pattern = "/groups/knoblich/", replacement = '/Volumes/knoblich/')
-  print("1. Mount:")
-  print("smb://storage.imp.ac.at/groups/knoblich/")
-  print("2. Go:")
-  print(x)
-}
+# osXpath2 <- function(str = "/groups/knoblich/bioinfo/Projects/connectomics/SNP_demux/classifications/v2") { # Parse path for CBE
+#   x = gsub(x = str, pattern = "/groups/knoblich/", replacement = '/Volumes/knoblich/')
+#   print("1. Mount:")
+#   print("smb://storage.imp.ac.at/groups/knoblich/")
+#   print("2. Go:")
+#   print(x)
+# }
 
 
 
