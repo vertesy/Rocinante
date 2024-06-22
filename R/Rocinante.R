@@ -979,12 +979,38 @@ matlabColors.pheatmap <- function(matrixx, nr = 50) {colorRamps::matlab.like(len
 
 # ________________________________________________________________________
 "FOR VECTOR. it works"
-annot_col.create.pheatmap.vec <- function(data, annot_vec, annot_names = "Annot") { # For VECTORS. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
-  stopifnot( length(annot_vec) == dim(data)[2] )
+#' @title Create Annotation Columns for pheatmap
+#'
+#' @description
+#' Auxiliary function for pheatmap. Prepares the two variables needed for `annotation_col` and
+#' `annotation_colors` in pheatmap.
+#'
+#' @param data A data frame or matrix where columns are to be annotated. Default: None.
+#' @param annot_vec A vector of annotations corresponding to the columns of the data. Default: None.
+#' @param annot_names A character string representing the name of the annotation column. Default: "Annot".
+#'
+#' @return No return value. The function assigns `annot` (data frame) and `annot_col` (list) to the global
+#' environment for use with `pheatmap`.
+#'
+#' @importFrom gplots rich.colors
+#' @export
+#'
+annot_col.create.pheatmap.vec <- function(data,
+                                          annot_vec,
+                                          annot_names = "Annot") {
+
+  # Input argument assertions
+  stopifnot(
+    is.data.frame(data) || is.matrix(data),
+    is.vector(annot_vec),
+    length(annot_vec) == ncol(data),
+    is.character(annot_names)
+  )
+
   namez = as.character(if (is.null(annot_names)) substitute(annot_vec) else annot_names)
 
   df = data.frame(x = annot_vec);
-  # df[, 1] = as.character(df[, 1])
+
   names(df) = namez # colnames but more flexible
   rownames(df) = colnames(data)
   assign(x = "annot", value = df, envir = .GlobalEnv)
@@ -999,10 +1025,12 @@ annot_col.create.pheatmap.vec <- function(data, annot_vec, annot_names = "Annot"
   names(col_list) = namez
   assign(x = "annot_col", value = col_list, envir = .GlobalEnv)
 
-  print("annot [data frame] and annot_col [list] variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
+  message("annot [data frame] and annot_col [list] variables are created.
+          Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
 }
 
 
+# ________________________________________________________________________
 annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names = NULL) { # For data frames. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
   stopif( dim(annot_df_per_column)[1] != dim(data)[2] , message = "The number of rows in the annotation data != to the # columns in your data frame")
 
@@ -1026,7 +1054,8 @@ annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names 
   } #for each column
   assign(x = "annot_col", value = col_list, envir = .GlobalEnv)
 
-  print("annot [data frame] and annot_col [list] variables are created. Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
+  print("annot [data frame] and annot_col [list] variables are created.
+        Use: pheatmap(..., annotation_col = annot, annotation_colors = annot_col)")
 }
 
 annot_col.fix.numeric <- function(ListOfColnames, df.annot = annot, annot_col = annot_col) { # fix class and color annotation in pheatmap annotation data frame's and lists.
@@ -1063,7 +1092,8 @@ annot_row.create.pheatmap.df <- function(data, annot_df_per_row, annot_names = N
   } #for each column
   assign(x = "annot_rows.col", value = col_list, envir = .GlobalEnv)
 
-  print("annot_rows [data frame] and annot_rows.col [list] variables are created. Use: pheatmap(..., annotation_row = annot_rows, annotation_colors = annot_rows.col)")
+  print("annot_rows [data frame] and annot_rows.col [list] variables are created.
+        Use: pheatmap(..., annotation_row = annot_rows, annotation_colors = annot_rows.col)")
 }
 
 
