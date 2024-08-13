@@ -281,18 +281,17 @@ memory.biggest.objects <- function(n = 5, plot = T, saveplot = FALSE) {
   # strX <- as.character(capture.output(dput(top.names)))
   strX <- kollapse(top.names, collapseby = "', '")
   # strX <- gsub('[^A-Za-z0-9 ,._/()]', '', strX)
-  message("rm(list = '", strX, "')\n")
+  message("rm(list = ('", strX, "'))\n")
 
   if(plot) {
     pie(x = Memorty.usage.stat, cex = .5, sub = date(),
         col = grDevices::terrain.colors(length(Memorty.usage.stat)))
     # dput(names(topX))
   }
-
-
-
 }
 # memory.biggest.objects()
+
+
 
 # _________________________________________________________________________________________________
 #' @title Retrieve Memory Information
