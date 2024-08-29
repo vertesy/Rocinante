@@ -232,7 +232,55 @@ sourceGitHub <- function(script = "Cell.cycle.scoring.R"
 
 
 # ____________________________________________________________
-sourcePartial <- function(fn,startTag = '#1', endTag = '#/1') { # Source parts of another script. Source: https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
+#' @title Source Specific Lines from an R Script
+#'
+#' @description
+#' This function sources (executes) specific lines from an R script. It reads the script into R,
+#' extracts the lines within the specified range, and then evaluates (executes) those lines.
+#'
+#' @param file_path A string specifying the path to the R script. Default: `NULL`.
+#' @param start_line An integer specifying the starting line number to source. Default: `NULL`.
+#' @param end_line An integer specifying the ending line number to source. Default: `NULL`.
+#'
+#' @return This function does not return a value. It executes the specified lines of the R script.
+#' @examples
+#' # Source lines 10 to 20 from the script located at "path/to/your/script.R"
+#' sourceLines("path/to/your/script.R", 10, 20)
+#'
+#' @export
+sourceLines <- function(file_path, start_line, end_line) {
+  # Input argument assertions
+  stopifnot(
+    is.character(file_path), length(file_path) == 1, file.exists(file_path),
+    is.numeric(start_line), start_line >= 1,
+    is.numeric(end_line), end_line >= start_line
+  )
+
+  # Read the entire script into R as a character vector
+  script_lines <- readLines(file_path)
+
+  # Ensure end_line does not exceed the number of lines in the script
+  if (end_line > length(script_lines)) {
+    end_line <- length(script_lines)
+    message("end_line exceeds the number of lines in the script. Clipping to the last line, ", end_line)
+  }
+
+  # Extract the lines within the specified range
+  selected_lines <- script_lines[start_line:end_line]
+
+  # Source the extracted lines using textConnection()
+  source(textConnection(selected_lines))
+
+}
+# pathX <- "~/GitHub/TheCorvinas/R/Test.for.sourceLines.function.R"
+# sourceLines(pathX, 1, 15)
+# sourceLines(pathX, 15,20)
+# sourceLines(pathX, 1,222)
+
+
+# ____________________________________________________________
+# Source parts of another script. Source: https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
+sourcePartial <- function(fn, startTag = '#1', endTag = '#/1') {
   lines <- scan(fn, what = character(), sep = "\n", quiet = TRUE)
   st <- grep(startTag,lines)
   en <- grep(endTag,lines)
