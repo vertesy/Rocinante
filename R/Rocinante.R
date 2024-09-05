@@ -98,6 +98,7 @@ d <- pDocAndLoad <- list(
 )
 
 r <- pReload <- list(
+  Rocinante =          function(...) source('~/GitHub/Packages/Rocinante/R/Rocinante.R'),
   Stringendo =      function(..., path = "~/GitHub/Packages/Stringendo") { devtools::load_all(path) },
   ReadWriter =      function(..., path = "~/GitHub/Packages/ReadWriter") { devtools::load_all(path) },
   CodeAndRoll2 =    function(..., path = "~/GitHub/Packages/CodeAndRoll2") { devtools::load_all(path) },
@@ -239,8 +240,7 @@ sourceGitHub <- function(script = "Cell.cycle.scoring.R"
 #' extracts the lines within the specified range, and then evaluates (executes) those lines.
 #'
 #' @param file_path A string specifying the path to the R script. Default: `NULL`.
-#' @param start_line An integer specifying the starting line number to source. Default: `NULL`.
-#' @param end_line An integer specifying the ending line number to source. Default: `NULL`.
+#' @param lines A numeric vector specifying the lines source, e.g.: `10:200`. Default: `NULL`.
 #'
 #' @return This function does not return a value. It executes the specified lines of the R script.
 #' @examples
@@ -248,28 +248,23 @@ sourceGitHub <- function(script = "Cell.cycle.scoring.R"
 #' sourceLines("path/to/your/script.R", 10, 20)
 #'
 #' @export
-sourceLines <- function(file_path, start_line, end_line) {
-  # Input argument assertions
+sourceLines <- function(file_path, lines) {
   stopifnot(
     is.character(file_path), length(file_path) == 1, file.exists(file_path),
-    is.numeric(start_line), start_line >= 1,
-    is.numeric(end_line), end_line >= start_line
+    is.numeric(lines), lines[1] >= 1, lines[2] >= lines[1]
   )
 
-  # Read the entire script into R as a character vector
-  script_lines <- readLines(file_path)
+  # Read the entire script into R as a vector of strings (1 for each line).
+  script_all_lines <- readLines(file_path)
 
   # Ensure end_line does not exceed the number of lines in the script
-  if (end_line > length(script_lines)) {
-    end_line <- length(script_lines)
-    message("end_line exceeds the number of lines in the script. Clipping to the last line, ", end_line)
+  if (lines[2] > length(script_all_lines)) {
+    lines[2] <- length(script_all_lines)
+    message("end_line exceeds the number of lines in the script. Clipping to the last line, ", lines[2])
   }
 
-  # Extract the lines within the specified range
-  selected_lines <- script_lines[start_line:end_line]
-
   # Source the extracted lines using textConnection()
-  source(textConnection(selected_lines))
+  source(textConnection(script_all_lines[lines]))
 
 }
 # pathX <- "~/GitHub/TheCorvinas/R/Test.for.sourceLines.function.R"
@@ -1371,7 +1366,7 @@ getVennOverlaps <- function(lsvenn = list(A = sort(sample(LETTERS, 15)),
 ww.randomize <- function(vec = nm.trunk) {
   old <- unique(vec)
   new <- sample(1:length(vec))
-  as.numeric(CodeAndRoll2::translate(vec = vec, oldvalues = old, newvalues = new))
+  as.numeric(CodeAndRoll2::translate(vec = vec, old = old, new = new))
 }
 
 # _________________________________________________________________________________________________
