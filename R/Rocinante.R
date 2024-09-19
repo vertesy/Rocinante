@@ -892,6 +892,15 @@ colACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { 
 
 # Plotting and Graphics ____________________________________________________________ ----
 
+
+qheatmap <- function(df, cluster_rows = F, cluster_cols = F,
+                     main = make.names(Stringendo::FixPlotName(substitute(df))),
+                     ...) {
+  pheatmap(mat = df, cluster_rows = cluster_rows, cluster_cols = cluster_cols, main = main
+           , ...)
+}
+
+
 colSums.barplot <- function(df, col = "seagreen2", na_rm = TRUE, ...) { barplot(colSums(df, na.rm = na_rm), col = col, ...) } # Draw a barplot from ColSums of a matrix.
 
 lm_equation_formatter <- function(lm) { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
