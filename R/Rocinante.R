@@ -629,9 +629,21 @@ say <- function(...) { # Use system voice to notify (after a long task is done)
 }
 sayy <- function(...) {system("say 'Ready to roll!'")} # Use system voice to notify (after a long task is done)
 
-oo <- function(path = '.') { # Open current working directory, or any directory.
-  system(paste("open", path))
+# oo <- function(path = '.') { # Open current working directory, or any directory.
+#   system(paste("open", path))
+# }
+# oo <- function() { print(list.files(getwd())); print("dir"); print(getwd()) }
+oo <- function(x=NULL) {
+  message('WD\n', getwd())
+  if (exists('OutDir')) {
+    if( ! getwd() == RemoveFinalSlash(OutDir)) {
+      message("OutDir different to WD:\n", RemoveFinalSlash(OutDir))
+    }
+  } else {
+    message("Outdir not defined.")
+  }
 }
+
 
 # make_bash_compatible <- function(x) {
 #   special_chars <- c("\\$", "\\\\", "\\ ", "\\\"", "\\'", "\\|", "\\&", "\\;", "\\<", "\\>"
