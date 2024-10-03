@@ -136,8 +136,19 @@ ccc <- function(...) clipr::write_clip(cbepath(clipr::read_clip()))
 oofix <- function(...) clipr::write_clip(gsub(pattern = '\\[1\\] ', replacement = '', x = clipr::read_clip()))
 
 # ____________________________________________________________
-osXpath <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/users/abel.vertesy/Analysis/"),
+osXpath <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/users/abel.vertesy/Analysis/sc6_21.v7/variables.2.regress_nuclear.fraction/"),
                       # "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
+                    attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v7/variables.2.regress_nuclear.fraction",
+                    cbe = "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v7/") {
+  # last.folder <- basename(attach)
+  message("designed attach: ", attach, " in finder.\n")
+  message(paste("open", gsub(x, pattern = cbe, replacement = "/Volumes/")))
+}
+osXpath()
+
+
+osXpath2 <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/users/abel.vertesy/Analysis/"),
+                    # "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
                     attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis",
                     cbe = "/groups/knoblich/Projects/connectomics/") {
   # last.folder <- basename(attach)
@@ -145,6 +156,7 @@ osXpath <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/
   message(paste("open", gsub(x, pattern = cbe, replacement = "/Volumes/")))
 }
 # osXpath()
+
 
 # ____________________________________________________________
 cbepath <- function(x = "/Volumes/Analysis/sc6_21.v5/preMerge.v2.Correct.CBC/Gruffi.Stress.annotation.v4/combined.obj_1_gruffi.complete.full_CON_2024.02.27_14.21.qs",
