@@ -179,7 +179,7 @@ osXpath <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/
   message("designed attach: ", attach, " in finder.\n")
   message(paste("open", gsub(x, pattern = cbe, replacement = "/Volumes/")))
 }
-osXpath()
+
 
 # _______________________________________________________________________________________
 osXpath2 <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/users/abel.vertesy/Analysis/"),
@@ -190,8 +190,17 @@ osXpath2 <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich
   message("designed attach: ", attach, " in finder.\n")
   message(paste("open", gsub(x, pattern = cbe, replacement = "/Volumes/")))
 }
-# osXpath()
 
+# _______________________________________________________________________________________
+osXpath8 <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/users/abel.vertesy/Analysis/sc6_21.v8/"),
+                      # "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
+                      attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v8",
+                      cbe = "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v8/") {
+  # last.folder <- basename(attach)
+  message("designed attach: ", attach, " in finder.\n")
+  message(paste("open", gsub(x, pattern = cbe, replacement = "/Volumes/sc6_21.v8/")))
+}
+# osXpath()
 
 # ____________________________________________________________
 cbepath <- function(x = "/Volumes/Analysis/sc6_21.v5/preMerge.v2.Correct.CBC/Gruffi.Stress.annotation.v4/combined.obj_1_gruffi.complete.full_CON_2024.02.27_14.21.qs",
