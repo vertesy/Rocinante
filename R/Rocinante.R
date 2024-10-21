@@ -614,9 +614,15 @@ colACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { 
 
 # ___________________________________________________________________________________________ ------
 # Plotting and Graphics ____________________________________________________________ ----
+
 colSums.barplot <- function(df, col = "seagreen2", na_rm = TRUE, ...) { barplot(colSums(df, na.rm = na_rm), col = col, ...) } # Draw a barplot from ColSums of a matrix.
 
 richColors <- function(n = 3) { gplots::rich.colors(n) } # Alias for rich.colors in gplots
+
+qheatmap <- function(df, cluster_rows = FALSE, cluster_cols = FALSE,
+                     main = make.names(Stringendo::FixPlotName(substitute(df))), ...) {
+  pheatmap::pheatmap(mat = df, cluster_rows = cluster_rows, cluster_cols = cluster_cols, main = main, ...)
+}
 
 HeatMapCol_BGR <- grDevices::colorRampPalette(c("blue", "cyan", "yellow", "red"), bias = 1)
 # HeatMapCol_BWR <- grDevices::colorRampPalette(c("blue", "white", "red"), bias = 1)
