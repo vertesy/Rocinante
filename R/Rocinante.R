@@ -22,6 +22,10 @@ wA4 = 8.27 # A4 inches
 hA4 = 11.69
 
 
+get_col <- function(mat, col_idx) as_tibble(mat) |> pull(col_idx)
+get_row <- function(mat, row_idx) as_tibble(mat) |> slice(row_idx)
+get_subvec <- function(vec, range) vec[range]
+
 # Alisases ____________________________________________________________ ----
 sort.natural = gtools::mixedsort
 comma = scales::comma
