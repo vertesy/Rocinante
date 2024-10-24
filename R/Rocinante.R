@@ -90,6 +90,7 @@ o <- pOpen <- list(
     PackageToolsDOC =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/DocumentationTools.R'),
     PackageToolsDEP =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/DependencyTools.R'),
     PackageToolsMISC =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/Miscellaneous.R'),
+    PackageToolsROXY =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/RoxygenTools.R'),
 
   MarkdownHelpers =    function(...) file.edit('~/GitHub/Packages/MarkdownHelpers/R/MarkdownHelpers.R'),
   MarkdownReports =    function(...) file.edit('~/GitHub/Packages/MarkdownReports/R/MarkdownReports.R'),
@@ -110,7 +111,6 @@ o <- pOpen <- list(
   DatabaseLinke.R =          function(...) file.edit('~/GitHub/Packages/DatabaseLinke.R/R/DatabaseLinke.R'),
   # gruffiDev =          function(...) file.edit('~/GitHub/Packages/gruffiDev/R/gruffi.R'),
   gruffi =             function(...) file.edit('~/GitHub/Packages/gruffi/R/gruffi.R')
-
 )
 
 d <- pDocAndLoad <- list(
@@ -159,6 +159,44 @@ r <- pReload <- list(
   # gruffiDev = function(..., path = "~/GitHub/Packages/gruffiDev") { devtools::document(path); devtools::load_all(path) },
   gruffi = function(..., path = "~/GitHub/Packages/gruffi") { devtools::load_all(path) }
 )
+
+# Open the traffic graph for each package on GitHub
+repoTrafficGraph <- list(
+  Stringendo =       function() { browseURL("https://github.com/vertesy/Stringendo/graphs/traffic") },
+  ReadWriter =       function() { browseURL("https://github.com/vertesy/ReadWriter/graphs/traffic") },
+  CodeAndRoll2 =     function() { browseURL("https://github.com/vertesy/CodeAndRoll2/graphs/traffic") },
+  PackageTools =     function() { browseURL("https://github.com/vertesy/PackageTools/graphs/traffic") },
+  MarkdownHelpers =  function() { browseURL("https://github.com/vertesy/MarkdownHelpers/graphs/traffic") },
+  MarkdownReports =  function() { browseURL("https://github.com/vertesy/MarkdownReports/graphs/traffic") },
+  ggExpress =        function() { browseURL("https://github.com/vertesy/ggExpress/graphs/traffic") },
+  Seurat.utils =     function() { browseURL("https://github.com/vertesy/Seurat.utils/graphs/traffic") },
+  isoENV =           function() { browseURL("https://github.com/vertesy/isoENV/graphs/traffic") },
+  UVI.tools =        function() { browseURL("https://github.com/vertesy/UVI.tools/graphs/traffic") },
+  Connectome.tools = function() { browseURL("https://github.com/vertesy/Connectome.tools/graphs/traffic") },
+  NestedMultiplexer =function() { browseURL("https://github.com/vertesy/NestedMultiplexer/graphs/traffic") },
+  DatabaseLinke.R =  function() { browseURL("https://github.com/vertesy/DatabaseLinke.R/graphs/traffic") }
+  # gruffi =           function() { browseURL("https://github.com/vertesy/jngoe/graphs/traffic") }
+)
+repoTrafficGraph_ALL <- function() { lapply(repoTrafficGraph, function(x) x()) }
+
+# Define a list of functions to open the "Create_the_*_Package.R" file for each package
+openCreatePackageFile <- list(
+  Stringendo =       function() { file.edit("/users/abel.vertesy/GitHub/Packages/Stringendo/Development/Create_the_Stringendo_Package.R") },
+  ReadWriter =       function() { file.edit("/users/abel.vertesy/GitHub/Packages/ReadWriter/Development/Create_the_ReadWriter_Package.R") },
+  CodeAndRoll2 =     function() { file.edit("/users/abel.vertesy/GitHub/Packages/CodeAndRoll2/Development/Create_the_CodeAndRoll2_Package.R") },
+  PackageTools =     function() { file.edit("/users/abel.vertesy/GitHub/Packages/PackageTools/Development/Create_the_PackageTools_Package.R") },
+  MarkdownHelpers =  function() { file.edit("/users/abel.vertesy/GitHub/Packages/MarkdownHelpers/Development/Create_the_MarkdownHelpers_Package.R") },
+  MarkdownReports =  function() { file.edit("/users/abel.vertesy/GitHub/Packages/MarkdownReports/Development/Create_the_MarkdownReports_Package.R") },
+  ggExpress =        function() { file.edit("/users/abel.vertesy/GitHub/Packages/ggExpress/Development/Create_the_ggExpress_Package.R") },
+  Seurat.utils =     function() { file.edit("/users/abel.vertesy/GitHub/Packages/Seurat.utils/Development/Create_the_Seurat.utils_Package.R") },
+  isoENV =           function() { file.edit("/users/abel.vertesy/GitHub/Packages/isoENV/Development/Create_the_isoENV_Package.R") },
+  UVI.tools =        function() { file.edit("/users/abel.vertesy/GitHub/Packages/UVI.tools/Development/Create_the_UVI.tools_Package.R") },
+  Connectome.tools = function() { file.edit("/users/abel.vertesy/GitHub/Packages/Connectome.tools/Development/Create_the_Connectome.tools_Package.R") },
+  NestedMultiplexer =function() { file.edit("/users/abel.vertesy/GitHub/Packages/NestedMultiplexer/Development/Create_the_NestedMultiplexer_Package.R") },
+  DatabaseLinke.R =  function() { file.edit("/users/abel.vertesy/GitHub/Packages/DatabaseLinke.R/Development/Create_the_DatabaseLinke.R_Package.R") }
+)
+openALL_CreatePackageFiles <- function() { lapply(openCreatePackageFile, function(f) f()) }
+
 
 # Package and script helpers ____________________________________________________________ ----
 
