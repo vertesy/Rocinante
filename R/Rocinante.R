@@ -181,22 +181,40 @@ repoTrafficGraph_ALL <- function() { lapply(repoTrafficGraph, function(x) x()) }
 
 # Define a list of functions to open the "Create_the_*_Package.R" file for each package
 openCreatePackageFile <- list(
-  Stringendo =       function() { file.edit("/users/abel.vertesy/GitHub/Packages/Stringendo/Development/Create_the_Stringendo_Package.R") },
-  ReadWriter =       function() { file.edit("/users/abel.vertesy/GitHub/Packages/ReadWriter/Development/Create_the_ReadWriter_Package.R") },
-  CodeAndRoll2 =     function() { file.edit("/users/abel.vertesy/GitHub/Packages/CodeAndRoll2/Development/Create_the_CodeAndRoll2_Package.R") },
-  PackageTools =     function() { file.edit("/users/abel.vertesy/GitHub/Packages/PackageTools/Development/Create_the_PackageTools_Package.R") },
-  MarkdownHelpers =  function() { file.edit("/users/abel.vertesy/GitHub/Packages/MarkdownHelpers/Development/Create_the_MarkdownHelpers_Package.R") },
-  MarkdownReports =  function() { file.edit("/users/abel.vertesy/GitHub/Packages/MarkdownReports/Development/Create_the_MarkdownReports_Package.R") },
-  ggExpress =        function() { file.edit("/users/abel.vertesy/GitHub/Packages/ggExpress/Development/Create_the_ggExpress_Package.R") },
-  Seurat.utils =     function() { file.edit("/users/abel.vertesy/GitHub/Packages/Seurat.utils/Development/Create_the_Seurat.utils_Package.R") },
-  isoENV =           function() { file.edit("/users/abel.vertesy/GitHub/Packages/isoENV/Development/Create_the_isoENV_Package.R") },
-  UVI.tools =        function() { file.edit("/users/abel.vertesy/GitHub/Packages/UVI.tools/Development/Create_the_UVI.tools_Package.R") },
-  Connectome.tools = function() { file.edit("/users/abel.vertesy/GitHub/Packages/Connectome.tools/Development/Create_the_Connectome.tools_Package.R") },
-  NestedMultiplexer =function() { file.edit("/users/abel.vertesy/GitHub/Packages/NestedMultiplexer/Development/Create_the_NestedMultiplexer_Package.R") },
-  DatabaseLinke.R =  function() { file.edit("/users/abel.vertesy/GitHub/Packages/DatabaseLinke.R/Development/Create_the_DatabaseLinke.R_Package.R") }
+  Stringendo =       function() { file.edit("~/GitHub/Packages/Stringendo/Development/Create_the_Stringendo_Package.R") },
+  ReadWriter =       function() { file.edit("~/GitHub/Packages/ReadWriter/Development/Create_the_ReadWriter_Package.R") },
+  CodeAndRoll2 =     function() { file.edit("~/GitHub/Packages/CodeAndRoll2/Development/Create_the_CodeAndRoll2_Package.R") },
+  PackageTools =     function() { file.edit("~/GitHub/Packages/PackageTools/Development/Create_the_PackageTools_Package.R") },
+  MarkdownHelpers =  function() { file.edit("~/GitHub/Packages/MarkdownHelpers/Development/Create_the_MarkdownHelpers_Package.R") },
+  MarkdownReports =  function() { file.edit("~/GitHub/Packages/MarkdownReports/Development/Create_the_MarkdownReports_Package.R") },
+  ggExpress =        function() { file.edit("~/GitHub/Packages/ggExpress/Development/Create_the_ggExpress_Package.R") },
+  Seurat.utils =     function() { file.edit("~/GitHub/Packages/Seurat.utils/Development/Create_the_Seurat.utils_Package.R") },
+  isoENV =           function() { file.edit("~/GitHub/Packages/isoENV/Development/Create_the_isoENV_Package.R") },
+  UVI.tools =        function() { file.edit("~/GitHub/Packages/UVI.tools/Development/Create_the_UVI.tools_Package.R") },
+  Connectome.tools = function() { file.edit("~/GitHub/Packages/Connectome.tools/Development/Create_the_Connectome.tools_Package.R") },
+  NestedMultiplexer =function() { file.edit("~/GitHub/Packages/NestedMultiplexer/Development/Create_the_NestedMultiplexer_Package.R") },
+  DatabaseLinke.R =  function() { file.edit("~/GitHub/Packages/DatabaseLinke.R/Development/Create_the_DatabaseLinke.R_Package.R") }
 )
 openALL_CreatePackageFiles <- function() { lapply(openCreatePackageFile, function(f) f()) }
 
+
+openConfigFiles <- list(
+  Stringendo =       function() { file.edit("~/GitHub/Packages/Stringendo/Development/config.R") },
+  ReadWriter =       function() { file.edit("~/GitHub/Packages/ReadWriter/Development/config.R") },
+  CodeAndRoll2 =     function() { file.edit("~/GitHub/Packages/CodeAndRoll2/Development/config.R") },
+  PackageTools =     function() { file.edit("~/GitHub/Packages/PackageTools/Development/config.R") },
+  MarkdownHelpers =  function() { file.edit("~/GitHub/Packages/MarkdownHelpers/Development/config.R") },
+  MarkdownReports =  function() { file.edit("~/GitHub/Packages/MarkdownReports/Development/config.R") },
+  ggExpress =        function() { file.edit("~/GitHub/Packages/ggExpress/Development/config.R") },
+  Seurat.utils =     function() { file.edit("~/GitHub/Packages/Seurat.utils/Development/config.R") },
+  isoENV =           function() { file.edit("~/GitHub/Packages/isoENV/Development/config.R") },
+  UVI.tools =        function() { file.edit("~/GitHub/Packages/UVI.tools/Development/config.R") },
+  Connectome.tools = function() { file.edit("~/GitHub/Packages/Connectome.tools/Development/config.R") },
+  NestedMultiplexer =function() { file.edit("~/GitHub/Packages/NestedMultiplexer/Development/config.R") },
+  # gruffi =           function() { file.edit("~/GitHub/Packages/gruffi/Development/config.R") }
+  DatabaseLinke.R =  function() { file.edit("~/GitHub/Packages/DatabaseLinke.R/Development/config.R") }
+)
+openALL_ConfigFiles <- function() { lapply(openConfigFiles, function(f) f()) }
 
 # Package and script helpers ____________________________________________________________ ----
 
