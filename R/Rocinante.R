@@ -43,42 +43,6 @@ warnings.erase <- function() assign("last.warning", NULL, envir = baseenv())
 rprofile <-  function(...) file.edit('~/.Rprofile')
 rocinanteSource <- function() source('~/GitHub/Packages/Rocinante/R/Rocinante.R')
 
-# " NOW IN STRINGENDO PACKAGE"
-# " NOW IN STRINGENDO PACKAGE"
-# " NOW IN STRINGENDO PACKAGE"
-#' # _______________________________________________________________________________________
-#' #' ifExistsElse
-#' #'
-#' #' Internal function. Checks if a variable is defined, else returns an
-#' #' @param varname Name of the varaible
-#' #' @param alternative Alternative value to return if the variable is not defined
-#' #' @param verbose Print messages. Default is FALSE.
-#' #' @export
-#' #' @examples ifExistsElse()
-#'
-#' ifExistsElse <- function(varname, alternative = "define an alternative", verbose = F ) {
-#'   if(!is.character(varname)) varname <- substitute(varname)
-#'   if(verbose) message("Checking if ", varname, " exists.")
-#'   if(exists(varname)) get(varname) else alternative
-#' }
-#'
-#'
-#' # _______________________________________________________________________________________
-#' #' ifExistsAndTrue
-#' #'
-#' #' Internal function. Checks if a variable is defined, and its value is TRUE.
-#' #' @param varname Name of the varaible
-#' #' @export
-#' #' @examples ifExistsAndTrue()
-#'
-#' ifExistsAndTrue <- function(varname = "pi" ) {
-#'   x = FALSE
-#'   if (exists(varname)) {
-#'     if (isTRUE(get(varname)))  {x = TRUE} else {x = FALSE; iprint(varname, " exists, but != TRUE; ", get(varname))}
-#'   }
-#'   return(x)
-#' }
-
 
 # Package Loaders ____________________________________________________________ ----
 
