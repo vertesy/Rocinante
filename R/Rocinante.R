@@ -432,6 +432,7 @@ sayy <- function(...) {system("say 'Ready to roll!'")} # Use system voice to not
 #   system(paste("open", path))
 # }
 # oo <- function() { print(list.files(getwd())); print("dir"); print(getwd()) }
+
 oo <- function(x=NULL) {
   message('WD\n', getwd())
   if (exists('OutDir')) {
