@@ -44,6 +44,7 @@ rprofile <-  function(...) file.edit('~/.Rprofile')
 rocinanteSource <- function() source('~/GitHub/Packages/Rocinante/R/Rocinante.R')
 
 
+
 # Package Loaders ____________________________________________________________ ----
 
 o <- pOpen <- list(
@@ -262,6 +263,29 @@ getCurrentScriptName <- function(toclipboard = TRUE) {
 
   return(file_name)
 }
+
+#' @title Get Current Script path in RStudio
+#'
+#' @description Retrieves the file path of the current script open in the RStudio source editor.
+#' This function is specific to RStudio and will not work in other environments.
+#' @examples
+#' getCurrentScriptPath() # Returns the path of the script currently open in RStudio
+#'
+#' @export
+getCurrentScriptPath <- function() {
+  # Ensure that rstudioapi is available
+  if (!requireNamespace("rstudioapi", quietly = TRUE)) {
+    stop("rstudioapi package is required.")
+  }
+
+  # Retrieve the file path of the current script
+  message(paste0("file.edit('", rstudioapi::getSourceEditorContext()$path, "')"))
+
+}
+
+
+
+#
 
 
 # ____________________________________________________________
