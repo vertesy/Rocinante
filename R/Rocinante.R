@@ -199,7 +199,7 @@ ccc <- function(...) clipr::write_clip(cbepath(clipr::read_clip()))
 oofix <- function(...) clipr::write_clip(gsub(pattern = '\\[1\\] ', replacement = '', x = clipr::read_clip()))
 
 # ____________________________________________________________
-osXpath <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/users/abel.vertesy/Analysis/sc6_21.v7/variables.2.regress_nuclear.fraction/"),
+osXpath7 <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/users/abel.vertesy/Analysis/sc6_21.v7/variables.2.regress_nuclear.fraction/"),
                       # "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
                     attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v7/variables.2.regress_nuclear.fraction",
                     cbe = "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v7/") {
@@ -210,17 +210,17 @@ osXpath <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/
 
 
 # _______________________________________________________________________________________
-osXpath2 <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/users/abel.vertesy/Analysis/"),
-                    # "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
-                    attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis",
-                    cbe = "/groups/knoblich/Projects/connectomics/") {
-  # last.folder <- basename(attach)
-  message("designed attach: ", attach, " in finder.\n")
-  message(paste("open", gsub(x, pattern = cbe, replacement = "/Volumes/")))
-}
+# osXpath2 <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/users/abel.vertesy/Analysis/"),
+#                     # "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
+#                     attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis",
+#                     cbe = "/groups/knoblich/Projects/connectomics/") {
+#   # last.folder <- basename(attach)
+#   message("designed attach: ", attach, " in finder.\n")
+#   message(paste("open", gsub(x, pattern = cbe, replacement = "/Volumes/")))
+# }
 
 # _______________________________________________________________________________________
-osXpath8 <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/users/abel.vertesy/Analysis/sc6_21.v8/"),
+osXpath <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/users/abel.vertesy/Analysis/sc6_21.v8/"),
                       # "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
                       attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v8",
                       cbe = "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v8/") {
