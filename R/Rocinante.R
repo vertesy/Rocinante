@@ -30,6 +30,7 @@ get_subvec <- function(vec, range) vec[range]
 sort.natural = gtools::mixedsort
 comma = scales::comma
 
+u <- unique
 b <- browser
 p0 <- paste0
 l <- length
@@ -204,7 +205,7 @@ osXpath7 <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich
                     attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v7/variables.2.regress_nuclear.fraction",
                     cbe = "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v7/") {
   # last.folder <- basename(attach)
-  message("designed attach: ", attach, " in finder.\n")
+  message("Attach in finder:\n", attach, "\n")
   message(paste("open", gsub(x, pattern = cbe, replacement = "/Volumes/")))
 }
 
@@ -225,7 +226,7 @@ osXpath <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/
                       attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v8",
                       cbe = "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v8/") {
   # last.folder <- basename(attach)
-  message("designed attach: ", attach, " in finder.\n")
+  message("Attach in finder:\n", attach, "\n")
   message(paste("open", gsub(x, pattern = cbe, replacement = "/Volumes/sc6_21.v8/")))
 }
 # osXpath()
