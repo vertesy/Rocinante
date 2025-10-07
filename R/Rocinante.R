@@ -453,20 +453,37 @@ say <- function(...) { # Use system voice to notify (after a long task is done)
 }
 sayy <- function(...) {system("say 'Ready to roll!'")} # Use system voice to notify (after a long task is done)
 
-# oo <- function(path = '.') { # Open current working directory, or any directory.
-#   system(paste("open", path))
-# }
-# oo <- function() { print(list.files(getwd())); print("dir"); print(getwd()) }
 
-oo <- function(x=NULL) {
-  message('WD\n', getwd())
+# oo <- function(x=NULL) {
+#   message('WD\n', getwd())
+#   if (exists('OutDir')) {
+#     if( ! getwd() == RemoveFinalSlash(OutDir)) {
+#       message("OutDir different to WD:\n", RemoveFinalSlash(OutDir))
+#     }
+#   } else {
+#     message("Outdir not defined.")
+#   }
+# }
+
+
+
+oo <- function(samba = "smb://storage.imp.ac.at/", loc_path = "/Volumes/") {
+
+  message('WD\n', getwd(), "\n")
   if (exists('OutDir')) {
     if( ! getwd() == RemoveFinalSlash(OutDir)) {
-      message("OutDir different to WD:\n", RemoveFinalSlash(OutDir))
+      message("OutDir different to WD:\n", RemoveFinalSlash(OutDir),"\n")
     }
   } else {
-    message("Outdir not defined.")
+    message("Outdir not defined.\n")
   }
+
+  attach = paste0("smb://storage.imp.ac.at", OutDir)
+  message("Attach in Finder:\n", attach, "\n")
+
+  message("open ", spps(loc_path, basename(attach)))
+
+
 }
 
 
