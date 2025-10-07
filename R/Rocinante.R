@@ -78,7 +78,7 @@ o <- pOpen <- list(
   NestedMultiplexer =  function(...) file.edit('~/GitHub/Packages/NestedMultiplexer/R/NestedMultiplexer.R'),
 
   DatabaseLinke.R =          function(...) file.edit('~/GitHub/Packages/DatabaseLinke.R/R/DatabaseLinke.R'),
-  # gruffiDev =          function(...) file.edit('~/GitHub/Packages/gruffiDev/R/gruffi.R'),
+  gruffiDev2 =          function(...) file.edit('~/GitHub/Packages/gruffiDev/R/gruffi.R'),
   gruffi =             function(...) file.edit('~/GitHub/Packages/gruffi/R/gruffi.R')
 )
 
@@ -466,7 +466,6 @@ sayy <- function(...) {system("say 'Ready to roll!'")} # Use system voice to not
 # }
 
 
-
 oo <- function(samba = "smb://storage.imp.ac.at/", loc_path = "/Volumes/") {
 
   message('WD\n', getwd(), "\n")
@@ -482,8 +481,6 @@ oo <- function(samba = "smb://storage.imp.ac.at/", loc_path = "/Volumes/") {
   message("Attach in Finder:\n", attach, "\n")
 
   message("open ", spps(loc_path, basename(attach)))
-
-
 }
 
 

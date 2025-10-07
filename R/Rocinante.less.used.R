@@ -421,10 +421,10 @@ plotMemoryUsageSimple <- function() {
 # Plotting and Graphics ____________________________________________________________ ----
 
 
-qheatmap <- function(df, cluster_rows = F, cluster_cols = F,
-                     main = make.names(Stringendo::FixPlotName(substitute(df))), ...) {
-  pheatmap::pheatmap(mat = df, cluster_rows = cluster_rows, cluster_cols = cluster_cols, main = main, ...)
-}
+# qheatmap <- function(df, cluster_rows = F, cluster_cols = F,
+#                      main = make.names(Stringendo::FixPlotName(substitute(df))), ...) {
+#   pheatmap::pheatmap(mat = df, cluster_rows = cluster_rows, cluster_cols = cluster_cols, main = main, ...)
+# }
 
 
 lm_equation_formatter <- function(lm) { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
