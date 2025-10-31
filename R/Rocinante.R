@@ -195,7 +195,7 @@ helpPak <- function(x) {
   browseURL(paste0("https://www.rdocumentation.org/packages/", pkg))
 }
 
-ooo <- function(...) osXpath(getwd(), ...)
+# ooo <- function(...) osXpath(getwd(), ...)
 ccc <- function(...) clipr::write_clip(cbepath(clipr::read_clip()))
 oofix <- function(...) clipr::write_clip(gsub(pattern = '\\[1\\] ', replacement = '', x = clipr::read_clip()))
 
@@ -285,10 +285,6 @@ getCurrentScriptPath <- function() {
 }
 
 
-
-#
-
-
 # ____________________________________________________________
 # Wrapper function to create a list of functions and their corresponding package names
 listFunctionsByPackage <- function(packageNames) {
@@ -302,7 +298,6 @@ listFunctionsByPackage <- function(packageNames) {
     print(pkg)
     # Get functions from the package
     funcs <- PackageTools::all_funs(pkg)
-    # funcs <- all_funs(pkg)
 
     # Add to the functions list with package name as value
     for (func in funcs) {
@@ -477,8 +472,10 @@ oo <- function(samba = "smb://storage.imp.ac.at/", loc_path = "/Volumes/") {
     message("Outdir not defined.\n")
   }
 
-  attach = paste0("smb://storage.imp.ac.at", OutDir)
-  message("Attach in Finder:\n", attach, "\n")
+  if(ifExistsAndTrue("onCBE")) {
+    attach = paste0("smb://storage.imp.ac.at", OutDir)
+    message("Attach in Finder:\n", attach, "\n")
+  }
 
   message("open ", spps(loc_path, basename(attach)))
 }
