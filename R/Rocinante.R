@@ -211,16 +211,6 @@ osXpath7 <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich
 
 
 # _______________________________________________________________________________________
-# osXpath2 <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/users/abel.vertesy/Analysis/"),
-#                     # "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
-#                     attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis",
-#                     cbe = "/groups/knoblich/Projects/connectomics/") {
-#   # last.folder <- basename(attach)
-#   message("designed attach: ", attach, " in finder.\n")
-#   message(paste("open", gsub(x, pattern = cbe, replacement = "/Volumes/")))
-# }
-
-# _______________________________________________________________________________________
 osXpath <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/users/abel.vertesy/Analysis/sc6_21.v8/"),
                       # "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
                       attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v8",
@@ -265,6 +255,8 @@ getCurrentScriptName <- function(toclipboard = TRUE) {
   return(file_name)
 }
 
+
+# ____________________________________________________________
 #' @title Get Current Script path in RStudio
 #'
 #' @description Retrieves the file path of the current script open in the RStudio source editor.
@@ -428,10 +420,6 @@ memory.biggest.objects <- function(n = 5, plot = T, saveplot = FALSE) {
 # memory.biggest.objects()
 
 
-
-
-# _________________________________________________________________________________________________
-
 # _________________________________________________________________________________________________
 
 
@@ -448,17 +436,6 @@ say <- function(...) { # Use system voice to notify (after a long task is done)
 }
 sayy <- function(...) {system("say 'Ready to roll!'")} # Use system voice to notify (after a long task is done)
 
-
-# oo <- function(x=NULL) {
-#   message('WD\n', getwd())
-#   if (exists('OutDir')) {
-#     if( ! getwd() == RemoveFinalSlash(OutDir)) {
-#       message("OutDir different to WD:\n", RemoveFinalSlash(OutDir))
-#     }
-#   } else {
-#     message("Outdir not defined.")
-#   }
-# }
 
 
 oo <- function(samba = "smb://storage.imp.ac.at/", loc_path = "/Volumes/") {
