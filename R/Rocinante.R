@@ -65,9 +65,9 @@ o <- pOpen <- list(
   MarkdownReports =    function(...) file.edit('~/GitHub/Packages/MarkdownReports/R/MarkdownReports.R'),
   ggExpress =          function(...) file.edit('~/GitHub/Packages/ggExpress/R/ggExpress.R'),
 
-  SeuratUtils =        function(...) file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.R'),
-    SeuratUtils_META =        function(...) file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Metadata.R'),
-    SeuratUtils_VIZ =        function(...) file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Visualization.R'),
+  Seurat.utils =        function(...) file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.R'),
+    Seurat.utils_META =        function(...) file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Metadata.R'),
+    Seurat.utils_VIZ =        function(...) file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Visualization.R'),
   isoENV =             function(...) file.edit('~/GitHub/Packages/isoENV/R/isoENV.R'),
   isoENV.other =       function(...) file.edit('~/GitHub/Packages/isoENV/R/isoENV.other.R'),
 
