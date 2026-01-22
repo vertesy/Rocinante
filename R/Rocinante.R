@@ -28,12 +28,14 @@ get_subvec <- function(vec, range) vec[range]
 
 # Alisases ____________________________________________________________ ----
 sort.natural = gtools::mixedsort
-comma = scales::comma
+# comma = scales::comma
+format_decimal <- function(x) format(x, scientific = FALSE)
 
 u <- unique
 b <- browser
 p0 <- paste0
 l <- length
+dfilter <- dplyr::filter
 toclip <- clipr::write_clip
 fromclip <- clipr::read_clip
 
