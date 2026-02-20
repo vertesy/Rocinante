@@ -36,6 +36,9 @@ b <- browser
 p0 <- paste0
 l <- length
 dfilter <- dplyr::filter
+dselect <- dplyr::select
+
+
 toclip <- clipr::write_clip
 fromclip <- clipr::read_clip
 
