@@ -49,8 +49,9 @@ warnings.erase <- function() assign("last.warning", NULL, envir = baseenv())
 rprofile <-  function(...) file.edit('~/.Rprofile')
 rocinanteSource <- function() source('~/GitHub/Packages/Rocinante/R/Rocinante.R')
 
+lock_current_file <- function() system2("chmod", c("u-w", shQuote(rstudioapi::getActiveDocumentContext()$path)))
 
-
+unlock_current_file <- function() system2("chmod", c("u+w", shQuote(rstudioapi::getActiveDocumentContext()$path)))
 # Package Loaders ____________________________________________________________ ----
 
 o <- pOpen <- list(
