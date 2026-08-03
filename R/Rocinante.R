@@ -37,6 +37,7 @@ l <- length
 dfilter <- dplyr::filter
 dselect <- dplyr::select
 
+kk <- keepalive <- function(){i=0;repeat{Sys.sleep(300);cat(i<-i+5,"min\n")}}
 
 toclip <- clipr::write_clip
 fromclip <- clipr::read_clip
