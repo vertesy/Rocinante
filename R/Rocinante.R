@@ -461,6 +461,75 @@ listFunctionsByPackage <- function(packageNames) {
 
 
 # ____________________________________________________________
+#' @title Write package functions list to Markdown to create a reference document of all packages provided.
+#' @description Formats a vector or list of package-qualified function names into Markdown sections.
+#' @param ls_all_functions Vector or list of strings formatted as 'Package::function'.
+#' @param outFile Character. Target Markdown file path. If NULL, auto-generated with timestamp.
+#' @param append Logical. Whether to append to an existing file (default: FALSE).
+#' @importFrom Stringendo FixPath iprint
+#' @export
+write_funs_to_markdown <- function(ls_all_functions, outFile = NULL, append = FALSE) {
+  ## Set Default Filename with Timestamp ----------------------------
+  if (is.null(outFile)) { # Generate default timestamped file path if NULL
+    time_stamp <- format(Sys.time(), "%Y%m%d_%H.%M") # Format current timestamp as YYYYMMDD_HH.MM
+    outFile <- paste0("List.of.Functions.Vertesy_", time_stamp, ".md") # Construct default target file name
+  }
+
+  ## Input Validation ----------------------------
+  stopifnot(
+    "ls_all_functions must be vector/list" = is.vector(ls_all_functions) || is.list(ls_all_functions),
+    "ls_all_functions elements must be character" = all(sapply(ls_all_functions, is.character)),
+    "outFile must be a single string" = is.character(outFile) && length(outFile) == 1
+  )
+
+  ## Data Processing ----------------------------
+  vec_funs <- unlist(ls_all_functions, use.names = FALSE) |> unique() # Flatten container and drop duplicates
+  split_funs <- strsplit(vec_funs, "::", fixed = TRUE) # Split elements by package namespace separator
+
+  valid_idx <- sapply(split_funs, length) == 2 # Check for valid Package::function structure
+  stopifnot("All elements must use 'Package::function' format" = all(valid_idx)) # Validate vector syntax
+
+  pkg_names <- sapply(split_funs, `[`, 1) # Extract package name component
+  fn_names <- sapply(split_funs, `[`, 2) # Extract function name component
+
+  ## Markdown Document Assembly ----------------------------
+  grouped_funs <- split(fn_names, pkg_names) # Group function names by package name
+  unique_pkgs <- sort(names(grouped_funs)) # Extract and sort unique package identifiers
+
+  doc_header <- "# Package Functions Reference Document" # Document level-1 header
+  doc_desc <- "This is a reference document of all functions (function names) in R packages below. One sections per package."
+
+  pkg_summary_header <- "## Covered Packages" # Section header for coverage summary
+  pkg_summary_bullets <- paste0("* ", unique_pkgs) # Construct bulleted summary list
+
+  md_lines <- c(
+    doc_header, "", doc_desc, "",
+    pkg_summary_header, "", pkg_summary_bullets, ""
+  ) # Assemble header section content
+
+  for (pkg in unique_pkgs) { # Loop over unique package groups
+    pkg_header <- paste0("## ", pkg, " functions") # Level-2 package header
+    pkg_bullets <- paste0("* ", sort(grouped_funs[[pkg]])) # Bullet points for sorted functions
+    md_lines <- c(md_lines, "", pkg_header, "", pkg_bullets) # Append package section to document
+  }
+
+  ## File Output ----------------------------
+  if (append) { # Check append flag
+    cat(md_lines, file = outFile, sep = "\n", append = TRUE) # Append lines to existing output file
+  } else { # Overwrite mode
+    writeLines(text = md_lines, con = outFile, useBytes = TRUE) # Write lines directly to target path
+  }
+
+  ## Console Feedback ----------------------------
+  abs_path <- Stringendo::FixPath(outFile, is.file = TRUE) # Resolve absolute path without trailing slash
+  message("Markdown file written to:", abs_path) # Output target file path to console
+  message("file.edit('", abs_path, "')") # Output executable RStudio edit line
+
+  invisible(md_lines) # Return formatted Markdown lines invisibly
+}
+
+
+# ____________________________________________________________
 sourceGitHub <- function(
   script = "Cell.cycle.scoring.R",
   repo = "Seurat.Pipeline",
