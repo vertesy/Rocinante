@@ -37,7 +37,13 @@ l <- length
 dfilter <- dplyr::filter
 dselect <- dplyr::select
 
-kk <- keepalive <- function(){i=0;repeat{Sys.sleep(300);cat(i<-i+5,"min\n")}}
+kk <- keepalive <- function() {
+  i <- 0
+  repeat{
+    Sys.sleep(300)
+    cat(i <- i + 5, "min\n")
+  }
+}
 
 toclip <- clipr::write_clip
 fromclip <- clipr::read_clip
@@ -48,8 +54,8 @@ stry <- function(...) {
 
 warnings.erase <- function() assign("last.warning", NULL, envir = baseenv())
 
-rprofile <-  function(...) file.edit('~/.Rprofile')
-rocinanteSource <- function() source('~/GitHub/Packages/Rocinante/R/Rocinante.R')
+rprofile <- function(...) file.edit("~/.Rprofile")
+rocinanteSource <- function() source("~/GitHub/Packages/Rocinante/R/Rocinante.R")
 
 lock_current_file <- function() system2("chmod", c("u-w", shQuote(rstudioapi::getActiveDocumentContext()$path)))
 unlock_current_file <- function() system2("chmod", c("u+w", shQuote(rstudioapi::getActiveDocumentContext()$path)))
@@ -57,37 +63,32 @@ unlock_current_file <- function() system2("chmod", c("u+w", shQuote(rstudioapi::
 # Package Loaders ____________________________________________________________ ----
 
 o <- pOpen <- list(
-  Rocinante =          function(...) file.edit('~/GitHub/Packages/Rocinante/R/Rocinante.R'),
-  Stringendo =         function(...) file.edit('~/GitHub/Packages/Stringendo/R/Stringendo.R'),
-  CodeAndRoll2 =       function(...) file.edit('~/GitHub/Packages/CodeAndRoll2/R/CodeAndRoll2.R'),
-  ReadWriter =         function(...) file.edit('~/GitHub/Packages/ReadWriter/R/ReadWriter.R'),
-
-  PackageTools =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/PackageTools.R'),
-    PackageToolsREPL =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/ReplacementTools.R'),
-    PackageToolsDOC =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/DocumentationTools.R'),
-    PackageToolsDEP =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/DependencyTools.R'),
-    PackageToolsMISC =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/Miscellaneous.R'),
-    PackageToolsROXY =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/RoxygenTools.R'),
-
-  MarkdownHelpers =    function(...) file.edit('~/GitHub/Packages/MarkdownHelpers/R/MarkdownHelpers.R'),
-  MarkdownReports =    function(...) file.edit('~/GitHub/Packages/MarkdownReports/R/MarkdownReports.R'),
-  ggExpress =          function(...) file.edit('~/GitHub/Packages/ggExpress/R/ggExpress.R'),
-
-  Seurat.utils =        function(...) file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.R'),
-    Seurat.utils_META =        function(...) file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Metadata.R'),
-    Seurat.utils_VIZ =        function(...) file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Visualization.R'),
-  isoENV =             function(...) file.edit('~/GitHub/Packages/isoENV/R/isoENV.R'),
-  isoENV.other =       function(...) file.edit('~/GitHub/Packages/isoENV/R/isoENV.other.R'),
-
-  UVITools =           function(...) file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.R'),
-    UVIToolsBulk =       function(...) file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.Bulk.R'),
-  ConnectomeTools =    function(...) file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.R'),
-    ConnectomeToolsAAV = function(...) file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.AAV.R'),
-  NestedMultiplexer =  function(...) file.edit('~/GitHub/Packages/NestedMultiplexer/R/NestedMultiplexer.R'),
-
-  DatabaseLinke.R =          function(...) file.edit('~/GitHub/Packages/DatabaseLinke.R/R/DatabaseLinke.R'),
-  gruffiDev2 =          function(...) file.edit('~/GitHub/Packages/gruffiDev/R/gruffi.R'),
-  gruffi =             function(...) file.edit('~/GitHub/Packages/gruffi/R/gruffi.R')
+  Rocinante = function(...) file.edit("~/GitHub/Packages/Rocinante/R/Rocinante.R"),
+  Stringendo = function(...) file.edit("~/GitHub/Packages/Stringendo/R/Stringendo.R"),
+  CodeAndRoll2 = function(...) file.edit("~/GitHub/Packages/CodeAndRoll2/R/CodeAndRoll2.R"),
+  ReadWriter = function(...) file.edit("~/GitHub/Packages/ReadWriter/R/ReadWriter.R"),
+  PackageTools = function(...) file.edit("~/GitHub/Packages/PackageTools/R/PackageTools.R"),
+  PackageToolsREPL = function(...) file.edit("~/GitHub/Packages/PackageTools/R/ReplacementTools.R"),
+  PackageToolsDOC = function(...) file.edit("~/GitHub/Packages/PackageTools/R/DocumentationTools.R"),
+  PackageToolsDEP = function(...) file.edit("~/GitHub/Packages/PackageTools/R/DependencyTools.R"),
+  PackageToolsMISC = function(...) file.edit("~/GitHub/Packages/PackageTools/R/Miscellaneous.R"),
+  PackageToolsROXY = function(...) file.edit("~/GitHub/Packages/PackageTools/R/RoxygenTools.R"),
+  MarkdownHelpers = function(...) file.edit("~/GitHub/Packages/MarkdownHelpers/R/MarkdownHelpers.R"),
+  MarkdownReports = function(...) file.edit("~/GitHub/Packages/MarkdownReports/R/MarkdownReports.R"),
+  ggExpress = function(...) file.edit("~/GitHub/Packages/ggExpress/R/ggExpress.R"),
+  Seurat.utils = function(...) file.edit("~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.R"),
+  Seurat.utils_META = function(...) file.edit("~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Metadata.R"),
+  Seurat.utils_VIZ = function(...) file.edit("~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Visualization.R"),
+  isoENV = function(...) file.edit("~/GitHub/Packages/isoENV/R/isoENV.R"),
+  isoENV.other = function(...) file.edit("~/GitHub/Packages/isoENV/R/isoENV.other.R"),
+  UVITools = function(...) file.edit("~/GitHub/Packages/UVI.tools/R/UVI.tools.R"),
+  UVIToolsBulk = function(...) file.edit("~/GitHub/Packages/UVI.tools/R/UVI.tools.Bulk.R"),
+  ConnectomeTools = function(...) file.edit("~/GitHub/Packages/Connectome.tools/R/Connectome.tools.R"),
+  ConnectomeToolsAAV = function(...) file.edit("~/GitHub/Packages/Connectome.tools/R/Connectome.tools.AAV.R"),
+  NestedMultiplexer = function(...) file.edit("~/GitHub/Packages/NestedMultiplexer/R/NestedMultiplexer.R"),
+  DatabaseLinke.R = function(...) file.edit("~/GitHub/Packages/DatabaseLinke.R/R/DatabaseLinke.R"),
+  gruffiDev2 = function(...) file.edit("~/GitHub/Packages/gruffiDev/R/gruffi.R"),
+  gruffi = function(...) file.edit("~/GitHub/Packages/gruffi/R/gruffi.R")
 )
 
 d <- pDocAndLoad <- list(
@@ -554,7 +555,7 @@ args.2.global <- ass <- function(overwrite = FALSE, ...) {
 #' @description Show distribution of the largest objects and return their names.
 #' Based on https://stackoverflow.com/questions/17218404/should-i-get-a-habit-of-removing-unused-variables-in-r
 
-memory.biggest.objects <- function(n = 5, plot = T, saveplot = FALSE) {
+memory.biggest.objects <- function(n = 5, plot = TRUE, saveplot = FALSE) {
   try(dev.off(), silent = TRUE)
   gc()
   ls.mem <- ls(envir = .GlobalEnv)
@@ -745,7 +746,6 @@ findFunctionPackage <- function(functionName, searchInstalled = FALSE) {
 }
 
 
-
 # Clipboard interaction ____________________________________________________________ ----
 # https://github.com/vertesy/DataInCode
 # try(source("~/Github/TheCorvinas/R/DataInCode/DataInCode.R"), silent = FALSE)
@@ -918,7 +918,6 @@ quantile_breaks <- function(xs, n = 10, na.Rm = FALSE) { # Quantile breakpoints 
   breaks <- quantile(xs, probs = seq(0, 1, length.out = n), na.rm = na.Rm)
   breaks[!duplicated(breaks)]
 }
-
 
 
 # ___________________________________________________________________________________________ ------
@@ -1147,7 +1146,7 @@ osX2ssh <- function(shellpath = clipr::read_clip()) { # '/groups/knoblich/users/
 #' @param column column name
 #' @param sep value separation
 #' @export
-#' @examples
+#'
 STRINGdb.reformat.ann.table.per.gene <- function(
   path_of_tsv = "~/Downloads/enrichment.DISEASES.tsv",
   column = "matching proteins in your network (labels)",

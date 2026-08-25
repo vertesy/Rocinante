@@ -1,7 +1,7 @@
 # Configuration for the Package
 DESCRIPTION <- list(
   package.name = "Rocinante",
-  version = "0.1.0",
+  version = "0.4.5",
   title = "Rocinante is a set of helper functions",
   description = "Rocinante is a set of helper functions for interactive sessions. No package should depend on this.",
 
