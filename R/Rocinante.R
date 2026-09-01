@@ -26,12 +26,12 @@ get_row <- function(mat, row_idx) as_tibble(mat) |> slice(row_idx)
 get_subvec <- function(vec, range) vec[range]
 
 # Alisases ____________________________________________________________ ----
-sort.natural <- gtools::mixedsort
 comma <- scales::comma
 format_decimal <- function(x) format(x, scientific = FALSE)
 
+sort.natural <- gtools::mixedsort
+# b <- browser
 u <- unique
-b <- browser
 p0 <- paste0
 l <- length
 dfilter <- dplyr::filter
