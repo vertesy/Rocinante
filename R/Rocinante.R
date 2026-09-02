@@ -945,22 +945,6 @@ legend.col <- function(col, lev) { # Legend color. # Source: https://aurelienmad
 
 
 ## Functions for pairs() plots ____________________________________________________________ ----
-# panelCorPearson <- function(x, y, digits = 2, prefix = "", cex.cor = 2, method = "pearson") { # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
-#   usr <- par("usr"); on.exit(par(usr))
-#   par(usr = c(0, 1, 0, 1))
-#   r <- abs(cor(x, y, method = method, use = "complete.obs"))
-#   txt <- format(c(r, 0.123456789), digits = digits)[1]
-#   txt <- paste(prefix, txt, sep = "")
-#   if (missing(cex.cor)) cex <- 0.8/strwidth(txt)
-#
-#   test <- cor.test(x, y)
-#   Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
-#                    cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
-#                    symbols = c("***", "**", "*", ".", " "))
-#
-#   text(0.5, 0.5, txt, cex = cex * r)
-#   text(.8, .8, Signif, cex = cex,  col = 2)
-# }
 
 panelCorSpearman <- function(x, y, digits = 2, prefix = "", cex.cor = 2, method = "spearman") { # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
   usr <- par("usr")
@@ -1231,6 +1215,61 @@ STRINGdb.reformat.ann.table.per.gene <- function(
 
 # _________________________________________________________________________________________________
 
+open_dev_repos <- function() {
+  pkgs <- c(
+    "Stringendo",
+    "CodeAndRoll2",
+    "ReadWriter",
+    "MarkdownHelpers",
+    "MarkdownReports",
+    "ggExpress",
+    "Seurat.utils",
+    "isoENV",
+    "PackageTools",
+    "NestedMultiplexer",
+    "Connectome.tools",
+    "UVI.tools"
+  )
+
+  urls <- sprintf("https://github.com/vertesy/%s/tree/dev", pkgs)
+
+  for (url in urls) {
+    browseURL(url)
+    Sys.sleep(2)
+  }
+  invisible(NULL)
+}
+
+
+
+
+open_repo_PRs <- function() {
+  pkgs <- c(
+    "Stringendo",
+    "CodeAndRoll2",
+    "ReadWriter",
+    "MarkdownHelpers",
+    "MarkdownReports",
+    "ggExpress",
+    "Seurat.utils",
+    "isoENV",
+    "PackageTools",
+    "NestedMultiplexer",
+    "Connectome.tools",
+    "UVI.tools"
+  )
+
+  urls <- sprintf("https://github.com/vertesy/%s/pulls", pkgs)
+
+  for (url in urls) {
+    browseURL(url)
+    Sys.sleep(2)
+  }
+  invisible(NULL)
+}
+
+
+
 
 #  ____________________________________________________________
 rnd4l <- function(set = c(LETTERS, 0:9), n = 4) {
@@ -1239,26 +1278,3 @@ rnd4l <- function(set = c(LETTERS, 0:9), n = 4) {
 
 
 # TMP code and roll -------------------- -----------------------------------------------------------------
-# fractions <- function(vec, na_rm = TRUE) vec/ sum(vec, na.rm = na_rm)
-# unique.wNames <- function(x) { x[!duplicated(x)] }
-
-
-# ____________________________________________________________
-# https://stackoverflow.com/questions/6216968/r-force-local-scope
-
-# findGlobals2 <- function(x) {
-#   codetools::findGlobals(x)
-#
-# }
-#
-# checkStrict <- function(f, silent=FALSE) {
-#   vars <- codetools::findGlobals(f)
-#   found <- !vapply(vars, exists, logical(1), envir=as.environment(2))
-#   if (!silent && any(found)) {
-#     warning("global variables used: ", paste(names(found)[found], collapse=', '))
-#     return(invisible(FALSE))
-#   }
-#
-#   !any(found)
-# }
-#
