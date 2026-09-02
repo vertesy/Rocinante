@@ -444,9 +444,10 @@ listFunctionsByPackage <- function(packageNames) {
   # Initialize an empty list to store results
   functionsList <- list()
 
+  message("Creating a list of function per @vertesy packages:")
   # Iterate over each package
   for (pkg in packageNames) {
-    print(pkg)
+    message("- ", pkg, " ✅")
     # Get functions from the package
     funcs <- PackageTools::all_funs(pkg)
 
