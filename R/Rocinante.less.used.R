@@ -466,6 +466,7 @@ getSequences.DNAStringSet <- function(DNAStringSet.obj = dnaSS.HEK.s175239.1e4) 
 }
 
 
+# Database links — possible destination: DatabaseLinke.R __________________________________________ ----
 # _________________________________________________________________________________________________
 # Possible destination: DatabaseLinke.R, as the following helpers build database links.
 #' @title link_SNPedia_clip2clip
