@@ -26,7 +26,7 @@ get_col <- function(mat, col_idx) as_tibble(mat) |> pull(col_idx)
 get_row <- function(mat, row_idx) as_tibble(mat) |> slice(row_idx)
 get_subvec <- function(vec, range) vec[range]
 
-# Alisases ____________________________________________________________ ----
+# Aliases ____________________________________________________________ ----
 comma <- scales::comma
 format_decimal <- function(x) format(x, scientific = FALSE)
 
@@ -650,7 +650,7 @@ cbepath <- function(x = "/Volumes/Analysis/sc6_21.v5/preMerge.v2.Correct.CBC/Gru
 #'
 #' @description Retrieves the file name of the current script open in the RStudio source editor.
 #' This function is specific to RStudio and will not work in other environments.
-#' @param toclipboard Copy to clipboard? Def: TRUE.
+#' @param toclipboard Whether to copy the script name to the clipboard. Default: `TRUE`.
 #'
 #' @return A character string with the file name of the current R script open in RStudio.
 #' If not running in RStudio or if no script is open, it returns NULL.
@@ -812,12 +812,12 @@ sourceGitHub <- function(
 #' extracts the lines within the specified range, and then evaluates (executes) those lines.
 #'
 #' @param file_path A string specifying the path to the R script. Default: `NULL`.
-#' @param lines A numeric vector specifying the lines source, e.g.: `10:200`. Default: `NULL`.
+#' @param lines A numeric vector specifying the lines to source, for example, `10:200`.
 #'
 #' @return This function does not return a value. It executes the specified lines of the R script.
 #' @examples
 #' # Source lines 10 to 20 from the script located at "path/to/your/script.R"
-#' sourceLines("path/to/your/script.R", 10, 20)
+#' sourceLines("path/to/your/script.R", 10:20)
 #'
 #' @export
 sourceLines <- function(file_path, lines) {
@@ -876,7 +876,7 @@ args.2.global <- ass <- function(overwrite = FALSE, ...) {
 
 
 # Clipboard interaction ____________________________________________________________ ----
-# https://github.com/vertesy/DataInCode
+# Migration candidates for DataInCode: clip2clip.vector, clip2clip.commaSepString, and write_clip.replace.dot.with.comma.
 # try(source("~/Github/TheCorvinas/R/DataInCode/DataInCode.R"), silent = FALSE)
 
 clip2clip.vector <- function() { # Copy from clipboard (e.g. excel) to a R-formatted vector to the  clipboard
@@ -942,10 +942,11 @@ STRINGdb.reformat.ann.table.per.gene <- function(
 # Plotting helpers
 # ___________________________________________________________________________________________ ------
 # Plotting and Graphics ____________________________________________________________ ----
+# Possible destination: ggExpress, as these helpers create or annotate plots.
 
 colSums.barplot <- function(df, col = "seagreen2", na_rm = TRUE, ...) {
   barplot(colSums(df, na.rm = na_rm), col = col, ...)
-} # Draw a barplot from ColSums of a matrix.
+} # Draw a bar plot from the column sums of a matrix.
 
 richColors <- function(n = 3) {
   gplots::rich.colors(n)
