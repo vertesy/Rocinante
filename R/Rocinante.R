@@ -25,7 +25,7 @@ get_col <- function(mat, col_idx) as_tibble(mat) |> pull(col_idx)
 get_row <- function(mat, row_idx) as_tibble(mat) |> slice(row_idx)
 get_subvec <- function(vec, range) vec[range]
 
-# Alisases ____________________________________________________________ ----
+# Aliases ____________________________________________________________ ----
 comma <- scales::comma
 format_decimal <- function(x) format(x, scientific = FALSE)
 
@@ -870,7 +870,7 @@ rowACF <- function(x, na_pass = na.pass, plot = FALSE, ...) {
 } # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
 colACF <- function(x, na_pass = na.pass, plot = FALSE, ...) {
   apply(x, 2, acf, na.action = na_pass, plot = plot, ...)
-} # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+} # RETURNS A LIST. Calculates the autocorrelation of each column of a numeric matrix / data frame.
 
 acf.exactLag <- function(x, lag = 1, na_pass = na.pass, plot = FALSE, ...) { # Autocorrelation with exact lag
   x <- acf(x, na.action = na_pass, plot = plot, ...)
@@ -881,7 +881,7 @@ rowACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { 
   signif(apply(x, 1, acf.exactLag, lag = lag, plot = plot, ...), digits = 2)
 }
 
-colACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { # RETURNS A Vector for the "lag" based autocorrelation. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+colACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { # RETURNS A Vector for the "lag" based autocorrelation. Calculates the autocorrelation of each column of a numeric matrix / data frame.
   signif(apply(x, 2, acf.exactLag, lag = lag, plot = plot, ...), digits = 2)
 }
 
@@ -891,7 +891,7 @@ colACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { 
 
 colSums.barplot <- function(df, col = "seagreen2", na_rm = TRUE, ...) {
   barplot(colSums(df, na.rm = na_rm), col = col, ...)
-} # Draw a barplot from ColSums of a matrix.
+} # Draw a barplot from the column sums of a matrix.
 
 richColors <- function(n = 3) {
   gplots::rich.colors(n)
@@ -1194,7 +1194,7 @@ osX2ssh <- function(shellpath = clipr::read_clip()) { # '/groups/knoblich/users/
 
 
 # _________________________________________________________________________________________________
-#' STRINGdb.reformat.ann.table.per.gene  > Databaselnker
+#' STRINGdb.reformat.ann.table.per.gene > DatabaseLinker
 #'
 #' @param path_of_tsv input file
 #' @param column column name
