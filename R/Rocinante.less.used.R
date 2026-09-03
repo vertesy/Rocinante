@@ -379,8 +379,8 @@ getMemoryInfoSimple <- function() {
 #' The plot includes the total memory as a subtitle and the operating system with the current time/date as a caption.
 #'
 #' @details
-#' The function calls `getMemoryInfo` to retrieve memory information and then uses `ggplot2` to plot the data.
-#' Memory values are converted to GB and percentages are calculated for plotting.
+#' The function calls `getMemoryInfoSimple` to retrieve memory information in MB and then uses `ggplot2` to plot the data.
+#' Memory values are converted from MB to GB and percentages are calculated for plotting.
 #'
 #' @importFrom ggplot2 ggplot geom_bar geom_text aes labs theme_minimal scale_fill_brewer
 #' @export
@@ -391,8 +391,8 @@ getMemoryInfoSimple <- function() {
 plotMemoryUsageSimple <- function() {
   require(ggplot2)
 
-  mem_info <- getMemoryInfo()
-  mem_df <- data.frame(Type = names(mem_info), Memory = mem_info)
+  mem_info_mb <- getMemoryInfoSimple()
+  mem_df <- data.frame(Type = names(mem_info_mb), Memory = mem_info_mb / 1024)
 
   # Calculate total memory and the percentage for each type
   total_memory <- sum(mem_df$Memory)
