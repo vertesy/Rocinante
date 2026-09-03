@@ -283,11 +283,11 @@ getSLURMjobDetails <- function(user_name = "abel.vertesy") {
 
 
 
-colSums.barplot <- function(df, col = "seagreen2", na_rm = TRUE, ...) { barplot(colSums(df, na.rm = na_rm), col = col, ...) } # Draw a barplot from ColSums of a matrix.
+colSums.barplot <- function(df, col = "seagreen2", na_rm = TRUE, ...) { barplot(colSums(df, na.rm = na_rm), col = col, ...) } # Draw a bar plot from the column sums of a matrix.
 
 
 # _________________________________________________________________________________________________
-hist.XbyY <- function(dfw2col = NULL, toSplit = 1:100, splitby = rnorm(100), breaks_ = 20 ) { # Split a one variable by another. Calculates equal bins in splitby, and returns a list of the corresponding values in toSplit.
+hist.XbyY <- function(dfw2col = NULL, toSplit = 1:100, splitby = rnorm(100), breaks_ = 20 ) { # Split one variable by equal-width bins of another variable.
   # http://stackoverflow.com/questions/8853735/get-index-of-the-histogram-bin-in-r
   if (NCOL(dfw2col) == 2) { toSplit = dfw2col[ , 1]; splitby = dfw2col[ , 2]; print(11) }
   xx = hist(splitby, breaks = breaks_, plot = TRUE)
@@ -357,7 +357,7 @@ getMemoryInfoSimple <- function() {
     pages_active <- extract_pages("Pages active")
     pages_wired <- extract_pages("Pages wired down")
 
-    # Add up in GBs
+    # Convert the page counts to memory totals.
     mem_free <- (pages_free + pages_inactive + pages_speculative) * page_size / 1024
     mem_used <- (pages_active + pages_wired) * page_size / 1024
 
@@ -419,6 +419,7 @@ plotMemoryUsageSimple <- function() {
 
 
 # Plotting and Graphics ____________________________________________________________ ----
+# Possible destination: ggExpress, as these helpers create plot-ready labels.
 
 
 # qheatmap <- function(df, cluster_rows = FALSE, cluster_cols = FALSE,
@@ -446,7 +447,7 @@ lm_equation_formatter3 <- function(lm, y.var.name = "y", x.var.name = "x") { # R
 
 # Biology ____________________________________________________________ ----
 
-GC_content <- function(string, len = nchar(string), pattern = c("G","C")) { # GC-content of a string (frequency of G and C letters among all letters).
+GC_content <- function(string, len = nchar(string), pattern = c("G","C")) { # Calculate the frequency of G and C among all letters.
   char.list <- stringr::str_split_fixed(string, pattern = "", n = nchar(string))
   tbl = table(factor(unlist(char.list), levels = c("A", "T", "G", "C")))
   sum(tbl[  pattern ]) / sum(tbl)
@@ -466,14 +467,15 @@ getSequences.DNAStringSet <- function(DNAStringSet.obj = dnaSS.HEK.s175239.1e4) 
 
 
 # _________________________________________________________________________________________________
+# Possible destination: DatabaseLinke.R, as the following helpers build database links.
 #' @title link_SNPedia_clip2clip
 #'
-#' @param rdIDs  Should be row-by-row list of  rsID's from an Excel column
-#' @param searchQueryPrefix snpedia search query link base
-#' @param as.MarkDownLink  return as Excel link, Def: TRUE
-#' @param as.MarkDownLink  return as Markdown link, Def: FALSE
+#' @param rdIDs A row-by-row list of rsIDs from an Excel column.
+#' @param searchQueryPrefix SNPedia search-query base URL.
+#' @param as.ExcelLink Whether to return Excel links. Default: `TRUE`.
+#' @param as.MarkDownLink Whether to return Markdown links. Default: `FALSE`.
 #' @export
-#' @examples link_SNPedia_clip2clip(rdIDs = clipr::read_clip_tbl( header=F)
+#' @examples link_SNPedia_clip2clip(rdIDs = clipr::read_clip_tbl(header = FALSE))
 #'
 link_SNPedia_clip2clip <- function(
     rdIDs = clipr::read_clip_tbl(header=F)
@@ -489,10 +491,10 @@ link_SNPedia_clip2clip <- function(
   colnames(tbl_link) <- NULL
   if (as.ExcelLink) {
     tbl_link <- FormatAsExcelLink(site_name = v.rdIDs, site_url = links)
-    print("Now paste into to Execl, or google sheets")
+    print("Now paste into Excel or Google Sheets")
   } else  if (as.MarkDownLink) {
     tbl_link <- paste0('[', v.rdIDs , '](', links , ')')
-    print("Now  paste into to typora (then text edit, then Execl, then google docs)")
+    print("Now paste into Typora (then a text editor, Excel, and Google Docs)")
   }
 
   clipr::write_clip(tbl_link)
@@ -503,11 +505,11 @@ link_SNPedia_clip2clip <- function(
 
 
 # _________________________________________________________________________________________________
-#' link_Franklin_clip2clip > Databaselnker
+#' link_Franklin_clip2clip > DatabaseLinke.R
 #'
 #' @param coordinates Coordinates in input format 5:35162876	C/T  OR 16:7164219	T/G
 #' @param searchQueryPrefix Genoox Franklin search query link base
-#' @param as.ExcelLink  return as Excel link, Def: TRUE
+#' @param as.ExcelLink Whether to return Excel links. Default: `TRUE`.
 #' @export
 #' @examples link_Franklin_clip2clip(coordinates = clipr::read_clip_tbl( header=F) )
 
@@ -530,7 +532,7 @@ link_Franklin_clip2clip <- function(coordinates = clipr::read_clip_tbl( header=F
   colnames(tbl_link) <- NULL
   if (as.ExcelLink) {
     tbl_link <- FormatAsExcelLink(site_name = tibble::deframe(Coord.Formattes), site_url = links)
-    print("Now paste into to Execl, or google sheets")
+    print("Now paste into Excel or Google Sheets")
   }
   clipr::write_clip(tbl_link)
 
@@ -543,10 +545,12 @@ link_Franklin_clip2clip <- function(coordinates = clipr::read_clip_tbl( header=F
 #'
 #' @param rdIDs  Should be row-by-row list of  rsID's from an Excel column
 #' @param searchQueryPrefix Varsome search query link base
-#' @param as.MarkDownLink  return as Excel link, Def: TRUE
+#' @param hg genome assembly, Def: "hg19"
+#' @param suffix Varsome query suffix
+#' @param as.ExcelLink  return as Excel link, Def: TRUE
 #' @param as.MarkDownLink  return as Markdown link, Def: FALSE
 #' @export
-#' @examples link_VarSome_clip2clip(rdIDs = clipr::read_clip_tbl( header=F) # "https://varsome.com/variant/hg38/rs12970134?annotation-mode=germline"
+#' @examples link_VarSome_clip2clip(rdIDs = clipr::read_clip_tbl(header = FALSE))
 
 link_VarSome_clip2clip <- function(rdIDs = clipr::read_clip_tbl( header=F)
                                    , searchQueryPrefix = 'https://varsome.com/variant/'
@@ -567,10 +571,10 @@ link_VarSome_clip2clip <- function(rdIDs = clipr::read_clip_tbl( header=F)
   if (as.ExcelLink) {
     tbl_link <- FormatAsExcelLink(site_name = paste('VS', v.rdIDs)
                                   , site_url = links)
-    print("Now paste into to Execl, or google sheets")
+    print("Now paste into Excel or Google Sheets")
   } else  if (as.MarkDownLink) {
     tbl_link <- paste0('[', v.rdIDs , '](', links , ')')
-    print("Now  paste into to typora (then text edit, then Execl, then google docs)")
+    print("Now paste into Typora (then a text editor, Excel, and Google Docs)")
   }
 
   clipr::write_clip(tbl_link)

@@ -25,7 +25,7 @@ get_col <- function(mat, col_idx) as_tibble(mat) |> pull(col_idx)
 get_row <- function(mat, row_idx) as_tibble(mat) |> slice(row_idx)
 get_subvec <- function(vec, range) vec[range]
 
-# Alisases ____________________________________________________________ ----
+# Aliases ____________________________________________________________ ----
 comma <- scales::comma
 format_decimal <- function(x) format(x, scientific = FALSE)
 
@@ -394,7 +394,7 @@ cbepath <- function(x = "/Volumes/Analysis/sc6_21.v5/preMerge.v2.Correct.CBC/Gru
 #'
 #' @description Retrieves the file name of the current script open in the RStudio source editor.
 #' This function is specific to RStudio and will not work in other environments.
-#' @param toclipboard Copy to clipboard? Def: TRUE.
+#' @param toclipboard Whether to copy the script name to the clipboard. Default: `TRUE`.
 #'
 #' @return A character string with the file name of the current R script open in RStudio.
 #' If not running in RStudio or if no script is open, it returns NULL.
@@ -556,12 +556,12 @@ sourceGitHub <- function(
 #' extracts the lines within the specified range, and then evaluates (executes) those lines.
 #'
 #' @param file_path A string specifying the path to the R script. Default: `NULL`.
-#' @param lines A numeric vector specifying the lines source, e.g.: `10:200`. Default: `NULL`.
+#' @param lines A numeric vector specifying the lines to source, for example, `10:200`.
 #'
 #' @return This function does not return a value. It executes the specified lines of the R script.
 #' @examples
 #' # Source lines 10 to 20 from the script located at "path/to/your/script.R"
-#' sourceLines("path/to/your/script.R", 10, 20)
+#' sourceLines("path/to/your/script.R", 10:20)
 #'
 #' @export
 sourceLines <- function(file_path, lines) {
@@ -817,7 +817,7 @@ findFunctionPackage <- function(functionName, searchInstalled = FALSE) {
 
 
 # Clipboard interaction ____________________________________________________________ ----
-# https://github.com/vertesy/DataInCode
+# Migration candidates for DataInCode: clip2clip.vector, clip2clip.commaSepString, and write_clip.replace.dot.with.comma.
 # try(source("~/Github/TheCorvinas/R/DataInCode/DataInCode.R"), silent = FALSE)
 
 clip2clip.vector <- function() { # Copy from clipboard (e.g. excel) to a R-formatted vector to the  clipboard
@@ -843,7 +843,7 @@ write_clip.replace.dot.with.comma <- function(var = df.markers, decimal_mark = "
 # write_clip.replace.dot.with.comma(df_markers)
 
 
-# _______________________________________________________________
+# Possible CodeAndRoll2 candidates: PCA.percent.var.explained, eucl.dist.pairwise, sign.dist.pairwise, rowACF, colACF, acf.exactLag, rowACF.exactLag, colACF.exactLag ----
 PCA.percent.var.explained <- function(prcomp.res = sPCA) { # Determine percent of variation associated with each PC. For Seurat see: scCalcPCAVarExplained().
   PCA.w.summary.added <- summary(prcomp.res)
   PCA.w.summary.added$importance["Proportion of Variance", ]
@@ -852,6 +852,7 @@ PCA.percent.var.explained <- function(prcomp.res = sPCA) { # Determine percent o
 
 # __________________________________________________________________________________________________
 # Distance and correlation calculations _____________________________________________________ ----
+# Possible destination: CodeAndRoll2, as these are general calculation helpers.
 eucl.dist.pairwise <- function(df2col) { # Calculate pairwise euclidean distance
   dist_ <- abs(df2col[, 1] - df2col[, 2]) / sqrt(2)
   if (!is.null(rownames(df2col))) names(dist_) <- rownames(df2col)
@@ -867,31 +868,32 @@ sign.dist.pairwise <- function(df2col) { # Calculate absolute value of the pairw
 # Auto correlation functions
 rowACF <- function(x, na_pass = na.pass, plot = FALSE, ...) {
   apply(x, 1, acf, na.action = na_pass, plot = plot, ...)
-} # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+} # Returns a list containing the autocorrelation of each row.
 colACF <- function(x, na_pass = na.pass, plot = FALSE, ...) {
   apply(x, 2, acf, na.action = na_pass, plot = plot, ...)
-} # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+} # Returns a list containing the autocorrelation of each column.
 
 acf.exactLag <- function(x, lag = 1, na_pass = na.pass, plot = FALSE, ...) { # Autocorrelation with exact lag
   x <- acf(x, na.action = na_pass, plot = plot, ...)
   x[["acf"]][(lag + 1)]
 }
 
-rowACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { # RETURNS A Vector for the "lag" based autocorrelation. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+rowACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { # Return each row's autocorrelation at the requested lag.
   signif(apply(x, 1, acf.exactLag, lag = lag, plot = plot, ...), digits = 2)
 }
 
-colACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { # RETURNS A Vector for the "lag" based autocorrelation. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+colACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { # Return each column's autocorrelation at the requested lag.
   signif(apply(x, 2, acf.exactLag, lag = lag, plot = plot, ...), digits = 2)
 }
 
 
 # ___________________________________________________________________________________________ ------
 # Plotting and Graphics ____________________________________________________________ ----
+# Possible destination: ggExpress, as these helpers create or annotate plots.
 
 colSums.barplot <- function(df, col = "seagreen2", na_rm = TRUE, ...) {
   barplot(colSums(df, na.rm = na_rm), col = col, ...)
-} # Draw a barplot from ColSums of a matrix.
+} # Draw a bar plot from the column sums of a matrix.
 
 richColors <- function(n = 3) {
   gplots::rich.colors(n)
@@ -1179,7 +1181,7 @@ val2col <- function(yourdata, # This function converts a vector of values("yourd
 }
 
 
-# New FUN ____________________________________________________________ ----
+# Path conversion and database helpers ______________________________ ----
 
 
 ssh2osX <- function(shellpath = clipr::read_clip()) { # '/groups/knoblich/users/burkard/Abel.Vertesy/R12357/R12357_merged_20211108093511/README.html'
@@ -1194,7 +1196,7 @@ osX2ssh <- function(shellpath = clipr::read_clip()) { # '/groups/knoblich/users/
 
 
 # _________________________________________________________________________________________________
-#' STRINGdb.reformat.ann.table.per.gene  > Databaselnker
+#' STRINGdb.reformat.ann.table.per.gene > DatabaseLinke.R
 #'
 #' @param path_of_tsv input file
 #' @param column column name
