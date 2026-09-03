@@ -812,18 +812,19 @@ sourceGitHub <- function(
 #' extracts the lines within the specified range, and then evaluates (executes) those lines.
 #'
 #' @param file_path A string specifying the path to the R script. Default: `NULL`.
-#' @param lines A numeric vector specifying the lines to source, for example, `10:200`.
+#' @param lines A numeric vector containing the first and last lines to source, for example, `c(10, 200)`.
 #'
 #' @return This function does not return a value. It executes the specified lines of the R script.
 #' @examples
 #' # Source lines 10 to 20 from the script located at "path/to/your/script.R"
-#' sourceLines("path/to/your/script.R", 10:20)
+#' sourceLines("path/to/your/script.R", c(10, 20))
 #'
 #' @export
 sourceLines <- function(file_path, lines) {
   stopifnot(
-    is.character(file_path), length(file_path) == 1, file.exists(file_path),
-    is.numeric(lines), lines[1] >= 1, lines[2] >= lines[1]
+    is.character(file_path) && length(file_path) == 1 && file.exists(file_path),
+    is.numeric(lines) && length(lines) == 2 && all(is.finite(lines)) &&
+      all(lines == floor(lines)) && lines[1] >= 1 && lines[2] >= lines[1]
   )
 
   # Read the entire script into R as a vector of strings (1 for each line).
@@ -835,13 +836,15 @@ sourceLines <- function(file_path, lines) {
     message("end_line exceeds the number of lines in the script. Clipping to the last line, ", lines[2])
   }
 
+  lines <- lines[1]:lines[2]
+
   # Source the extracted lines using textConnection()
   source(textConnection(script_all_lines[lines]))
 }
 # pathX <- "~/GitHub/TheCorvinas/R/Test.for.sourceLines.function.R"
-# sourceLines(pathX, 1, 15)
-# sourceLines(pathX, 15,20)
-# sourceLines(pathX, 1,222)
+# sourceLines(pathX, c(1, 15))
+# sourceLines(pathX, c(15, 20))
+# sourceLines(pathX, c(1, 222))
 
 
 # ____________________________________________________________
