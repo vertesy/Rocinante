@@ -1,6 +1,6 @@
 # Keep namespace-qualified calls and roxygen imports declared in DESCRIPTION.
-r_files <- file.path("R", c("Rocinante.R", "Rocinante.less.used.R"))
-stopifnot(all(file.exists(r_files)))
+r_files <- list.files("R", pattern = "\\.R$", full.names = TRUE)
+stopifnot(length(r_files) > 0, all(file.exists(r_files)))
 
 namespace_packages <- function(path) {
   stopifnot(is.character(path), length(path) == 1)
@@ -10,6 +10,13 @@ namespace_packages <- function(path) {
     stopifnot(is.language(x) || is.pairlist(x) || is.expression(x) || is.atomic(x))
     if (is.call(x) && identical(x[[1]], as.name("::"))) {
       packages <<- c(packages, as.character(x[[2]]))
+    }
+    if (is.call(x) && identical(x[[1]], as.name("require")) ||
+      (is.call(x) && identical(x[[1]], as.name("library")))) {
+      pkg_arg <- if (!is.null(x[["package"]])) x[["package"]] else x[[2]]
+      if (is.symbol(pkg_arg) || is.character(pkg_arg)) {
+        packages <<- c(packages, as.character(pkg_arg))
+      }
     }
     if (is.recursive(x)) {
       lapply(as.list(x), walk)
