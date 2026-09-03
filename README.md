@@ -133,16 +133,16 @@ Updated: 2026/08/25 17:28
 Retrieve Memory Information. 
 
 - #### 2 `    extract_pages()`
-Plot Memory Usage. 
+Extract a page count from macOS memory information.
 
 - #### 3 `plotMemoryUsage()`
-Retrieve SLURM Job Details. This function fetches details of the current SLURM job for a specified user.
+Plot system and R object memory usage.
 
 - #### 4 `getSLURMjobDetails()`
-Retrieve Memory Information. 
+Retrieve details of the current SLURM job for a specified user.
 
 - #### 5 `  run_command()`
-Plot Memory Usage. 
+Run a system command and return its output.
 
 - #### 6 `colSums.barplot()`
 - #### 7 `hist.XbyY()`

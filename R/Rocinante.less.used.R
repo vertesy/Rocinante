@@ -491,10 +491,10 @@ link_SNPedia_clip2clip <- function(
   colnames(tbl_link) <- NULL
   if (as.ExcelLink) {
     tbl_link <- FormatAsExcelLink(site_name = v.rdIDs, site_url = links)
-    print("Now paste into to Execl, or google sheets")
+    print("Now paste into Excel or Google Sheets")
   } else  if (as.MarkDownLink) {
     tbl_link <- paste0('[', v.rdIDs , '](', links , ')')
-    print("Now  paste into to typora (then text edit, then Execl, then google docs)")
+    print("Now paste into Typora (then a text editor, Excel, and Google Docs)")
   }
 
   clipr::write_clip(tbl_link)
@@ -532,7 +532,7 @@ link_Franklin_clip2clip <- function(coordinates = clipr::read_clip_tbl( header=F
   colnames(tbl_link) <- NULL
   if (as.ExcelLink) {
     tbl_link <- FormatAsExcelLink(site_name = tibble::deframe(Coord.Formattes), site_url = links)
-    print("Now paste into to Execl, or google sheets")
+    print("Now paste into Excel or Google Sheets")
   }
   clipr::write_clip(tbl_link)
 
@@ -543,10 +543,12 @@ link_Franklin_clip2clip <- function(coordinates = clipr::read_clip_tbl( header=F
 # _________________________________________________________________________________________________
 #' link_VarSome_clip2clip
 #'
-#' @param rdIDs A row-by-row list of rsIDs from an Excel column.
-#' @param searchQueryPrefix VarSome search-query base URL.
-#' @param as.ExcelLink Whether to return Excel links. Default: `TRUE`.
-#' @param as.MarkDownLink Whether to return Markdown links. Default: `FALSE`.
+#' @param rdIDs  Should be row-by-row list of  rsID's from an Excel column
+#' @param searchQueryPrefix Varsome search query link base
+#' @param hg genome assembly, Def: "hg19"
+#' @param suffix Varsome query suffix
+#' @param as.ExcelLink  return as Excel link, Def: TRUE
+#' @param as.MarkDownLink  return as Markdown link, Def: FALSE
 #' @export
 #' @examples link_VarSome_clip2clip(rdIDs = clipr::read_clip_tbl(header = FALSE))
 
@@ -569,10 +571,10 @@ link_VarSome_clip2clip <- function(rdIDs = clipr::read_clip_tbl( header=F)
   if (as.ExcelLink) {
     tbl_link <- FormatAsExcelLink(site_name = paste('VS', v.rdIDs)
                                   , site_url = links)
-    print("Now paste into to Execl, or google sheets")
+    print("Now paste into Excel or Google Sheets")
   } else  if (as.MarkDownLink) {
     tbl_link <- paste0('[', v.rdIDs , '](', links , ')')
-    print("Now  paste into to typora (then text edit, then Execl, then google docs)")
+    print("Now paste into Typora (then a text editor, Excel, and Google Docs)")
   }
 
   clipr::write_clip(tbl_link)
