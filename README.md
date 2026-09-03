@@ -6,7 +6,7 @@ A collection of custom R functions. Helper functions complementing [CodeAndRoll2
 
 ## Installation
 
-1.) [Download `Rocinante.R`](https://github.com/vertesy/Rocinante/blob/main/R/Rocinante.R), save as local `.R` file, and `source(~/path/to/Rocinante.R)`: 
+1.) [Download `Rocinante.R`](https://github.com/vertesy/Rocinante/blob/main/R/Rocinante.R), save it as a local `.R` file, and run `source("~/path/to/Rocinante.R")`:
 
 2.) Directly source from the web:
 
@@ -17,35 +17,35 @@ source("https://raw.githubusercontent.com/vertesy/Rocinante/main/R/Rocinante.R")
 
 ### Troubleshooting
 
-*If you encounter a **bug**, something doesn't work or unclear, please let me know by raising an issue on [Rocinante](https://github.com/vertesy/Rocinante/issues) – Please check if it has been asked.*<br>
+*If you encounter a **bug**, something does not work, or the documentation is unclear, please open an issue in [Rocinante](https://github.com/vertesy/Rocinante/issues). Please check whether it has already been reported.*<br>
 
-## List of Functions in Rocinante.R (83)
+## List of Functions in Rocinante.R (84)
 
 Updated: 2026/08/25 17:28
 
 - #### 1 `get_col()`
 
-  Get Current Script Name in RStudio. Retrieves the file name of the current script open in the RStudio source editor.
+  Extract a column from a matrix-like object as a vector.
 
 - #### 2 `get_row()`
 
-  Get Current Script path in RStudio. Retrieves the file path of the current script open in the RStudio source editor.
+  Extract a row from a matrix-like object as a tibble.
 
 - #### 3 `get_subvec()`
 
-  Source Specific Lines from an R Script. 
+  Extract selected elements from a vector.
 
 - #### 4 `format_decimal()`
 
-  Show biggest object in memory. Show distribution of the largest objects and return their names.
+  Format values without scientific notation.
 
 - #### 5 `kk()`
 
-  Find Function Package. Determines the package that a given function is defined in.
+  Keep an interactive R session alive and report elapsed minutes.
 
 - #### 6 `stry()`
 
-  Create Annotation Columns for pheatmap. 
+  Evaluate an expression with silent error handling.
 
 - #### 7 `warnings.erase()`
 - #### 8 `rprofile()`
@@ -126,7 +126,7 @@ Updated: 2026/08/25 17:28
 - #### 83 `# findGlobals2()`
 - #### 84 `# checkStrict()`
 
-## List of Functions in Rocinante.less.used.R (25)
+## List of Functions in Rocinante.less.used.R (26)
 
 Updated: 2026/08/25 17:28
 - #### 1 `getMemoryInfo()`
