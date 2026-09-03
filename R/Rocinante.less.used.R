@@ -332,8 +332,9 @@ getMemoryInfoSimple <- function() {
   } else if (os_type == "Linux") { # Implementation for Linux
     mem_info <- system("free -m", intern = TRUE)
     mem_lines <- strsplit(mem_info, " +")[[2]]
+    mem_total <- as.numeric(mem_lines[2])
     mem_used <- as.numeric(mem_lines[3])
-    mem_free <- as.numeric(mem_lines[4])
+    mem_free <- mem_total - mem_used # Total minus used, so Used + Free partitions total memory (the "free" column alone excludes buff/cache)
 
   } else if (os_type == "Darwin") { # Implementation for macOS
     warning("Maybe does not work correctly on macOS yet.")
@@ -357,9 +358,9 @@ getMemoryInfoSimple <- function() {
     pages_active <- extract_pages("Pages active")
     pages_wired <- extract_pages("Pages wired down")
 
-    # Convert the page counts to memory totals.
-    mem_free <- (pages_free + pages_inactive + pages_speculative) * page_size / 1024
-    mem_used <- (pages_active + pages_wired) * page_size / 1024
+    # Convert the page counts (bytes) to MB, consistent with the other OS branches.
+    mem_free <- (pages_free + pages_inactive + pages_speculative) * page_size / 1024^2
+    mem_used <- (pages_active + pages_wired) * page_size / 1024^2
 
   } else {
     stop("Unsupported OS")
@@ -379,8 +380,8 @@ getMemoryInfoSimple <- function() {
 #' The plot includes the total memory as a subtitle and the operating system with the current time/date as a caption.
 #'
 #' @details
-#' The function calls `getMemoryInfo` to retrieve memory information and then uses `ggplot2` to plot the data.
-#' Memory values are converted to GB and percentages are calculated for plotting.
+#' The function calls `getMemoryInfoSimple` to retrieve memory information in MB and then uses `ggplot2` to plot the data.
+#' Memory values are converted from MB to GB and percentages are calculated for plotting.
 #'
 #' @importFrom ggplot2 ggplot geom_bar geom_text aes labs theme_minimal scale_fill_brewer
 #' @export
@@ -391,8 +392,8 @@ getMemoryInfoSimple <- function() {
 plotMemoryUsageSimple <- function() {
   require(ggplot2)
 
-  mem_info <- getMemoryInfo()
-  mem_df <- data.frame(Type = names(mem_info), Memory = mem_info)
+  mem_info_mb <- getMemoryInfoSimple()
+  mem_df <- data.frame(Type = names(mem_info_mb), Memory = mem_info_mb / 1024)
 
   # Calculate total memory and the percentage for each type
   total_memory <- sum(mem_df$Memory)
