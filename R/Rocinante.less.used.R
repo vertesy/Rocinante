@@ -465,6 +465,7 @@ getSequences.DNAStringSet <- function(DNAStringSet.obj = dnaSS.HEK.s175239.1e4) 
 }
 
 
+# Database links — possible destination: DatabaseLinke.R __________________________________________ ----
 # _________________________________________________________________________________________________
 #' @title link_SNPedia_clip2clip
 #'
@@ -503,7 +504,7 @@ link_SNPedia_clip2clip <- function(
 
 
 # _________________________________________________________________________________________________
-#' link_Franklin_clip2clip > Databaselnker
+#' link_Franklin_clip2clip > DatabaseLinke.R
 #'
 #' @param coordinates Coordinates in input format 5:35162876	C/T  OR 16:7164219	T/G
 #' @param searchQueryPrefix Genoox Franklin search query link base
