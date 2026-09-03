@@ -2,7 +2,7 @@
 # Rocinante - LESS USED FUNCTIONS
 ######################################################################
 # source('~/GitHub/Packages/Rocinante/R/Rocinante.less.used.R')
-# rm(list = ls(all.names = TRUE)); try(dev.off(), silent = T)
+# rm(list = ls(all.names = TRUE)); try(dev.off(), silent = TRUE)
 
 
 
@@ -28,7 +28,7 @@ getMemoryInfo <- function() {
   os_type <- Sys.info()["sysname"]
   gc()
 
-  memory.biggest.objects(plot = F)
+  memory.biggest.objects(plot = FALSE)
 
   if (os_type == "Windows") {
     warning("Not tested on Windows", immediate. = TRUE)
@@ -421,10 +421,10 @@ plotMemoryUsageSimple <- function() {
 # Plotting and Graphics ____________________________________________________________ ----
 
 
-qheatmap <- function(df, cluster_rows = F, cluster_cols = F,
-                     main = make.names(Stringendo::FixPlotName(substitute(df))), ...) {
-  pheatmap::pheatmap(mat = df, cluster_rows = cluster_rows, cluster_cols = cluster_cols, main = main, ...)
-}
+# qheatmap <- function(df, cluster_rows = FALSE, cluster_cols = FALSE,
+#                      main = make.names(Stringendo::FixPlotName(substitute(df))), ...) {
+#   pheatmap::pheatmap(mat = df, cluster_rows = cluster_rows, cluster_cols = cluster_cols, main = main, ...)
+# }
 
 
 lm_equation_formatter <- function(lm) { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
@@ -466,7 +466,7 @@ getSequences.DNAStringSet <- function(DNAStringSet.obj = dnaSS.HEK.s175239.1e4) 
 
 
 # _________________________________________________________________________________________________
-#' link_SNPedia_clip2clip
+#' @title link_SNPedia_clip2clip
 #'
 #' @param rdIDs  Should be row-by-row list of  rsID's from an Excel column
 #' @param searchQueryPrefix snpedia search query link base
@@ -474,8 +474,9 @@ getSequences.DNAStringSet <- function(DNAStringSet.obj = dnaSS.HEK.s175239.1e4) 
 #' @param as.MarkDownLink  return as Markdown link, Def: FALSE
 #' @export
 #' @examples link_SNPedia_clip2clip(rdIDs = clipr::read_clip_tbl( header=F)
-
-link_SNPedia_clip2clip <- function(rdIDs = clipr::read_clip_tbl( header=F)
+#'
+link_SNPedia_clip2clip <- function(
+    rdIDs = clipr::read_clip_tbl(header=F)
                                    , searchQueryPrefix = 'https://www.snpedia.com/index.php/'
                                    , as.ExcelLink = T
                                    , as.MarkDownLink = F

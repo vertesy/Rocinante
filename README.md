@@ -1,8 +1,5 @@
 # Rocinante
-A collection of custom R functions. Helper functions complementing the new [CodeAndRoll2](https://github.com/vertesy/CodeAndRoll2). Many functionalities were part of the formerly used [CodeAndRoll (v1)](https://github.com/vertesy/CodeAndRoll).
-
-
-
+A collection of custom R functions. Helper functions complementing [CodeAndRoll2](https://github.com/vertesy/CodeAndRoll2). Many functionalities were part of the formerly used [CodeAndRoll (v1)](https://github.com/vertesy/CodeAndRoll).
 
 
 <br><br>
@@ -22,188 +19,149 @@ source("https://raw.githubusercontent.com/vertesy/Rocinante/main/R/Rocinante.R")
 
 *If you encounter a **bug**, something doesn't work or unclear, please let me know by raising an issue on [Rocinante](https://github.com/vertesy/Rocinante/issues) – Please check if it has been asked.*<br>
 
-## List of functions
+## List of Functions in Rocinante.R (83)
 
-- #### stry  
-Silent try
+Updated: 2026/08/25 17:28
 
-- #### sourcePartial   
-Source parts of another script. Source: https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
+- #### 1 `get_col()`
 
-- #### eucl.dist.pairwise  
-Calculate pairwise euclidean distance
+  Get Current Script Name in RStudio. Retrieves the file name of the current script open in the RStudio source editor.
 
-- #### sign.dist.pairwise  
-Calculate absolute value of the pairwise euclidean distance
+- #### 2 `get_row()`
 
-- #### rowACF  
-RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+  Get Current Script path in RStudio. Retrieves the file path of the current script open in the RStudio source editor.
 
-- #### colACF  
-RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+- #### 3 `get_subvec()`
 
-- #### acf.exactLag  
-Autocorrelation with exact lag
+  Source Specific Lines from an R Script. 
 
-- #### rowACF.exactLag   
-RETURNS A Vector for the "lag" based autocorrelation. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+- #### 4 `format_decimal()`
 
-- #### colACF.exactLag   
-RETURNS A Vector for the "lag" based autocorrelation. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+  Show biggest object in memory. Show distribution of the largest objects and return their names.
 
-- #### clip2clip.vector  
-Copy from clipboard (e.g. excel) to a R-formatted vector to the  clipboard
+- #### 5 `kk()`
 
-- #### clip2clip.commaSepString  
-Read a comma separated string (e.g. list of gene names) and properly format it for R.
+  Find Function Package. Determines the package that a given function is defined in.
 
-- #### write_clip.replace.dot  
-Clipboard export for da wonderful countries with where "," is the decimal
+- #### 6 `stry()`
 
-- #### view.head   
-view the head of an object by console.
+  Create Annotation Columns for pheatmap. 
 
-- #### view.head2  
-view the head of an object by View().
+- #### 7 `warnings.erase()`
+- #### 8 `rprofile()`
+- #### 9 `rocinanteSource()`
+- #### 10 `lock_current_file()`
+- #### 11 `unlock_current_file()`
+- #### 12 `repoTrafficGraph_ALL()`
+- #### 13 `openALL_CreatePackageFiles()`
+- #### 14 `openALL_ConfigFiles()`
+- #### 15 `d.all()`
+- #### 16 `r.all()`
+- #### 17 `helpPak()`
+- #### 18 `# ooo()`
+- #### 19 `ccc()`
+- #### 20 `oofix()`
+- #### 21 `osXpath7()`
+- #### 22 `osXpath()`
+- #### 23 `cbepath()`
+- #### 24 `getCurrentScriptName()`
+- #### 25 `getCurrentScriptPath()`
+- #### 26 `listFunctionsByPackage()`
+- #### 27 `sourceGitHub()`
+- #### 28 `sourceLines()`
+- #### 29 `sourcePartial()`
+- #### 30 `args.2.global()`
+- #### 31 `memory.biggest.objects()`
+- #### 32 `# printEveryN()`
+- #### 33 `say()`
+- #### 34 `sayy()`
+- #### 35 `oo()`
+- #### 36 `view.head()`
+- #### 37 `view.head2()`
+- #### 38 `unload()`
+- #### 39 `backup()`
+- #### 40 `list.dirs.depth.n()`
+- #### 41 `list_subdirectories_at_depth()`
+- #### 42 `iidentical.names()`
+- #### 43 `iidentical()`
+- #### 44 `iidentical.all()`
+- #### 45 `findFunctionPackage()`
+- #### 46 `clip2clip.vector()`
+- #### 47 `clip2clip.commaSepString()`
+- #### 48 `write_clip.replace.dot.with.comma()`
+- #### 49 `PCA.percent.var.explained()`
+- #### 50 `eucl.dist.pairwise()`
+- #### 51 `sign.dist.pairwise()`
+- #### 52 `rowACF()`
+- #### 53 `colACF()`
+- #### 54 `acf.exactLag()`
+- #### 55 `rowACF.exactLag()`
+- #### 56 `colACF.exactLag()`
+- #### 57 `colSums.barplot()`
+- #### 58 `richColors()`
+- #### 59 `qqheatmap()`
+- #### 60 `legend.col()`
+- #### 61 `# panelCorPearson()`
+- #### 62 `panelCorSpearman()`
+- #### 63 `quantile_breaks()`
+- #### 64 `hclust.getOrder.row()`
+- #### 65 `hclust.getOrder.col()`
+- #### 66 `hclust.getClusterID.row()`
+- #### 67 `hclust.getClusterID.col()`
+- #### 68 `hclust.ClusterSeparatingLines.row()`
+- #### 69 `hclust.ClusterSeparatingLines.col()`
+- #### 70 `Gap.Postions.calc.pheatmap()`
+- #### 71 `matlabColors.pheatmap()`
+- #### 72 `annot_col.create.pheatmap.vec()`
+- #### 73 `annot_col.create.pheatmap.df()`
+- #### 74 `annot_col.fix.numeric()`
+- #### 75 `annot_row.create.pheatmap.df()`
+- #### 76 `val2col()`
+- #### 77 `ssh2osX()`
+- #### 78 `osX2ssh()`
+- #### 79 `STRINGdb.reformat.ann.table.per.gene()`
+- #### 80 `rnd4l()`
+- #### 81 `# fractions()`
+- #### 82 `# unique.wNames()`
+- #### 83 `# findGlobals2()`
+- #### 84 `# checkStrict()`
 
-- #### iidentical.names  
-Test if names of two objects for being exactly equal
+## List of Functions in Rocinante.less.used.R (25)
 
-- #### iidentical  
-Test if two objects for being exactly equal
+Updated: 2026/08/25 17:28
+- #### 1 `getMemoryInfo()`
+Retrieve Memory Information. 
 
-- #### iidentical.all  
-Test if two objects for being exactly equal.
+- #### 2 `    extract_pages()`
+Plot Memory Usage. 
 
-- #### ifExistsAndTrue   
-Internal function. Checks if a variable is defined, and its value is TRUE.
+- #### 3 `plotMemoryUsage()`
+Retrieve SLURM Job Details. This function fetches details of the current SLURM job for a specified user.
 
-- #### memory.biggest.objects  
-https://stackoverflow.com/questions/17218404/should-i-get-a-habit-of-removing-unused-variables-in-r
+- #### 4 `getSLURMjobDetails()`
+Retrieve Memory Information. 
 
-- #### link_google   
- Parse google search query links to your list of gene symbols. Strings "prefix" and ""suffix" will be searched for together with each gene ("Human ID4 neurons"). See many additional services in [DatabaseLinke.R](https://vertesy.github.io/DatabaseLinke.R/).
+- #### 5 `  run_command()`
+Plot Memory Usage. 
 
-- #### link_bing   
- Parse bing search query links to your list of gene symbols. Strings "prefix" and ""suffix" will be searched for together with each gene ("Human ID4 neurons"). See many additional services in [DatabaseLinke.R](https://vertesy.github.io/DatabaseLinke.R/).
-
-- #### GC_content  
-GC-content of a string (frequency of G and C letters among all letters).
-
-- #### printEveryN   
-Report at every e.g. 1000
-
-- #### '%!in%'   
-
-
-- #### stopif2   
-Stop script if the condition is met. You can parse anything (e.g. variables) in the message
-
-- #### say   
-Use system voice to notify (after a long task is done)
-
-- #### sayy  
-Use system voice to notify (after a long task is done)
-
-- #### oo  
-Open current working directory.
-
-- #### unload  
-Unload a package. Source: https://stackoverflow.com/questions/6979917/how-to-unload-a-package-without-restarting-r
-
-- #### irequire  
-Load a package. If it does not exist, try to install it from CRAN.
-
-- #### legend.col  
-Source: https://aurelienmadouasse.wordpress.com/2012/01/13/legend-for-a-continuous-color-scale-in-r/
-
-- #### val2col   
-This function converts a vector of values("yourdata") to a vector of color levels. One must define the number of colors. The limits of the color scale("zlim") or the break points for the color changes("breaks") can also be defined. When breaks and zlim are defined, breaks overrides zlim.
-
-- #### richColors  
-Alias for rich.colors in gplots
-
-- #### Color_Check   
-Display the colors encoded by the numbers / color-ID-s you pass on to this function
-
-- #### colSums.barplot   
-Draw a barplot from ColSums of a matrix.
-
-- #### lm_equation_formatter   
-Renders the lm() function's output into a human readable text. (e.g. for subtitles)
-
-- #### lm_equation_formatter2  
-Renders the lm() function's output into a human readable text. (e.g. for subtitles)
-
-- #### lm_equation_formatter3  
-Renders the lm() function's output into a human readable text. (e.g. for subtitles)
-
-- #### hist.XbyY   
-Split a one variable by another. Calculates equal bins in splitby, and returns a list of the corresponding values in toSplit.
-
-- #### panel.cor.pearson   
-A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
-
-- #### panel.cor.spearman  
-A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
-
-- #### quantile_breaks   
-Quantile breakpoints in any data vector http://slowkow.com/notes/heatmap-tutorial/
-
-- #### hclust.getOrder.row   
-Extract ROW order from a pheatmap object.
-
-- #### hclust.getOrder.col   
-Extract COLUMN order from a pheatmap object.
-
-- #### hclust.getClusterID.row   
-Extract cluster ID's for ROWS of a pheatmap object.
-
-- #### hclust.getClusterID.col   
-Extract cluster ID's for COLUMNS of a pheatmap object.
-
-- #### hclust.ClusterSeparatingLines.row   
-Calculate the position of ROW separating lines between clusters in a pheatmap object.
-
-- #### hclust.ClusterSeparatingLines.col   
-Calculate the position of COLUMN separating lines between clusters in a pheatmap object.
-
-- #### Gap.Postions.calc.pheatmap  
-calculate gap positions for pheatmap, based a sorted annotation vector of categories
-
-- #### matlabColors.pheatmap   
-Create a Matlab-like color gradient using "colorRamps".
-
-- #### annot_col.create.pheatmap.vec   
-For VECTORS. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
-
-- #### annot_col.create.pheatmap.df  
-For data frames. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
-
-- #### annot_col.fix.numeric   
-fix class and color annotation in pheatmap annotation data frame's and lists.
-
-- #### annot_row.create.pheatmap.df  
-For data frames. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
-
-- #### sourceGitHub  
-
-
-- #### # RemoveFinalSlash  
-  
-- #### ww.set.OutDir   
-  
-- #### backup  
-make a backup of an object into global env. Scheme: obj > obj.bac
-
-- #### list.dirs.depth.n   
-list dirs recursive up to a certain level in R https://stackoverflow.com/questions/48297440/list-files-recursive-up-to-a-certain-level-in-r
-
-- #### qHGNC   
-Parse HGNC links to your list of gene symbols.
-
-- #### NrAndPc   
-Summary stat. text formatting for logical vectors (%, length)
-
-- #### jjpegA4   
-Setup an A4 size jpeg
+- #### 6 `colSums.barplot()`
+- #### 7 `hist.XbyY()`
+- #### 8 `getMemoryInfoSimple()`
+- #### 9 `    extract_pages()`
+- #### 10 `plotMemoryUsageSimple()`
+- #### 11 `# qheatmap()`
+- #### 12 `lm_equation_formatter()`
+- #### 13 `lm_equation_formatter2()`
+- #### 14 `lm_equation_formatter3()`
+- #### 15 `GC_content()`
+- #### 16 `getSequences.DNAStringSet()`
+- #### 17 `link_SNPedia_clip2clip()`
+- #### 18 `link_Franklin_clip2clip()`
+- #### 19 `link_VarSome_clip2clip()`
+- #### 20 `getVennOverlaps()`
+- #### 21 `ww.randomize()`
+- #### 22 `append_non_na()`
+- #### 23 `dateOK()`
+- #### 24 `dateAndTime()`
+- #### 25 `backupRprofile()`
+- #### 26 `# make_bash_compatible()`

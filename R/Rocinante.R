@@ -8,8 +8,7 @@
 
 print("Loading Rocinante custom function library.")
 # Search query links _______________________________________________________________
-try(library(DatabaseLinke.R, include.only = c('qHGNC','link_google', 'link_bing', 'openURLs.1by1')) , silent = TRUE)
-
+try(library(DatabaseLinke.R, include.only = c("qHGNC", "link_google", "link_bing", "openURLs.1by1")), silent = TRUE)
 
 
 # Setup _______________________________________________________________
@@ -18,8 +17,8 @@ debuggingState(on = FALSE)
 print("Depends on CodeAndRoll2, MarkdownReports, gtools, readr, gdata, clipr. Some functions depend on other libraries.")
 
 # Params _______________________________________________________________
-wA4 = 8.27 # A4 inches
-hA4 = 11.69
+wA4 <- 8.27 # A4 inches
+hA4 <- 11.69
 
 
 get_col <- function(mat, col_idx) as_tibble(mat) |> pull(col_idx)
@@ -27,163 +26,324 @@ get_row <- function(mat, row_idx) as_tibble(mat) |> slice(row_idx)
 get_subvec <- function(vec, range) vec[range]
 
 # Alisases ____________________________________________________________ ----
-sort.natural = gtools::mixedsort
-comma = scales::comma
+comma <- scales::comma
+format_decimal <- function(x) format(x, scientific = FALSE)
 
+sort.natural <- gtools::mixedsort
+# b <- browser
 u <- unique
-b <- browser
 p0 <- paste0
 l <- length
+dfilter <- dplyr::filter
+dselect <- dplyr::select
+
+kk <- keepalive <- function() {
+  i <- 0
+  repeat{
+    Sys.sleep(300)
+    cat(i <- i + 5, "min\n")
+  }
+}
+
 toclip <- clipr::write_clip
 fromclip <- clipr::read_clip
 
-stry <- function(...) {try(..., silent = TRUE)} # Silent try
+stry <- function(...) {
+  try(..., silent = TRUE)
+} # Silent try
 
 warnings.erase <- function() assign("last.warning", NULL, envir = baseenv())
 
-rprofile <-  function(...) file.edit('~/.Rprofile')
-rocinanteSource <- function() source('~/GitHub/Packages/Rocinante/R/Rocinante.R')
+rprofile <- function(...) file.edit("~/.Rprofile")
+rocinanteSource <- function() source("~/GitHub/Packages/Rocinante/R/Rocinante.R")
 
-
+lock_current_file <- function() system2("chmod", c("u-w", shQuote(rstudioapi::getActiveDocumentContext()$path)))
+unlock_current_file <- function() system2("chmod", c("u+w", shQuote(rstudioapi::getActiveDocumentContext()$path)))
 
 # Package Loaders ____________________________________________________________ ----
 
 o <- pOpen <- list(
-  Rocinante =          function(...) file.edit('~/GitHub/Packages/Rocinante/R/Rocinante.R'),
-  Stringendo =         function(...) file.edit('~/GitHub/Packages/Stringendo/R/Stringendo.R'),
-  CodeAndRoll2 =       function(...) file.edit('~/GitHub/Packages/CodeAndRoll2/R/CodeAndRoll2.R'),
-  ReadWriter =         function(...) file.edit('~/GitHub/Packages/ReadWriter/R/ReadWriter.R'),
-
-  PackageTools =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/PackageTools.R'),
-    PackageToolsREPL =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/ReplacementTools.R'),
-    PackageToolsDOC =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/DocumentationTools.R'),
-    PackageToolsDEP =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/DependencyTools.R'),
-    PackageToolsMISC =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/Miscellaneous.R'),
-    PackageToolsROXY =       function(...) file.edit('~/GitHub/Packages/PackageTools/R/RoxygenTools.R'),
-
-  MarkdownHelpers =    function(...) file.edit('~/GitHub/Packages/MarkdownHelpers/R/MarkdownHelpers.R'),
-  MarkdownReports =    function(...) file.edit('~/GitHub/Packages/MarkdownReports/R/MarkdownReports.R'),
-  ggExpress =          function(...) file.edit('~/GitHub/Packages/ggExpress/R/ggExpress.R'),
-
-  SeuratUtils =        function(...) file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.R'),
-    SeuratUtils_META =        function(...) file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Metadata.R'),
-    SeuratUtils_VIZ =        function(...) file.edit('~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Visualization.R'),
-  isoENV =             function(...) file.edit('~/GitHub/Packages/isoENV/R/isoENV.R'),
-  isoENV.other =       function(...) file.edit('~/GitHub/Packages/isoENV/R/isoENV.other.R'),
-
-  UVITools =           function(...) file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.R'),
-    UVIToolsBulk =       function(...) file.edit('~/GitHub/Packages/UVI.tools/R/UVI.tools.Bulk.R'),
-  ConnectomeTools =    function(...) file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.R'),
-    ConnectomeToolsAAV = function(...) file.edit('~/GitHub/Packages/Connectome.tools/R/Connectome.tools.AAV.R'),
-  NestedMultiplexer =  function(...) file.edit('~/GitHub/Packages/NestedMultiplexer/R/NestedMultiplexer.R'),
-
-  DatabaseLinke.R =          function(...) file.edit('~/GitHub/Packages/DatabaseLinke.R/R/DatabaseLinke.R'),
-  # gruffiDev =          function(...) file.edit('~/GitHub/Packages/gruffiDev/R/gruffi.R'),
-  gruffi =             function(...) file.edit('~/GitHub/Packages/gruffi/R/gruffi.R')
+  Rocinante = function(...) file.edit("~/GitHub/Packages/Rocinante/R/Rocinante.R"),
+  Stringendo = function(...) file.edit("~/GitHub/Packages/Stringendo/R/Stringendo.R"),
+  CodeAndRoll2 = function(...) file.edit("~/GitHub/Packages/CodeAndRoll2/R/CodeAndRoll2.R"),
+  ReadWriter = function(...) file.edit("~/GitHub/Packages/ReadWriter/R/ReadWriter.R"),
+  PackageTools = function(...) file.edit("~/GitHub/Packages/PackageTools/R/PackageTools.R"),
+  PackageToolsREPL = function(...) file.edit("~/GitHub/Packages/PackageTools/R/ReplacementTools.R"),
+  PackageToolsDOC = function(...) file.edit("~/GitHub/Packages/PackageTools/R/DocumentationTools.R"),
+  PackageToolsDEP = function(...) file.edit("~/GitHub/Packages/PackageTools/R/DependencyTools.R"),
+  PackageToolsMISC = function(...) file.edit("~/GitHub/Packages/PackageTools/R/Miscellaneous.R"),
+  PackageToolsROXY = function(...) file.edit("~/GitHub/Packages/PackageTools/R/RoxygenTools.R"),
+  MarkdownHelpers = function(...) file.edit("~/GitHub/Packages/MarkdownHelpers/R/MarkdownHelpers.R"),
+  MarkdownReports = function(...) file.edit("~/GitHub/Packages/MarkdownReports/R/MarkdownReports.R"),
+  ggExpress = function(...) file.edit("~/GitHub/Packages/ggExpress/R/ggExpress.R"),
+  Seurat.utils = function(...) file.edit("~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.R"),
+  Seurat.utils_META = function(...) file.edit("~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Metadata.R"),
+  Seurat.utils_VIZ = function(...) file.edit("~/GitHub/Packages/Seurat.utils/R/Seurat.Utils.Visualization.R"),
+  isoENV = function(...) file.edit("~/GitHub/Packages/isoENV/R/isoENV.R"),
+  isoENV.other = function(...) file.edit("~/GitHub/Packages/isoENV/R/isoENV.other.R"),
+  UVITools = function(...) file.edit("~/GitHub/Packages/UVI.tools/R/UVI.tools.R"),
+  UVIToolsBulk = function(...) file.edit("~/GitHub/Packages/UVI.tools/R/UVI.tools.Bulk.R"),
+  ConnectomeTools = function(...) file.edit("~/GitHub/Packages/Connectome.tools/R/Connectome.tools.R"),
+  ConnectomeToolsAAV = function(...) file.edit("~/GitHub/Packages/Connectome.tools/R/Connectome.tools.AAV.R"),
+  NestedMultiplexer = function(...) file.edit("~/GitHub/Packages/NestedMultiplexer/R/NestedMultiplexer.R"),
+  DatabaseLinke.R = function(...) file.edit("~/GitHub/Packages/DatabaseLinke.R/R/DatabaseLinke.R"),
+  gruffiDev2 = function(...) file.edit("~/GitHub/Packages/gruffiDev/R/gruffi.R"),
+  gruffi = function(...) file.edit("~/GitHub/Packages/gruffi/R/gruffi.R")
 )
 
 d <- pDocAndLoad <- list(
-  Stringendo =       function(..., path = "~/GitHub/Packages/Stringendo") { devtools::document(path); devtools::load_all(path) },
-  ReadWriter =       function(..., path = "~/GitHub/Packages/ReadWriter") { devtools::document(path); devtools::load_all(path) },
-  CodeAndRoll2 =     function(..., path = "~/GitHub/Packages/CodeAndRoll2") { devtools::document(path); devtools::load_all(path) },
-  ReadWriter =       function(..., path = "~/GitHub/Packages/ReadWriter") { devtools::document(path); devtools::load_all(path) },
-  PackageTools =     function(..., path = "~/GitHub/Packages/PackageTools") { devtools::document(path); devtools::load_all(path) },
-
-  MarkdownHelpers =  function(..., path = "~/GitHub/Packages/MarkdownHelpers") { devtools::document(path); devtools::load_all(path) },
-  MarkdownReports =  function(..., path = "~/GitHub/Packages/MarkdownReports") { devtools::document(path); devtools::load_all(path) },
-  ggExpress =        function(..., path = "~/GitHub/Packages/ggExpress") { devtools::document(path); devtools::load_all(path) },
-
-  Seurat.utils =     function(..., path = "~/GitHub/Packages/Seurat.utils") { devtools::document(path); devtools::load_all(path) },
-  isoENV =           function(..., path = "~/GitHub/Packages/isoENV") { devtools::document(path); devtools::load_all(path) },
-
-  UVI.tools =         function(..., path = "~/GitHub/Packages/UVI.tools") { devtools::document(path); devtools::load_all(path) },
-  Connectome.tools =  function(..., path = "~/GitHub/Packages/Connectome.tools") { devtools::document(path); devtools::load_all(path) },
-  NestedMultiplexer = function(..., path = "~/GitHub/Packages/NestedMultiplexer") { devtools::document(path); devtools::load_all(path) },
-
-  DatabaseLinke.R = function(..., path = "~/GitHub/Packages/DatabaseLinke.R") { devtools::document(path); devtools::load_all(path) },
+  Stringendo = function(..., path = "~/GitHub/Packages/Stringendo") {
+    devtools::document(path)
+    devtools::load_all(path)
+  },
+  ReadWriter = function(..., path = "~/GitHub/Packages/ReadWriter") {
+    devtools::document(path)
+    devtools::load_all(path)
+  },
+  CodeAndRoll2 = function(..., path = "~/GitHub/Packages/CodeAndRoll2") {
+    devtools::document(path)
+    devtools::load_all(path)
+  },
+  ReadWriter = function(..., path = "~/GitHub/Packages/ReadWriter") {
+    devtools::document(path)
+    devtools::load_all(path)
+  },
+  PackageTools = function(..., path = "~/GitHub/Packages/PackageTools") {
+    devtools::document(path)
+    devtools::load_all(path)
+  },
+  MarkdownHelpers = function(..., path = "~/GitHub/Packages/MarkdownHelpers") {
+    devtools::document(path)
+    devtools::load_all(path)
+  },
+  MarkdownReports = function(..., path = "~/GitHub/Packages/MarkdownReports") {
+    devtools::document(path)
+    devtools::load_all(path)
+  },
+  ggExpress = function(..., path = "~/GitHub/Packages/ggExpress") {
+    devtools::document(path)
+    devtools::load_all(path)
+  },
+  Seurat.utils = function(..., path = "~/GitHub/Packages/Seurat.utils") {
+    devtools::document(path)
+    devtools::load_all(path)
+  },
+  isoENV = function(..., path = "~/GitHub/Packages/isoENV") {
+    devtools::document(path)
+    devtools::load_all(path)
+  },
+  UVI.tools = function(..., path = "~/GitHub/Packages/UVI.tools") {
+    devtools::document(path)
+    devtools::load_all(path)
+  },
+  Connectome.tools = function(..., path = "~/GitHub/Packages/Connectome.tools") {
+    devtools::document(path)
+    devtools::load_all(path)
+  },
+  NestedMultiplexer = function(..., path = "~/GitHub/Packages/NestedMultiplexer") {
+    devtools::document(path)
+    devtools::load_all(path)
+  },
+  DatabaseLinke.R = function(..., path = "~/GitHub/Packages/DatabaseLinke.R") {
+    devtools::document(path)
+    devtools::load_all(path)
+  },
   # gruffiDev = function(..., path = "~/GitHub/Packages/gruffiDev") { devtools::document(path); devtools::load_all(path) },
-  gruffi = function(..., path = "~/GitHub/Packages/gruffi") { devtools::document(path); devtools::load_all(path) }
+  gruffi = function(..., path = "~/GitHub/Packages/gruffi") {
+    devtools::document(path)
+    devtools::load_all(path)
+  }
 )
 
 r <- pReload <- list(
-  Rocinante =          function(...) source('~/GitHub/Packages/Rocinante/R/Rocinante.R'),
-  Stringendo =      function(..., path = "~/GitHub/Packages/Stringendo") { devtools::load_all(path) },
-  ReadWriter =      function(..., path = "~/GitHub/Packages/ReadWriter") { devtools::load_all(path) },
-  CodeAndRoll2 =    function(..., path = "~/GitHub/Packages/CodeAndRoll2") { devtools::load_all(path) },
-  ReadWriter =    function(..., path = "~/GitHub/Packages/ReadWriter") { devtools::load_all(path) },
-  PackageTools = function(..., path = "~/GitHub/Packages/PackageTools") { devtools::load_all(path) },
-
-  MarkdownHelpers =  function(..., path = "~/GitHub/Packages/MarkdownHelpers") { devtools::load_all(path) },
-  MarkdownReports =  function(..., path = "~/GitHub/Packages/MarkdownReports") { devtools::load_all(path) },
-  ggExpress =        function(..., path = "~/GitHub/Packages/ggExpress") { devtools::load_all(path) },
-
-  Seurat.utils =   function(..., path = "~/GitHub/Packages/Seurat.utils") { devtools::load_all(path) },
-  isoENV =         function(..., path = "~/GitHub/Packages/isoENV") { devtools::load_all(path) },
-
-  UVI.tools =         function(..., path = "~/GitHub/Packages/UVI.tools") { devtools::load_all(path) },
-  Connectome.tools =  function(..., path = "~/GitHub/Packages/Connectome.tools") { devtools::load_all(path) },
-  NestedMultiplexer = function(..., path = "~/GitHub/Packages/NestedMultiplexer") { devtools::load_all(path) },
-
-  DatabaseLinke.R = function(..., path = "~/GitHub/Packages/DatabaseLinke.R") { devtools::load_all(path) },
+  Rocinante = function(...) source("~/GitHub/Packages/Rocinante/R/Rocinante.R"),
+  Stringendo = function(..., path = "~/GitHub/Packages/Stringendo") {
+    devtools::load_all(path)
+  },
+  ReadWriter = function(..., path = "~/GitHub/Packages/ReadWriter") {
+    devtools::load_all(path)
+  },
+  CodeAndRoll2 = function(..., path = "~/GitHub/Packages/CodeAndRoll2") {
+    devtools::load_all(path)
+  },
+  ReadWriter = function(..., path = "~/GitHub/Packages/ReadWriter") {
+    devtools::load_all(path)
+  },
+  PackageTools = function(..., path = "~/GitHub/Packages/PackageTools") {
+    devtools::load_all(path)
+  },
+  MarkdownHelpers = function(..., path = "~/GitHub/Packages/MarkdownHelpers") {
+    devtools::load_all(path)
+  },
+  MarkdownReports = function(..., path = "~/GitHub/Packages/MarkdownReports") {
+    devtools::load_all(path)
+  },
+  ggExpress = function(..., path = "~/GitHub/Packages/ggExpress") {
+    devtools::load_all(path)
+  },
+  Seurat.utils = function(..., path = "~/GitHub/Packages/Seurat.utils") {
+    devtools::load_all(path)
+  },
+  isoENV = function(..., path = "~/GitHub/Packages/isoENV") {
+    devtools::load_all(path)
+  },
+  UVI.tools = function(..., path = "~/GitHub/Packages/UVI.tools") {
+    devtools::load_all(path)
+  },
+  Connectome.tools = function(..., path = "~/GitHub/Packages/Connectome.tools") {
+    devtools::load_all(path)
+  },
+  NestedMultiplexer = function(..., path = "~/GitHub/Packages/NestedMultiplexer") {
+    devtools::load_all(path)
+  },
+  DatabaseLinke.R = function(..., path = "~/GitHub/Packages/DatabaseLinke.R") {
+    devtools::load_all(path)
+  },
   # gruffiDev = function(..., path = "~/GitHub/Packages/gruffiDev") { devtools::document(path); devtools::load_all(path) },
-  gruffi = function(..., path = "~/GitHub/Packages/gruffi") { devtools::load_all(path) }
+  gruffi = function(..., path = "~/GitHub/Packages/gruffi") {
+    devtools::load_all(path)
+  }
 )
 
 # Open the traffic graph for each package on GitHub
 repoTrafficGraph <- list(
-  Stringendo =       function() { browseURL("https://github.com/vertesy/Stringendo/graphs/traffic") },
-  ReadWriter =       function() { browseURL("https://github.com/vertesy/ReadWriter/graphs/traffic") },
-  CodeAndRoll2 =     function() { browseURL("https://github.com/vertesy/CodeAndRoll2/graphs/traffic") },
-  PackageTools =     function() { browseURL("https://github.com/vertesy/PackageTools/graphs/traffic") },
-  MarkdownHelpers =  function() { browseURL("https://github.com/vertesy/MarkdownHelpers/graphs/traffic") },
-  MarkdownReports =  function() { browseURL("https://github.com/vertesy/MarkdownReports/graphs/traffic") },
-  ggExpress =        function() { browseURL("https://github.com/vertesy/ggExpress/graphs/traffic") },
-  Seurat.utils =     function() { browseURL("https://github.com/vertesy/Seurat.utils/graphs/traffic") },
-  isoENV =           function() { browseURL("https://github.com/vertesy/isoENV/graphs/traffic") },
-  UVI.tools =        function() { browseURL("https://github.com/vertesy/UVI.tools/graphs/traffic") },
-  Connectome.tools = function() { browseURL("https://github.com/vertesy/Connectome.tools/graphs/traffic") },
-  NestedMultiplexer =function() { browseURL("https://github.com/vertesy/NestedMultiplexer/graphs/traffic") },
-  DatabaseLinke.R =  function() { browseURL("https://github.com/vertesy/DatabaseLinke.R/graphs/traffic") }
+  Stringendo = function() {
+    browseURL("https://github.com/vertesy/Stringendo/graphs/traffic")
+  },
+  ReadWriter = function() {
+    browseURL("https://github.com/vertesy/ReadWriter/graphs/traffic")
+  },
+  CodeAndRoll2 = function() {
+    browseURL("https://github.com/vertesy/CodeAndRoll2/graphs/traffic")
+  },
+  PackageTools = function() {
+    browseURL("https://github.com/vertesy/PackageTools/graphs/traffic")
+  },
+  MarkdownHelpers = function() {
+    browseURL("https://github.com/vertesy/MarkdownHelpers/graphs/traffic")
+  },
+  MarkdownReports = function() {
+    browseURL("https://github.com/vertesy/MarkdownReports/graphs/traffic")
+  },
+  ggExpress = function() {
+    browseURL("https://github.com/vertesy/ggExpress/graphs/traffic")
+  },
+  Seurat.utils = function() {
+    browseURL("https://github.com/vertesy/Seurat.utils/graphs/traffic")
+  },
+  isoENV = function() {
+    browseURL("https://github.com/vertesy/isoENV/graphs/traffic")
+  },
+  UVI.tools = function() {
+    browseURL("https://github.com/vertesy/UVI.tools/graphs/traffic")
+  },
+  Connectome.tools = function() {
+    browseURL("https://github.com/vertesy/Connectome.tools/graphs/traffic")
+  },
+  NestedMultiplexer = function() {
+    browseURL("https://github.com/vertesy/NestedMultiplexer/graphs/traffic")
+  },
+  DatabaseLinke.R = function() {
+    browseURL("https://github.com/vertesy/DatabaseLinke.R/graphs/traffic")
+  }
   # gruffi =           function() { browseURL("https://github.com/vertesy/jngoe/graphs/traffic") }
 )
-repoTrafficGraph_ALL <- function() { lapply(repoTrafficGraph, function(x) x()) }
+repoTrafficGraph_ALL <- function() {
+  lapply(repoTrafficGraph, function(x) x())
+}
 
 # Define a list of functions to open the "Create_the_*_Package.R" file for each package
 openCreatePackageFile <- list(
-  Stringendo =       function() { file.edit("~/GitHub/Packages/Stringendo/Development/Create_the_Stringendo_Package.R") },
-  ReadWriter =       function() { file.edit("~/GitHub/Packages/ReadWriter/Development/Create_the_ReadWriter_Package.R") },
-  CodeAndRoll2 =     function() { file.edit("~/GitHub/Packages/CodeAndRoll2/Development/Create_the_CodeAndRoll2_Package.R") },
-  PackageTools =     function() { file.edit("~/GitHub/Packages/PackageTools/Development/Create_the_PackageTools_Package.R") },
-  MarkdownHelpers =  function() { file.edit("~/GitHub/Packages/MarkdownHelpers/Development/Create_the_MarkdownHelpers_Package.R") },
-  MarkdownReports =  function() { file.edit("~/GitHub/Packages/MarkdownReports/Development/Create_the_MarkdownReports_Package.R") },
-  ggExpress =        function() { file.edit("~/GitHub/Packages/ggExpress/Development/Create_the_ggExpress_Package.R") },
-  Seurat.utils =     function() { file.edit("~/GitHub/Packages/Seurat.utils/Development/Create_the_Seurat.utils_Package.R") },
-  isoENV =           function() { file.edit("~/GitHub/Packages/isoENV/Development/Create_the_isoENV_Package.R") },
-  UVI.tools =        function() { file.edit("~/GitHub/Packages/UVI.tools/Development/Create_the_UVI.tools_Package.R") },
-  Connectome.tools = function() { file.edit("~/GitHub/Packages/Connectome.tools/Development/Create_the_Connectome.tools_Package.R") },
-  NestedMultiplexer =function() { file.edit("~/GitHub/Packages/NestedMultiplexer/Development/Create_the_NestedMultiplexer_Package.R") },
-  DatabaseLinke.R =  function() { file.edit("~/GitHub/Packages/DatabaseLinke.R/Development/Create_the_DatabaseLinke.R_Package.R") }
+  Stringendo = function() {
+    file.edit("~/GitHub/Packages/Stringendo/Development/Create_the_Stringendo_Package.R")
+  },
+  ReadWriter = function() {
+    file.edit("~/GitHub/Packages/ReadWriter/Development/Create_the_ReadWriter_Package.R")
+  },
+  CodeAndRoll2 = function() {
+    file.edit("~/GitHub/Packages/CodeAndRoll2/Development/Create_the_CodeAndRoll2_Package.R")
+  },
+  PackageTools = function() {
+    file.edit("~/GitHub/Packages/PackageTools/Development/Create_the_PackageTools_Package.R")
+  },
+  MarkdownHelpers = function() {
+    file.edit("~/GitHub/Packages/MarkdownHelpers/Development/Create_the_MarkdownHelpers_Package.R")
+  },
+  MarkdownReports = function() {
+    file.edit("~/GitHub/Packages/MarkdownReports/Development/Create_the_MarkdownReports_Package.R")
+  },
+  ggExpress = function() {
+    file.edit("~/GitHub/Packages/ggExpress/Development/Create_the_ggExpress_Package.R")
+  },
+  Seurat.utils = function() {
+    file.edit("~/GitHub/Packages/Seurat.utils/Development/Create_the_Seurat.utils_Package.R")
+  },
+  isoENV = function() {
+    file.edit("~/GitHub/Packages/isoENV/Development/Create_the_isoENV_Package.R")
+  },
+  UVI.tools = function() {
+    file.edit("~/GitHub/Packages/UVI.tools/Development/Create_the_UVI.tools_Package.R")
+  },
+  Connectome.tools = function() {
+    file.edit("~/GitHub/Packages/Connectome.tools/Development/Create_the_Connectome.tools_Package.R")
+  },
+  NestedMultiplexer = function() {
+    file.edit("~/GitHub/Packages/NestedMultiplexer/Development/Create_the_NestedMultiplexer_Package.R")
+  },
+  DatabaseLinke.R = function() {
+    file.edit("~/GitHub/Packages/DatabaseLinke.R/Development/Create_the_DatabaseLinke.R_Package.R")
+  }
 )
-openALL_CreatePackageFiles <- function() { lapply(openCreatePackageFile, function(f) f()) }
+openALL_CreatePackageFiles <- function() {
+  lapply(openCreatePackageFile, function(f) f())
+}
 
 
 openConfigFiles <- list(
-  Stringendo =       function() { file.edit("~/GitHub/Packages/Stringendo/Development/config.R") },
-  ReadWriter =       function() { file.edit("~/GitHub/Packages/ReadWriter/Development/config.R") },
-  CodeAndRoll2 =     function() { file.edit("~/GitHub/Packages/CodeAndRoll2/Development/config.R") },
-  PackageTools =     function() { file.edit("~/GitHub/Packages/PackageTools/Development/config.R") },
-  MarkdownHelpers =  function() { file.edit("~/GitHub/Packages/MarkdownHelpers/Development/config.R") },
-  MarkdownReports =  function() { file.edit("~/GitHub/Packages/MarkdownReports/Development/config.R") },
-  ggExpress =        function() { file.edit("~/GitHub/Packages/ggExpress/Development/config.R") },
-  Seurat.utils =     function() { file.edit("~/GitHub/Packages/Seurat.utils/Development/config.R") },
-  isoENV =           function() { file.edit("~/GitHub/Packages/isoENV/Development/config.R") },
-  UVI.tools =        function() { file.edit("~/GitHub/Packages/UVI.tools/Development/config.R") },
-  Connectome.tools = function() { file.edit("~/GitHub/Packages/Connectome.tools/Development/config.R") },
-  NestedMultiplexer =function() { file.edit("~/GitHub/Packages/NestedMultiplexer/Development/config.R") },
+  Stringendo = function() {
+    file.edit("~/GitHub/Packages/Stringendo/Development/config.R")
+  },
+  ReadWriter = function() {
+    file.edit("~/GitHub/Packages/ReadWriter/Development/config.R")
+  },
+  CodeAndRoll2 = function() {
+    file.edit("~/GitHub/Packages/CodeAndRoll2/Development/config.R")
+  },
+  PackageTools = function() {
+    file.edit("~/GitHub/Packages/PackageTools/Development/config.R")
+  },
+  MarkdownHelpers = function() {
+    file.edit("~/GitHub/Packages/MarkdownHelpers/Development/config.R")
+  },
+  MarkdownReports = function() {
+    file.edit("~/GitHub/Packages/MarkdownReports/Development/config.R")
+  },
+  ggExpress = function() {
+    file.edit("~/GitHub/Packages/ggExpress/Development/config.R")
+  },
+  Seurat.utils = function() {
+    file.edit("~/GitHub/Packages/Seurat.utils/Development/config.R")
+  },
+  isoENV = function() {
+    file.edit("~/GitHub/Packages/isoENV/Development/config.R")
+  },
+  UVI.tools = function() {
+    file.edit("~/GitHub/Packages/UVI.tools/Development/config.R")
+  },
+  Connectome.tools = function() {
+    file.edit("~/GitHub/Packages/Connectome.tools/Development/config.R")
+  },
+  NestedMultiplexer = function() {
+    file.edit("~/GitHub/Packages/NestedMultiplexer/Development/config.R")
+  },
   # gruffi =           function() { file.edit("~/GitHub/Packages/gruffi/Development/config.R") }
-  DatabaseLinke.R =  function() { file.edit("~/GitHub/Packages/DatabaseLinke.R/Development/config.R") }
+  DatabaseLinke.R = function() {
+    file.edit("~/GitHub/Packages/DatabaseLinke.R/Development/config.R")
+  }
 )
-openALL_ConfigFiles <- function() { lapply(openConfigFiles, function(f) f()) }
+openALL_ConfigFiles <- function() {
+  lapply(openConfigFiles, function(f) f())
+}
 
 # Package and script helpers ____________________________________________________________ ----
 
@@ -195,15 +355,15 @@ helpPak <- function(x) {
   browseURL(paste0("https://www.rdocumentation.org/packages/", pkg))
 }
 
-ooo <- function(...) osXpath(getwd(), ...)
+# ooo <- function(...) osXpath(getwd(), ...)
 ccc <- function(...) clipr::write_clip(cbepath(clipr::read_clip()))
-oofix <- function(...) clipr::write_clip(gsub(pattern = '\\[1\\] ', replacement = '', x = clipr::read_clip()))
+oofix <- function(...) clipr::write_clip(gsub(pattern = "\\[1\\] ", replacement = "", x = clipr::read_clip()))
 
 # ____________________________________________________________
-osXpath7 <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/users/abel.vertesy/Analysis/sc6_21.v7/variables.2.regress_nuclear.fraction/"),
-                      # "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
-                    attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v7/variables.2.regress_nuclear.fraction",
-                    cbe = "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v7/") {
+osXpath7 <- function(x = ifExistsElse("OutDir", alternative = "/groups/knoblich/users/abel.vertesy/Analysis/sc6_21.v7/variables.2.regress_nuclear.fraction/"),
+                     # "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
+                     attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v7/variables.2.regress_nuclear.fraction",
+                     cbe = "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v7/") {
   # last.folder <- basename(attach)
   message("Attach in finder:\n", attach, "\n")
   message(paste("open", gsub(x, pattern = cbe, replacement = "/Volumes/")))
@@ -211,20 +371,10 @@ osXpath7 <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich
 
 
 # _______________________________________________________________________________________
-# osXpath2 <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/users/abel.vertesy/Analysis/"),
-#                     # "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
-#                     attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis",
-#                     cbe = "/groups/knoblich/Projects/connectomics/") {
-#   # last.folder <- basename(attach)
-#   message("designed attach: ", attach, " in finder.\n")
-#   message(paste("open", gsub(x, pattern = cbe, replacement = "/Volumes/")))
-# }
-
-# _______________________________________________________________________________________
-osXpath <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/users/abel.vertesy/Analysis/sc6_21.v8/"),
-                      # "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
-                      attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v8",
-                      cbe = "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v8/") {
+osXpath <- function(x = ifExistsElse("OutDir", alternative = "/groups/knoblich/users/abel.vertesy/Analysis/sc6_21.v8/"),
+                    # "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v5/",
+                    attach = "smb://storage.imp.ac.at/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v8",
+                    cbe = "/groups/knoblich/Projects/connectomics/Analysis/sc6_21.v8/") {
   # last.folder <- basename(attach)
   message("Attach in finder:\n", attach, "\n")
   message(paste("open", gsub(x, pattern = cbe, replacement = "/Volumes/sc6_21.v8/")))
@@ -233,7 +383,7 @@ osXpath <- function(x = ifExistsElse('OutDir', alternative =  "/groups/knoblich/
 
 # ____________________________________________________________
 cbepath <- function(x = "/Volumes/Analysis/sc6_21.v5/preMerge.v2.Correct.CBC/Gruffi.Stress.annotation.v4/combined.obj_1_gruffi.complete.full_CON_2024.02.27_14.21.qs",
-                     cbe = "/groups/knoblich/Projects/connectomics/") {
+                    cbe = "/groups/knoblich/Projects/connectomics/") {
   # last.folder <- basename(attach)
   message(gsub(x, pattern = "/Volumes/", replacement = cbe))
 }
@@ -265,6 +415,8 @@ getCurrentScriptName <- function(toclipboard = TRUE) {
   return(file_name)
 }
 
+
+# ____________________________________________________________
 #' @title Get Current Script path in RStudio
 #'
 #' @description Retrieves the file path of the current script open in the RStudio source editor.
@@ -281,12 +433,7 @@ getCurrentScriptPath <- function() {
 
   # Retrieve the file path of the current script
   message(paste0("file.edit('", rstudioapi::getSourceEditorContext()$path, "')"))
-
 }
-
-
-
-#
 
 
 # ____________________________________________________________
@@ -297,12 +444,12 @@ listFunctionsByPackage <- function(packageNames) {
   # Initialize an empty list to store results
   functionsList <- list()
 
+  message("Creating a list of function per @vertesy packages:")
   # Iterate over each package
   for (pkg in packageNames) {
-    print(pkg)
+    message("- ", pkg, " ✅")
     # Get functions from the package
     funcs <- PackageTools::all_funs(pkg)
-    # funcs <- all_funs(pkg)
 
     # Add to the functions list with package name as value
     for (func in funcs) {
@@ -315,16 +462,87 @@ listFunctionsByPackage <- function(packageNames) {
 
 
 # ____________________________________________________________
-sourceGitHub <- function(script = "Cell.cycle.scoring.R"
-                         , repo = "Seurat.Pipeline"
-                         , folder = "elements"
-                         , user = "vertesy"
-                         , rawpath = "https://raw.githubusercontent.com"
-                         , suffix = "master"
-                         , token = NULL, ...) { # Source from GitHub. Example https://raw.githubusercontent.com/vertesy/Seurat.Pipeline/main/elements/Cell.cycle.scoring.R
-  path.part = FixPath(kpps(user, repo, suffix, folder, script))
-  fullpath = RemoveFinalSlash(kpps(rawpath, path.part))
-  if (!is.null(token)) fullpath = paste0(fullpath, token)
+#' @title Write package functions list to Markdown to create a reference document of all packages provided.
+#' @description Formats a vector or list of package-qualified function names into Markdown sections.
+#' @param ls_all_functions Vector or list of strings formatted as 'Package::function'.
+#' @param outFile Character. Target Markdown file path. If NULL, auto-generated with timestamp.
+#' @param append Logical. Whether to append to an existing file (default: FALSE).
+#' @importFrom Stringendo FixPath iprint
+#' @export
+write_funs_to_markdown <- function(ls_all_functions, outFile = NULL, append = FALSE) {
+  ## Set Default Filename with Timestamp ----------------------------
+  if (is.null(outFile)) { # Generate default timestamped file path if NULL
+    time_stamp <- format(Sys.time(), "%Y%m%d_%H.%M") # Format current timestamp as YYYYMMDD_HH.MM
+    outFile <- paste0("List.of.Functions.Vertesy_", time_stamp, ".md") # Construct default target file name
+  }
+
+  ## Input Validation ----------------------------
+  stopifnot(
+    "ls_all_functions must be vector/list" = is.vector(ls_all_functions) || is.list(ls_all_functions),
+    "ls_all_functions elements must be character" = all(sapply(ls_all_functions, is.character)),
+    "outFile must be a single string" = is.character(outFile) && length(outFile) == 1
+  )
+
+  ## Data Processing ----------------------------
+  vec_funs <- unlist(ls_all_functions, use.names = FALSE) |> unique() # Flatten container and drop duplicates
+  split_funs <- strsplit(vec_funs, "::", fixed = TRUE) # Split elements by package namespace separator
+
+  valid_idx <- sapply(split_funs, length) == 2 # Check for valid Package::function structure
+  stopifnot("All elements must use 'Package::function' format" = all(valid_idx)) # Validate vector syntax
+
+  pkg_names <- sapply(split_funs, `[`, 1) # Extract package name component
+  fn_names <- sapply(split_funs, `[`, 2) # Extract function name component
+
+  ## Markdown Document Assembly ----------------------------
+  grouped_funs <- split(fn_names, pkg_names) # Group function names by package name
+  unique_pkgs <- sort(names(grouped_funs)) # Extract and sort unique package identifiers
+
+  doc_header <- "# Package Functions Reference Document" # Document level-1 header
+  doc_desc <- "This is a reference document of all functions (function names) in R packages below. One sections per package."
+
+  pkg_summary_header <- "## Covered Packages" # Section header for coverage summary
+  pkg_summary_bullets <- paste0("* ", unique_pkgs) # Construct bulleted summary list
+
+  md_lines <- c(
+    doc_header, "", doc_desc, "",
+    pkg_summary_header, "", pkg_summary_bullets, ""
+  ) # Assemble header section content
+
+  for (pkg in unique_pkgs) { # Loop over unique package groups
+    pkg_header <- paste0("## ", pkg, " functions") # Level-2 package header
+    pkg_bullets <- paste0("* ", sort(grouped_funs[[pkg]])) # Bullet points for sorted functions
+    md_lines <- c(md_lines, "", pkg_header, "", pkg_bullets) # Append package section to document
+  }
+
+  ## File Output ----------------------------
+  if (append) { # Check append flag
+    cat(md_lines, file = outFile, sep = "\n", append = TRUE) # Append lines to existing output file
+  } else { # Overwrite mode
+    writeLines(text = md_lines, con = outFile, useBytes = TRUE) # Write lines directly to target path
+  }
+
+  ## Console Feedback ----------------------------
+  abs_path <- Stringendo::FixPath(outFile, is.file = TRUE) # Resolve absolute path without trailing slash
+  message("Markdown file written to:", abs_path) # Output target file path to console
+  message("file.edit('", abs_path, "')") # Output executable RStudio edit line
+
+  invisible(md_lines) # Return formatted Markdown lines invisibly
+}
+
+
+# ____________________________________________________________
+sourceGitHub <- function(
+  script = "Cell.cycle.scoring.R",
+  repo = "Seurat.Pipeline",
+  folder = "elements",
+  user = "vertesy",
+  rawpath = "https://raw.githubusercontent.com",
+  suffix = "master",
+  token = NULL, ...
+) { # Source from GitHub. Example https://raw.githubusercontent.com/vertesy/Seurat.Pipeline/main/elements/Cell.cycle.scoring.R
+  path.part <- FixPath(kpps(user, repo, suffix, folder, script))
+  fullpath <- RemoveFinalSlash(kpps(rawpath, path.part))
+  if (!is.null(token)) fullpath <- paste0(fullpath, token)
   print(fullpath)
   source(fullpath)
 }
@@ -363,7 +581,6 @@ sourceLines <- function(file_path, lines) {
 
   # Source the extracted lines using textConnection()
   source(textConnection(script_all_lines[lines]))
-
 }
 # pathX <- "~/GitHub/TheCorvinas/R/Test.for.sourceLines.function.R"
 # sourceLines(pathX, 1, 15)
@@ -373,10 +590,10 @@ sourceLines <- function(file_path, lines) {
 
 # ____________________________________________________________
 # Source parts of another script. Source: https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
-sourcePartial <- function(fn, startTag = '#1', endTag = '#/1') {
+sourcePartial <- function(fn, startTag = "#1", endTag = "#/1") {
   lines <- scan(fn, what = character(), sep = "\n", quiet = TRUE)
-  st <- grep(startTag,lines)
-  en <- grep(endTag,lines)
+  st <- grep(startTag, lines)
+  en <- grep(endTag, lines)
   tc <- textConnection(lines[(st + 1):(en - 1)])
   source(tc)
   close(tc)
@@ -386,11 +603,12 @@ sourcePartial <- function(fn, startTag = '#1', endTag = '#/1') {
 args.2.global <- ass <- function(overwrite = FALSE, ...) {
   args <- list(...)
   namez <- names(args)
-  for (i in 1:length(args)) { print("------------------------------------")
+  for (i in 1:length(args)) {
+    print("------------------------------------")
     print(namez[i])
     print(args[[i]])
 
-    if(exists(namez[i])) {
+    if (exists(namez[i])) {
       iprint(namez[i], "already exists, overwritten only if specified in arg 1.")
       if (overwrite) assign(x = names(args)[i], value = args[[i]], envir = .GlobalEnv)
     } else {
@@ -407,16 +625,16 @@ args.2.global <- ass <- function(overwrite = FALSE, ...) {
 #' @description Show distribution of the largest objects and return their names.
 #' Based on https://stackoverflow.com/questions/17218404/should-i-get-a-habit-of-removing-unused-variables-in-r
 
-memory.biggest.objects <- function(n = 5, plot = T, saveplot = FALSE) {
+memory.biggest.objects <- function(n = 5, plot = TRUE, saveplot = FALSE) {
   try(dev.off(), silent = TRUE)
   gc()
-  ls.mem <- ls( envir = .GlobalEnv)
+  ls.mem <- ls(envir = .GlobalEnv)
   ls.obj <- lapply(ls.mem, get)
   Sizes.of.objects.in.mem <- CodeAndRoll2::unlapply(ls.obj, object.size)
   names(Sizes.of.objects.in.mem) <- ls.mem
-  topX = sort(Sizes.of.objects.in.mem,decreasing = TRUE)[1:n]
+  topX <- sort(Sizes.of.objects.in.mem, decreasing = TRUE)[1:n]
 
-  Memorty.usage.stat = c(topX, 'Other' = sum(sort(Sizes.of.objects.in.mem,decreasing = TRUE)[-(1:n)]))
+  Memorty.usage.stat <- c(topX, "Other" = sum(sort(Sizes.of.objects.in.mem, decreasing = TRUE)[-(1:n)]))
 
   top.names <- head(names(topX), n = 5)
   # strX <- as.character(capture.output(dput(top.names)))
@@ -424,18 +642,16 @@ memory.biggest.objects <- function(n = 5, plot = T, saveplot = FALSE) {
   # strX <- gsub('[^A-Za-z0-9 ,._/()]', '', strX)
   message("rm(list = c('", strX, "'))\n")
 
-  if(plot) {
-    pie(x = Memorty.usage.stat, cex = .5, sub = date(),
-        col = grDevices::terrain.colors(length(Memorty.usage.stat)))
+  if (plot) {
+    pie(
+      x = Memorty.usage.stat, cex = .5, sub = date(),
+      col = grDevices::terrain.colors(length(Memorty.usage.stat))
+    )
     # dput(names(topX))
   }
 }
 # memory.biggest.objects()
 
-
-
-
-# _________________________________________________________________________________________________
 
 # _________________________________________________________________________________________________
 
@@ -444,45 +660,50 @@ memory.biggest.objects <- function(n = 5, plot = T, saveplot = FALSE) {
 # printEveryN <- function(i, N = 1000) { if ((i %% N) == 0 ) iprint(i) } # Report at every e.g. 1000
 
 
-
-
 say <- function(...) { # Use system voice to notify (after a long task is done)
   sys <- Sys.info()["sysname"]
   if (sys == "Darwin") system("say Ready!") # say -v Samantha 'Ready!'
-  if (sys == "Linux") system("echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'")  # For UNIX servers.
+  if (sys == "Linux") system("echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'") # For UNIX servers.
 }
-sayy <- function(...) {system("say 'Ready to roll!'")} # Use system voice to notify (after a long task is done)
+sayy <- function(...) {
+  system("say 'Ready to roll!'")
+} # Use system voice to notify (after a long task is done)
 
-# oo <- function(path = '.') { # Open current working directory, or any directory.
-#   system(paste("open", path))
-# }
-# oo <- function() { print(list.files(getwd())); print("dir"); print(getwd()) }
 
-oo <- function(x=NULL) {
-  message('WD\n', getwd())
-  if (exists('OutDir')) {
-    if( ! getwd() == RemoveFinalSlash(OutDir)) {
-      message("OutDir different to WD:\n", RemoveFinalSlash(OutDir))
+oo <- function(samba = "smb://storage.imp.ac.at/", loc_path = "/Volumes/") {
+  message("WD\n", getwd(), "\n")
+  if (exists("OutDir")) {
+    if (!getwd() == RemoveFinalSlash(OutDir)) {
+      message("OutDir different to WD:\n", RemoveFinalSlash(OutDir), "\n")
     }
   } else {
-    message("Outdir not defined.")
+    message("Outdir not defined.\n")
   }
+
+  if (ifExistsAndTrue("onCBE")) {
+    attach <- paste0("smb://storage.imp.ac.at", OutDir)
+    message("Attach in Finder:\n", attach, "\n")
+  }
+
+  message("open ", spps(loc_path, basename(attach)))
 }
 
 
-view.head <- function(matrix, enn = 10) { matrix[1:min(NROW(matrix), enn), 1:min(NCOL(matrix), enn)] } # view the head of an object by console.
-view.head2 <- function(matrix, enn = 10) { View(head(matrix, n = min(NROW(matrix), NCOL(matrix), enn))) } # view the head of an object by View().
+view.head <- function(matrix, enn = 10) {
+  matrix[1:min(NROW(matrix), enn), 1:min(NCOL(matrix), enn)]
+} # view the head of an object by console.
+view.head2 <- function(matrix, enn = 10) {
+  View(head(matrix, n = min(NROW(matrix), NCOL(matrix), enn)))
+} # view the head of an object by View().
 
 
 # detach_package <-
 unload <- function(pkg, character.only = FALSE) { # Unload a package. Source: https://stackoverflow.com/questions/6979917/how-to-unload-a-package-without-restarting-r
-  if (!character.only)
-  {
+  if (!character.only) {
     pkg <- deparse(substitute(pkg))
   }
   search_item <- paste("package", pkg, sep = ":")
-  while (search_item %in% search())
-  {
+  while (search_item %in% search()) {
     detach(search_item, unload = TRUE, character.only = TRUE)
   }
 }
@@ -490,17 +711,17 @@ unload <- function(pkg, character.only = FALSE) { # Unload a package. Source: ht
 backup <- function(obj, overwrite = FALSE) { # make a backup of an object into global env. Scheme: obj > obj.bac
   varname <- as.character(substitute(obj))
   bac.varname <- ppp(varname, "bac")
-  if (exists(bac.varname) & !overwrite ) {
+  if (exists(bac.varname) & !overwrite) {
     print(" Backup already exists.")
   } else {
     iprint(varname, "is backep up into:", bac.varname)
-    assign(x = bac.varname, value = obj, envir= as.environment(1) )
+    assign(x = bac.varname, value = obj, envir = as.environment(1))
   }
 }
 # backup(combined.obj)
 
 
-list.dirs.depth.n <- function(dir = '.' , depth = 2) { # list dirs recursive up to a certain level in R https://stackoverflow.com/questions/48297440/list-files-recursive-up-to-a-certain-level-in-r
+list.dirs.depth.n <- function(dir = ".", depth = 2) { # list dirs recursive up to a certain level in R https://stackoverflow.com/questions/48297440/list-files-recursive-up-to-a-certain-level-in-r
   iprint("Scanning directories. Depth:", depth)
   res <- list.dirs(dir, recursive = FALSE)
   if (depth > 1) {
@@ -512,39 +733,38 @@ list.dirs.depth.n <- function(dir = '.' , depth = 2) { # list dirs recursive up 
 }
 
 
-list_subdirectories_at_depth <- function(path = '.', depth = 2) {
+list_subdirectories_at_depth <- function(path = ".", depth = 2) {
   path <- path.expand(path)
   num_slashes <- stringr::str_count(path, "/")
   target_depth <- depth + num_slashes
 
   subdirs <- list.dirs(path, recursive = TRUE)
   subdirs[stringr::str_count(subdirs, "/") == target_depth]
-
 }
 # list_subdirectories_at_depth(path = '~/Downloads', depth = 2)
 
 
 iidentical.names <- function(v1, v2) { # Test if names of two objects for being exactly equal
-  nv1 = names(v1)
-  nv2 = names(v2)
-  len.eq = (length(nv1) == length(nv2))
-  if (!len.eq) iprint("Lenghts differ by:", (length(nv1) - length(nv2)) )
-  Check = identical(nv1, nv2)
+  nv1 <- names(v1)
+  nv2 <- names(v2)
+  len.eq <- (length(nv1) == length(nv2))
+  if (!len.eq) iprint("Lenghts differ by:", (length(nv1) - length(nv2)))
+  Check <- identical(nv1, nv2)
   if (!Check) {
-    diff = setdiff(nv1, nv2)
-    ld = length(diff)
+    diff <- setdiff(nv1, nv2)
+    ld <- length(diff)
     iprint(ld, "elements differ: ", head(diff))
   }
   Check
 }
 
 iidentical <- function(v1, v2) { # Test if two objects for being exactly equal
-  len.eq = (length(v1) == length(v2))
-  if (!len.eq) iprint("Lenghts differ by:", (length(v1) - length(v2)) )
-  Check = identical(v1,v2)
+  len.eq <- (length(v1) == length(v2))
+  if (!len.eq) iprint("Lenghts differ by:", (length(v1) - length(v2)))
+  Check <- identical(v1, v2)
   if (!Check) {
-    diff = setdiff(v1, v2)
-    ld = length(diff)
+    diff <- setdiff(v1, v2)
+    ld <- length(diff)
     iprint(ld, "elements differ: ", head(diff))
   }
   Check
@@ -596,13 +816,12 @@ findFunctionPackage <- function(functionName, searchInstalled = FALSE) {
 }
 
 
-
 # Clipboard interaction ____________________________________________________________ ----
 # https://github.com/vertesy/DataInCode
 # try(source("~/Github/TheCorvinas/R/DataInCode/DataInCode.R"), silent = FALSE)
 
 clip2clip.vector <- function() { # Copy from clipboard (e.g. excel) to a R-formatted vector to the  clipboard
-  x = dput(clipr::read_clip() )
+  x <- dput(clipr::read_clip())
   clipr::write_clip(
     utils::capture.output(x)
   )
@@ -611,49 +830,51 @@ clip2clip.vector <- function() { # Copy from clipboard (e.g. excel) to a R-forma
 
 
 clip2clip.commaSepString <- function() { # Read a comma separated string (e.g. list of gene names) and properly format it for R.
-  x = unlist(strsplit(clipr::read_clip(), split = ','))
+  x <- unlist(strsplit(clipr::read_clip(), split = ","))
   clipr::write_clip(
     utils::capture.output(x)
   )
   print(x)
 }
 
-write_clip.replace.dot.with.comma <- function(var = df.markers, decimal_mark = ',') { # Clipboard export for da wonderful countries where "," is the decimal...
-  write_clip(format(var, decimal.mark = decimal_mark) )
+write_clip.replace.dot.with.comma <- function(var = df.markers, decimal_mark = ",") { # Clipboard export for da wonderful countries where "," is the decimal...
+  write_clip(format(var, decimal.mark = decimal_mark))
 }
 # write_clip.replace.dot.with.comma(df_markers)
 
 
-
 # _______________________________________________________________
-PCA.percent.var.explained <- function(prcomp.res =  sPCA) { # Determine percent of variation associated with each PC. For Seurat see: scCalcPCAVarExplained().
+PCA.percent.var.explained <- function(prcomp.res = sPCA) { # Determine percent of variation associated with each PC. For Seurat see: scCalcPCAVarExplained().
   PCA.w.summary.added <- summary(prcomp.res)
-  PCA.w.summary.added$importance['Proportion of Variance', ]
+  PCA.w.summary.added$importance["Proportion of Variance", ]
 }
-
 
 
 # __________________________________________________________________________________________________
 # Distance and correlation calculations _____________________________________________________ ----
 eucl.dist.pairwise <- function(df2col) { # Calculate pairwise euclidean distance
-  dist_ = abs(df2col[,1] - df2col[,2]) / sqrt(2)
-  if (!is.null(rownames(df2col)))   names(dist_) = rownames(df2col)
+  dist_ <- abs(df2col[, 1] - df2col[, 2]) / sqrt(2)
+  if (!is.null(rownames(df2col))) names(dist_) <- rownames(df2col)
   dist_
 }
 
 sign.dist.pairwise <- function(df2col) { # Calculate absolute value of the pairwise euclidean distance
-  dist_ = abs(df2col[,1] - df2col[,2]) / sqrt(2)
-  if (!is.null(rownames(df2col)))   names(dist_) = rownames(df2col)
+  dist_ <- abs(df2col[, 1] - df2col[, 2]) / sqrt(2)
+  if (!is.null(rownames(df2col))) names(dist_) <- rownames(df2col)
   dist_
 }
 
 # Auto correlation functions
-rowACF <- function(x, na_pass = na.pass, plot = FALSE, ...) { apply(x, 1, acf, na.action = na_pass,  plot = plot, ...)} # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
-colACF <- function(x, na_pass = na.pass, plot = FALSE, ...) { apply(x, 2, acf, na.action = na_pass,  plot = plot, ...)} # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+rowACF <- function(x, na_pass = na.pass, plot = FALSE, ...) {
+  apply(x, 1, acf, na.action = na_pass, plot = plot, ...)
+} # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+colACF <- function(x, na_pass = na.pass, plot = FALSE, ...) {
+  apply(x, 2, acf, na.action = na_pass, plot = plot, ...)
+} # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
 
-acf.exactLag <- function(x, lag = 1, na_pass = na.pass, plot = FALSE, ... ) { # Autocorrelation with exact lag
-  x = acf(x, na.action = na_pass,  plot = plot, ...)
-  x[['acf']][(lag + 1)]
+acf.exactLag <- function(x, lag = 1, na_pass = na.pass, plot = FALSE, ...) { # Autocorrelation with exact lag
+  x <- acf(x, na.action = na_pass, plot = plot, ...)
+  x[["acf"]][(lag + 1)]
 }
 
 rowACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { # RETURNS A Vector for the "lag" based autocorrelation. Calculates the autocorrelation of each row of a numeric matrix / data frame.
@@ -668,12 +889,17 @@ colACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { 
 # ___________________________________________________________________________________________ ------
 # Plotting and Graphics ____________________________________________________________ ----
 
-colSums.barplot <- function(df, col = "seagreen2", na_rm = TRUE, ...) { barplot(colSums(df, na.rm = na_rm), col = col, ...) } # Draw a barplot from ColSums of a matrix.
+colSums.barplot <- function(df, col = "seagreen2", na_rm = TRUE, ...) {
+  barplot(colSums(df, na.rm = na_rm), col = col, ...)
+} # Draw a barplot from ColSums of a matrix.
 
-richColors <- function(n = 3) { gplots::rich.colors(n) } # Alias for rich.colors in gplots
+richColors <- function(n = 3) {
+  gplots::rich.colors(n)
+} # Alias for rich.colors in gplots
 
-qheatmap <- function(df, cluster_rows = FALSE, cluster_cols = FALSE,
-                     main = make.names(Stringendo::FixPlotName(substitute(df))), ...) {
+qqheatmap <- function(df, cluster_rows = FALSE, cluster_cols = FALSE,
+                      main = make.names(Stringendo::FixPlotName(substitute(df))), ...) {
+  message("using pheatmap!")
   pheatmap::pheatmap(mat = df, cluster_rows = cluster_rows, cluster_cols = cluster_cols, main = main, ...)
 }
 
@@ -686,26 +912,32 @@ legend.col <- function(col, lev) { # Legend color. # Source: https://aurelienmad
   opar <- par
   n <- length(col)
   bx <- par("usr")
-  box.cx <- c(bx[2] + (bx[2] - bx[1]) / 1000,
-              bx[2] + (bx[2] - bx[1]) / 1000 + (bx[2] - bx[1]) / 50)
+  box.cx <- c(
+    bx[2] + (bx[2] - bx[1]) / 1000,
+    bx[2] + (bx[2] - bx[1]) / 1000 + (bx[2] - bx[1]) / 50
+  )
   box.cy <- c(bx[3], bx[3])
   box.sy <- (bx[4] - bx[3]) / n
   xx <- rep(box.cx, each = 2)
 
   par(xpd = TRUE)
   for (i in 1:n) {
-    yy <- c(box.cy[1] + (box.sy * (i - 1)),
-            box.cy[1] + (box.sy * (i)),
-            box.cy[1] + (box.sy * (i)),
-            box.cy[1] + (box.sy * (i - 1)))
+    yy <- c(
+      box.cy[1] + (box.sy * (i - 1)),
+      box.cy[1] + (box.sy * (i)),
+      box.cy[1] + (box.sy * (i)),
+      box.cy[1] + (box.sy * (i - 1))
+    )
     polygon(xx, yy, col = col[i], border = col[i])
   }
   par(new = TRUE)
-  plot(0, 0, type = "n",
-       ylim = c(min(lev), max(lev)),
-       yaxt = "n", ylab = "",
-       xaxt = "n", xlab = "",
-       frame.plot = FALSE)
+  plot(0, 0,
+    type = "n",
+    ylim = c(min(lev), max(lev)),
+    yaxt = "n", ylab = "",
+    xaxt = "n", xlab = "",
+    frame.plot = FALSE
+  )
   axis(side = 4, las = 2, tick = FALSE, line = .25)
   par <- opar
   par(xpd = FALSE)
@@ -713,37 +945,23 @@ legend.col <- function(col, lev) { # Legend color. # Source: https://aurelienmad
 }
 
 
-
 ## Functions for pairs() plots ____________________________________________________________ ----
-# panelCorPearson <- function(x, y, digits = 2, prefix = "", cex.cor = 2, method = "pearson") { # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
-#   usr <- par("usr"); on.exit(par(usr))
-#   par(usr = c(0, 1, 0, 1))
-#   r <- abs(cor(x, y, method = method, use = "complete.obs"))
-#   txt <- format(c(r, 0.123456789), digits = digits)[1]
-#   txt <- paste(prefix, txt, sep = "")
-#   if (missing(cex.cor)) cex <- 0.8/strwidth(txt)
-#
-#   test <- cor.test(x, y)
-#   Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
-#                    cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
-#                    symbols = c("***", "**", "*", ".", " "))
-#
-#   text(0.5, 0.5, txt, cex = cex * r)
-#   text(.8, .8, Signif, cex = cex,  col = 2)
-# }
 
 panelCorSpearman <- function(x, y, digits = 2, prefix = "", cex.cor = 2, method = "spearman") { # A function to display correlation values for pairs() function. Default is pearson correlation, that can be set to  "kendall" or "spearman".
-  usr <- par("usr"); on.exit(par(usr))
+  usr <- par("usr")
+  on.exit(par(usr))
   par(usr = c(0, 1, 0, 1))
   r <- abs(cor(x, y, method = method, use = "complete.obs"))
   txt <- format(c(r, 0.123456789), digits = digits)[1]
   txt <- paste(prefix, txt, sep = "")
-  if (missing(cex.cor)) cex <- 0.8/strwidth(txt)
+  if (missing(cex.cor)) cex <- 0.8 / strwidth(txt)
 
   test <- cor.test(x, y)
-  Signif <- symnum(test$p.value, corr = FALSE, na = FALSE,
-                   cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
-                   symbols = c("***", "**", "*", ".", " "))
+  Signif <- symnum(test$p.value,
+    corr = FALSE, na = FALSE,
+    cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
+    symbols = c("***", "**", "*", ".", " ")
+  )
 
   text(0.5, 0.5, txt, cex = cex * r)
   text(.8, .8, Signif, cex = cex, col = 2)
@@ -754,7 +972,6 @@ quantile_breaks <- function(xs, n = 10, na.Rm = FALSE) { # Quantile breakpoints 
   breaks <- quantile(xs, probs = seq(0, 1, length.out = n), na.rm = na.Rm)
   breaks[!duplicated(breaks)]
 }
-
 
 
 # ___________________________________________________________________________________________ ------
@@ -770,13 +987,15 @@ hclust.ClusterSeparatingLines.row <- function(pheatmapObject, k = 3) which(!dupl
 hclust.ClusterSeparatingLines.col <- function(pheatmapObject, k = 3) which(!duplicated(cutree(pheatmapObject$tree_col, k = k)[pheatmapObject$tree_col$order])[-1]) # Calculate the position of COLUMN separating lines between clusters in a pheatmap object.
 
 Gap.Postions.calc.pheatmap <- function(annot.vec.of.categories) { # calculate gap positions for pheatmap, based a sorted annotation vector of categories
-  NAZ = sum(is.na(annot.vec.of.categories))
+  NAZ <- sum(is.na(annot.vec.of.categories))
   if (NAZ) iprint("There are", NAZ, "NA values in your vector. They should be last and they are omitted.")
-  consecutive.lengthes = rle( na.omit.strip(annot.vec.of.categories))$lengths
+  consecutive.lengthes <- rle(na.omit.strip(annot.vec.of.categories))$lengths
   cumsum(consecutive.lengthes) # return abs.positions
 }
 
-matlabColors.pheatmap <- function(matrixx, nr = 50) {colorRamps::matlab.like(length(quantile_breaks(matrixx, n = nr)) - 1)} # Create a Matlab-like color gradient using "colorRamps".
+matlabColors.pheatmap <- function(matrixx, nr = 50) {
+  colorRamps::matlab.like(length(quantile_breaks(matrixx, n = nr)) - 1)
+} # Create a Matlab-like color gradient using "colorRamps".
 
 
 # ________________________________________________________________________
@@ -800,7 +1019,6 @@ matlabColors.pheatmap <- function(matrixx, nr = 50) {colorRamps::matlab.like(len
 annot_col.create.pheatmap.vec <- function(data,
                                           annot_vec,
                                           annot_names = "Annot") {
-
   # Input argument assertions
   stopifnot(
     is.data.frame(data) || is.matrix(data),
@@ -809,22 +1027,25 @@ annot_col.create.pheatmap.vec <- function(data,
     is.character(annot_names)
   )
 
-  namez = as.character(if (is.null(annot_names)) substitute(annot_vec) else annot_names)
+  namez <- as.character(if (is.null(annot_names)) substitute(annot_vec) else annot_names)
 
-  df = data.frame(x = annot_vec);
+  df <- data.frame(x = annot_vec)
 
-  names(df) = namez # colnames but more flexible
-  rownames(df) = colnames(data)
+  names(df) <- namez # colnames but more flexible
+  rownames(df) <- colnames(data)
   assign(x = "annot", value = df, envir = .GlobalEnv)
 
-  tt = table(annot_vec); nz = names(tt)
+  tt <- table(annot_vec)
+  nz <- names(tt)
   if (is.numeric(annot_vec)) {
-    coll = val2col(annot_vec[!duplicated(annot_vec)]); names(coll) = nz
+    coll <- val2col(annot_vec[!duplicated(annot_vec)])
+    names(coll) <- nz
   } else {
-    coll = gplots::rich.colors(length(tt)); names(coll) = nz
+    coll <- gplots::rich.colors(length(tt))
+    names(coll) <- nz
   }
-  col_list = list(annot_vec = coll)
-  names(col_list) = namez
+  col_list <- list(annot_vec = coll)
+  names(col_list) <- namez
   assign(x = "annot_col", value = col_list, envir = .GlobalEnv)
 
   message("annot [data frame] and annot_col [list] variables are created.
@@ -834,26 +1055,32 @@ annot_col.create.pheatmap.vec <- function(data,
 
 # ________________________________________________________________________
 annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names = NULL) { # For data frames. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
-  stopif( dim(annot_df_per_column)[1] != dim(data)[2] , message = "The number of rows in the annotation data != to the # columns in your data frame")
+  stopif(dim(annot_df_per_column)[1] != dim(data)[2], message = "The number of rows in the annotation data != to the # columns in your data frame")
 
-  df = as.data.frame(annot_df_per_column)
-  if (any(rownames(df) != colnames(data))) { print("The rownames of annot_df_per_column are not the same as the colnames of data:")
-    print(cbind("rownames(df)" = rownames(df) , "colnames(data)" = colnames(data))) }
-  namez = as.character(if (is.null(annot_names)) colnames(annot_df_per_column) else annot_names)
+  df <- as.data.frame(annot_df_per_column)
+  if (any(rownames(df) != colnames(data))) {
+    print("The rownames of annot_df_per_column are not the same as the colnames of data:")
+    print(cbind("rownames(df)" = rownames(df), "colnames(data)" = colnames(data)))
+  }
+  namez <- as.character(if (is.null(annot_names)) colnames(annot_df_per_column) else annot_names)
 
-  colnames(df) = namez
-  rownames(df) = colnames(data)
+  colnames(df) <- namez
+  rownames(df) <- colnames(data)
   assign(x = "annot", value = df, envir = .GlobalEnv)
 
-  col_list = list.fromNames(namez)
-  for (i in 1:NCOL(df) ) {
-    annot_column_i = df[, i]
-    tt = table(annot_column_i); nz = names(tt)
-    coll = if (is.numeric(annot_column_i)) { val2col(unique(annot_column_i));
-    } else { gplots::rich.colors(length(tt)) }
-    names(coll) = sort(nz)
-    col_list[[i]] = coll
-  } #for each column
+  col_list <- list.fromNames(namez)
+  for (i in 1:NCOL(df)) {
+    annot_column_i <- df[, i]
+    tt <- table(annot_column_i)
+    nz <- names(tt)
+    coll <- if (is.numeric(annot_column_i)) {
+      val2col(unique(annot_column_i))
+    } else {
+      gplots::rich.colors(length(tt))
+    }
+    names(coll) <- sort(nz)
+    col_list[[i]] <- coll
+  } # for each column
   assign(x = "annot_col", value = col_list, envir = .GlobalEnv)
 
   print("annot [data frame] and annot_col [list] variables are created.
@@ -861,44 +1088,48 @@ annot_col.create.pheatmap.df <- function(data, annot_df_per_column, annot_names 
 }
 
 annot_col.fix.numeric <- function(ListOfColnames, df.annot = annot, annot_col = annot_col) { # fix class and color annotation in pheatmap annotation data frame's and lists.
-  for (i in 1:length(ListOfColnames) ) {
-    j = ListOfColnames[i]
-    annot[[j]] = as.numeric(annot[[j]])
-    annot_col[[j]] = NULL # remove fixed colors -> auto determine by pheatmap
-  } #for
+  for (i in 1:length(ListOfColnames)) {
+    j <- ListOfColnames[i]
+    annot[[j]] <- as.numeric(annot[[j]])
+    annot_col[[j]] <- NULL # remove fixed colors -> auto determine by pheatmap
+  } # for
   assign(x = "annot_col", value = annot_col, envir = .GlobalEnv)
   iprint("Columns in annot are as.numeric(), list elements in annot_col are removed")
 }
 
 
 annot_row.create.pheatmap.df <- function(data, annot_df_per_row, annot_names = NULL) { # For data frames. Auxiliary function for pheatmap. Prepares the 2 variables needed for "annotation_col" and "annotation_colors" in pheatmap
-  stopif( dim(annot_df_per_row)[1] != dim(data)[1] , message = "The number of rows in the annotation data != to the # columns in your data frame")
+  stopif(dim(annot_df_per_row)[1] != dim(data)[1], message = "The number of rows in the annotation data != to the # columns in your data frame")
 
-  df = as.data.frame(annot_df_per_row)
-  if (any(rownames(df) != rownames(data))) { print("The rownames of annot_df_per_row are not the same as the rownames of data:")
-    print(cbind("rownames(df)" = rownames(df) , "rownames(data)" = rownames(data))) }
-  namez = as.character(if (is.null(annot_names)) colnames(annot_df_per_row) else annot_names)
+  df <- as.data.frame(annot_df_per_row)
+  if (any(rownames(df) != rownames(data))) {
+    print("The rownames of annot_df_per_row are not the same as the rownames of data:")
+    print(cbind("rownames(df)" = rownames(df), "rownames(data)" = rownames(data)))
+  }
+  namez <- as.character(if (is.null(annot_names)) colnames(annot_df_per_row) else annot_names)
 
-  colnames(df) = namez
-  rownames(df) = rownames(data)
+  colnames(df) <- namez
+  rownames(df) <- rownames(data)
   assign(x = "annot_rows", value = df, envir = .GlobalEnv)
 
-  col_list = list.fromNames(namez)
-  for (i in 1:NCOL(df) ) {
-    annot_column_i = df[, i]
-    tt = table(annot_column_i); nz = names(tt)
-    coll = if (is.numeric(annot_column_i)) { val2col(unique(annot_column_i));
-    } else { gplots::rich.colors(length(tt)) }
-    names(coll) = sort(nz)
-    col_list[[i]] = coll
-  } #for each column
+  col_list <- list.fromNames(namez)
+  for (i in 1:NCOL(df)) {
+    annot_column_i <- df[, i]
+    tt <- table(annot_column_i)
+    nz <- names(tt)
+    coll <- if (is.numeric(annot_column_i)) {
+      val2col(unique(annot_column_i))
+    } else {
+      gplots::rich.colors(length(tt))
+    }
+    names(coll) <- sort(nz)
+    col_list[[i]] <- coll
+  } # for each column
   assign(x = "annot_rows.col", value = col_list, envir = .GlobalEnv)
 
   print("annot_rows [data frame] and annot_rows.col [list] variables are created.
         Use: pheatmap(..., annotation_row = annot_rows, annotation_colors = annot_rows.col)")
 }
-
-
 
 
 #' val2col
@@ -914,9 +1145,7 @@ annot_row.create.pheatmap.df <- function(data, annot_df_per_row, annot_names = N
 #' @param breaks Number of bins.
 #' @param rename The returned color vector will be named with its previous values
 #' @export
-#' @examples val2col (yourdata = rpois(200, 20), zlim = c(0,5),col = rev(heat.colors(100)), breaks = 101  )
-
-
+#' @examples val2col(yourdata = rpois(200, 20), zlim = c(0, 5), col = rev(heat.colors(100)), breaks = 101)
 ### CONTAINS A QUICK FIX FOR THE NUMBER OF COLOR LEVELS. See #59 on GitHub ###
 val2col <- function(yourdata, # This function converts a vector of values("yourdata") to a vector of color levels. One must define the number of colors. The limits of the color scale("zlim") or the break points for the color changes("breaks") can also be defined. When breaks and zlim are defined, breaks overrides zlim.
                     zlim,
@@ -938,29 +1167,28 @@ val2col <- function(yourdata, # This function converts a vector of values("yourd
     breaks <- seq(zlim[1], zlim[2], length.out = (length(col) + 1))
   }
   colorlevels <- col[((as.vector(yourdata) - breaks[1]) /
-                        (range(breaks)[2] - range(breaks)[1])) * (length(breaks) - 1) + 1]
+    (range(breaks)[2] - range(breaks)[1])) * (length(breaks) - 1) + 1]
   if (length(names(yourdata))) {
-    names(colorlevels) = yourdata
+    names(colorlevels) <- yourdata
   }
 
   if (rename) {
-    names(colorlevels) = yourdata
+    names(colorlevels) <- yourdata
   } # works on vectors only"
   colorlevels
 }
 
 
-
 # New FUN ____________________________________________________________ ----
 
 
-ssh2osX <- function(shellpath=clipr::read_clip()) { # '/groups/knoblich/users/burkard/Abel.Vertesy/R12357/R12357_merged_20211108093511/README.html'
-  newpath <- gsub(x = shellpath, pattern = '/groups/', replacement = 'smb://storage.imp.ac.at/groups/')
+ssh2osX <- function(shellpath = clipr::read_clip()) { # '/groups/knoblich/users/burkard/Abel.Vertesy/R12357/R12357_merged_20211108093511/README.html'
+  newpath <- gsub(x = shellpath, pattern = "/groups/", replacement = "smb://storage.imp.ac.at/groups/")
   clipr::write_clip(newpath)
 }
 
-osX2ssh <- function(shellpath=clipr::read_clip()) { # '/groups/knoblich/users/burkard/Abel.Vertesy/R12357/R12357_merged_20211108093511/README.html'
-  newpath <- gsub(x = shellpath, replacement = '/groups/',  pattern= 'smb://storage.imp.ac.at/groups/')
+osX2ssh <- function(shellpath = clipr::read_clip()) { # '/groups/knoblich/users/burkard/Abel.Vertesy/R12357/R12357_merged_20211108093511/README.html'
+  newpath <- gsub(x = shellpath, replacement = "/groups/", pattern = "smb://storage.imp.ac.at/groups/")
   clipr::write_clip(newpath)
 }
 
@@ -972,56 +1200,82 @@ osX2ssh <- function(shellpath=clipr::read_clip()) { # '/groups/knoblich/users/bu
 #' @param column column name
 #' @param sep value separation
 #' @export
-#' @examples
-
-STRINGdb.reformat.ann.table.per.gene <- function(path_of_tsv = '~/Downloads/enrichment.DISEASES.tsv'
-                                                 , column = 'matching proteins in your network (labels)'
-                                                 , sep = ',') {
-
+#'
+STRINGdb.reformat.ann.table.per.gene <- function(
+  path_of_tsv = "~/Downloads/enrichment.DISEASES.tsv",
+  column = "matching proteins in your network (labels)",
+  sep = ","
+) {
   annotation_tsv <- CodeAndRoll2::read.simple.tsv(path_of_tsv)
   stopifnot(column %in% colnames(annotation_tsv))
-  (tbl_split <- tidyr::separate_rows(data = annotation_tsv, column, sep = sep ))
-  CodeAndRoll2::write.simple.tsv(tbl_split, ManualName = paste(path_of_tsv, "per.gene.tsv", sep = ".") )
+  (tbl_split <- tidyr::separate_rows(data = annotation_tsv, column, sep = sep))
+  CodeAndRoll2::write.simple.tsv(tbl_split, ManualName = paste(path_of_tsv, "per.gene.tsv", sep = "."))
   return(tbl_split)
 }
 
 
-
 # _________________________________________________________________________________________________
+
+open_dev_repos <- function() {
+  pkgs <- c(
+    "Stringendo",
+    "CodeAndRoll2",
+    "ReadWriter",
+    "MarkdownHelpers",
+    "MarkdownReports",
+    "ggExpress",
+    "Seurat.utils",
+    "isoENV",
+    "PackageTools",
+    "NestedMultiplexer",
+    "Connectome.tools",
+    "UVI.tools"
+  )
+
+  urls <- sprintf("https://github.com/vertesy/%s/tree/dev", pkgs)
+
+  for (url in urls) {
+    browseURL(url)
+    Sys.sleep(2)
+  }
+  invisible(NULL)
+}
+
+
+
+
+open_repo_PRs <- function() {
+  pkgs <- c(
+    "Stringendo",
+    "CodeAndRoll2",
+    "ReadWriter",
+    "MarkdownHelpers",
+    "MarkdownReports",
+    "ggExpress",
+    "Seurat.utils",
+    "isoENV",
+    "PackageTools",
+    "NestedMultiplexer",
+    "Connectome.tools",
+    "UVI.tools"
+  )
+
+  urls <- sprintf("https://github.com/vertesy/%s/pulls", pkgs)
+
+  for (url in urls) {
+    browseURL(url)
+    Sys.sleep(2)
+  }
+  invisible(NULL)
+}
 
 
 
 
 #  ____________________________________________________________
 rnd4l <- function(set = c(LETTERS, 0:9), n = 4) {
-  print(paste0(paste0( sample(x = set, size = n), collapse = ''), '__'))
+  print(paste0(paste0(sample(x = set, size = n), collapse = ""), "__"))
 }
 
 
-
 # TMP code and roll -------------------- -----------------------------------------------------------------
-# fractions <- function(vec, na_rm = TRUE) vec/ sum(vec, na.rm = na_rm)
-# unique.wNames <- function(x) { x[!duplicated(x)] }
-
-
-
-
-# ____________________________________________________________
-# https://stackoverflow.com/questions/6216968/r-force-local-scope
-
-# findGlobals2 <- function(x) {
-#   codetools::findGlobals(x)
-#
-# }
-#
-# checkStrict <- function(f, silent=FALSE) {
-#   vars <- codetools::findGlobals(f)
-#   found <- !vapply(vars, exists, logical(1), envir=as.environment(2))
-#   if (!silent && any(found)) {
-#     warning("global variables used: ", paste(names(found)[found], collapse=', '))
-#     return(invisible(FALSE))
-#   }
-#
-#   !any(found)
-# }
-#
