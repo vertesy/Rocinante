@@ -847,12 +847,26 @@ sourceLines <- function(file_path, lines) {
 # ____________________________________________________________
 # Source parts of another script. Source: https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
 sourcePartial <- function(fn, startTag = "#1", endTag = "#/1") {
+  stopifnot(
+    is.character(fn) && length(fn) == 1 && file.exists(fn),
+    is.character(startTag) && length(startTag) == 1 && !is.na(startTag),
+    is.character(endTag) && length(endTag) == 1 && !is.na(endTag)
+  )
+
   lines <- scan(fn, what = character(), sep = "\n", quiet = TRUE)
   st <- grep(startTag, lines)
   en <- grep(endTag, lines)
-  tc <- textConnection(lines[(st + 1):(en - 1)])
+
+  if (length(st) == 0) stop("Start marker not found: ", startTag, call. = FALSE)
+  if (length(st) > 1) stop("Start marker must occur exactly once: ", startTag, call. = FALSE)
+  if (length(en) == 0) stop("End marker not found: ", endTag, call. = FALSE)
+  if (length(en) > 1) stop("End marker must occur exactly once: ", endTag, call. = FALSE)
+  if (en <= st) stop("End marker must occur after start marker.", call. = FALSE)
+
+  selected <- lines[seq_along(lines) > st & seq_along(lines) < en]
+  tc <- textConnection(selected)
+  on.exit(close(tc), add = TRUE)
   source(tc)
-  close(tc)
 }
 
 # ____________________________________________________________
