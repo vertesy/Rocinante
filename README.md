@@ -19,33 +19,33 @@ source("https://raw.githubusercontent.com/vertesy/Rocinante/main/R/Rocinante.R")
 
 *If you encounter a **bug**, something doesn't work or unclear, please let me know by raising an issue on [Rocinante](https://github.com/vertesy/Rocinante/issues) – Please check if it has been asked.*<br>
 
-## List of Functions in Rocinante.R (83)
+## List of Functions in Rocinante.R (84)
 
 Updated: 2026/08/25 17:28
 
 - #### 1 `get_col()`
 
-  Get Current Script Name in RStudio. Retrieves the file name of the current script open in the RStudio source editor.
+  Extract a column from a matrix as a vector.
 
 - #### 2 `get_row()`
 
-  Get Current Script path in RStudio. Retrieves the file path of the current script open in the RStudio source editor.
+  Extract a row from a matrix as a tibble.
 
 - #### 3 `get_subvec()`
 
-  Source Specific Lines from an R Script. 
+  Extract a range of elements from a vector.
 
 - #### 4 `format_decimal()`
 
-  Show biggest object in memory. Show distribution of the largest objects and return their names.
+  Format numbers without scientific notation.
 
 - #### 5 `kk()`
 
-  Find Function Package. Determines the package that a given function is defined in.
+  Keep an R session alive and report elapsed time every five minutes.
 
 - #### 6 `stry()`
 
-  Create Annotation Columns for pheatmap. 
+  Evaluate an expression with errors suppressed.
 
 - #### 7 `warnings.erase()`
 - #### 8 `rprofile()`
@@ -126,23 +126,23 @@ Updated: 2026/08/25 17:28
 - #### 83 `# findGlobals2()`
 - #### 84 `# checkStrict()`
 
-## List of Functions in Rocinante.less.used.R (25)
+## List of Functions in Rocinante.less.used.R (26)
 
 Updated: 2026/08/25 17:28
 - #### 1 `getMemoryInfo()`
 Retrieve Memory Information. 
 
 - #### 2 `    extract_pages()`
-Plot Memory Usage. 
+Extract a page count from macOS memory information.
 
 - #### 3 `plotMemoryUsage()`
-Retrieve SLURM Job Details. This function fetches details of the current SLURM job for a specified user.
+Plot system and R object memory usage.
 
 - #### 4 `getSLURMjobDetails()`
-Retrieve Memory Information. 
+Retrieve details of the current SLURM job for a specified user.
 
 - #### 5 `  run_command()`
-Plot Memory Usage. 
+Run a system command and return its output.
 
 - #### 6 `colSums.barplot()`
 - #### 7 `hist.XbyY()`
