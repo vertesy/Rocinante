@@ -111,21 +111,32 @@ sayy <- function(...) {
 
 
 oo <- function(samba = "smb://storage.imp.ac.at/", loc_path = "/Volumes/") {
+  stopifnot(
+    is.character(samba), length(samba) == 1,
+    is.character(loc_path), length(loc_path) == 1
+  )
+
   message("WD\n", getwd(), "\n")
-  if (exists("OutDir")) {
-    if (!getwd() == RemoveFinalSlash(OutDir)) {
-      message("OutDir different to WD:\n", RemoveFinalSlash(OutDir), "\n")
+  out_dir_defined <- exists("OutDir", inherits = TRUE)
+  local_path <- getwd()
+
+  if (out_dir_defined) {
+    out_dir <- get("OutDir", inherits = TRUE)
+    local_path <- out_dir
+    if (!getwd() == RemoveFinalSlash(out_dir)) {
+      message("OutDir different to WD:\n", RemoveFinalSlash(out_dir), "\n")
     }
   } else {
     message("Outdir not defined.\n")
   }
 
-  if (ifExistsAndTrue("onCBE")) {
-    attach <- paste0("smb://storage.imp.ac.at", OutDir)
+  on_cbe <- exists("onCBE", inherits = TRUE) && isTRUE(get("onCBE", inherits = TRUE))
+  if (on_cbe && out_dir_defined) {
+    attach <- paste0(sub("/$", "", samba), out_dir)
     message("Attach in Finder:\n", attach, "\n")
   }
 
-  message("open ", spps(loc_path, basename(attach)))
+  message("open ", spps(loc_path, basename(local_path)))
 }
 
 
