@@ -439,9 +439,14 @@ lm_equation_formatter2 <- function(lm) { # Renders the lm() function's output in
 }
 
 lm_equation_formatter3 <- function(lm, y.var.name = "y", x.var.name = "x") { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
-  eq = signif(lm$coefficients, digits = 3);
-  plusSign = if (sign(eq[1] == 1)) "" else "-"
-  kollapse(y.var.name, " = ", eq[2], "*",x.var.name," ",plusSign,"", eq[1]);
+  stopifnot(is.numeric(lm$coefficients), length(lm$coefficients) >= 2,
+            is.character(y.var.name), length(y.var.name) == 1, !is.na(y.var.name),
+            is.character(x.var.name), length(x.var.name) == 1, !is.na(x.var.name))
+  eq <- signif(lm$coefficients, digits = 3)
+  intercept <- eq[1]
+  operator <- if (is.na(intercept)) "" else if (intercept < 0) "-" else "+"
+  magnitude <- abs(intercept)
+  paste0(y.var.name, " = ", eq[2], "*", x.var.name, " ", operator, magnitude)
 }
 
 
