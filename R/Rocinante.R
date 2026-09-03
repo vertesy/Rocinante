@@ -817,7 +817,7 @@ findFunctionPackage <- function(functionName, searchInstalled = FALSE) {
 
 
 # Clipboard interaction ____________________________________________________________ ----
-# Possible destination: DataInCode, which also provides clipboard-to-code helpers.
+# Migration candidates for DataInCode: clip2clip.vector, clip2clip.commaSepString, and write_clip.replace.dot.with.comma.
 # try(source("~/Github/TheCorvinas/R/DataInCode/DataInCode.R"), silent = FALSE)
 
 clip2clip.vector <- function() { # Copy from clipboard (e.g. excel) to a R-formatted vector to the  clipboard
