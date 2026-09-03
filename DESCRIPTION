@@ -10,13 +10,23 @@ BugReports: https://github.com/vertesy/Rocinante/issues
 Depends: 
     base
 Imports: 
-    cowplot,
-    ggpubr,
+    clipr,
+    CodeAndRoll2,
+    colorRamps,
+    dplyr,
+    ggplot2,
     gplots,
-    MarkdownReports,
-    RColorBrewer,
-    sessioninfo,
-    tidyverse
+    gtools,
+    pheatmap,
+    scales,
+    Stringendo,
+    stringr,
+    tibble,
+    tidyr
+Suggests:
+    devtools,
+    PackageTools,
+    rstudioapi
 Encoding: UTF-8
 Packaged: 2026-08-25 17:39:49.229727
 Roxygen: list(markdown = TRUE)
