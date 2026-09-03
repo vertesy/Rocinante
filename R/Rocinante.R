@@ -843,7 +843,7 @@ write_clip.replace.dot.with.comma <- function(var = df.markers, decimal_mark = "
 # write_clip.replace.dot.with.comma(df_markers)
 
 
-# _______________________________________________________________
+# Possible CodeAndRoll2 candidates: PCA.percent.var.explained, eucl.dist.pairwise, sign.dist.pairwise, rowACF, colACF, acf.exactLag, rowACF.exactLag, colACF.exactLag ----
 PCA.percent.var.explained <- function(prcomp.res = sPCA) { # Determine percent of variation associated with each PC. For Seurat see: scCalcPCAVarExplained().
   PCA.w.summary.added <- summary(prcomp.res)
   PCA.w.summary.added$importance["Proportion of Variance", ]
