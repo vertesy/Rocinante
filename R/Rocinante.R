@@ -312,10 +312,6 @@ d <- pDocAndLoad <- list(
     devtools::document(path)
     devtools::load_all(path)
   },
-  ReadWriter = function(..., path = "~/GitHub/Packages/ReadWriter") {
-    devtools::document(path)
-    devtools::load_all(path)
-  },
   PackageTools = function(..., path = "~/GitHub/Packages/PackageTools") {
     devtools::document(path)
     devtools::load_all(path)
@@ -372,9 +368,6 @@ r <- pReload <- list(
     devtools::load_all(path)
   },
   CodeAndRoll2 = function(..., path = "~/GitHub/Packages/CodeAndRoll2") {
-    devtools::load_all(path)
-  },
-  ReadWriter = function(..., path = "~/GitHub/Packages/ReadWriter") {
     devtools::load_all(path)
   },
   PackageTools = function(..., path = "~/GitHub/Packages/PackageTools") {
@@ -1300,12 +1293,60 @@ acf.exactLag <- function(x, lag = 1, na_pass = na.pass, plot = FALSE, ...) { # A
   x[["acf"]][(lag + 1)]
 }
 
-rowACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { # RETURNS A Vector for the "lag" based autocorrelation. Calculates the autocorrelation of each row of a numeric matrix / data frame.
-  signif(apply(x, 1, acf.exactLag, lag = lag, plot = plot, ...), digits = 2)
+
+# _________________________________________________________________________________________________
+
+open_dev_repos <- function() {
+  pkgs <- c(
+    "Stringendo",
+    "CodeAndRoll2",
+    "ReadWriter",
+    "MarkdownHelpers",
+    "MarkdownReports",
+    "ggExpress",
+    "Seurat.utils",
+    "isoENV",
+    "PackageTools",
+    "NestedMultiplexer",
+    "Connectome.tools",
+    "UVI.tools"
+  )
+
+  urls <- sprintf("https://github.com/vertesy/%s/tree/dev", pkgs)
+
+  for (url in urls) {
+    browseURL(url)
+    Sys.sleep(0.5)
+  }
+  invisible(NULL)
 }
 
-colACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { # RETURNS A Vector for the "lag" based autocorrelation. Calculates the autocorrelation of each row of a numeric matrix / data frame.
-  signif(apply(x, 2, acf.exactLag, lag = lag, plot = plot, ...), digits = 2)
+
+
+
+open_repo_PRs <- function() {
+  pkgs <- c(
+    "Stringendo",
+    "CodeAndRoll2",
+    "ReadWriter",
+    "MarkdownHelpers",
+    "MarkdownReports",
+    "ggExpress",
+    "Seurat.utils",
+    "isoENV",
+    "PackageTools",
+    "NestedMultiplexer",
+    "Connectome.tools",
+    "UVI.tools"
+  )
+
+  urls <- sprintf("https://github.com/vertesy/%s/pulls", pkgs)
+
+  for (url in urls) {
+    browseURL(url)
+    Sys.sleep(0.5)
+  }
+  invisible(NULL)
 }
 
 
