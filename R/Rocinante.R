@@ -863,7 +863,7 @@ sourcePartial <- function(fn, startTag = "#1", endTag = "#/1") {
   if (length(en) > 1) stop("End marker must occur exactly once: ", endTag, call. = FALSE)
   if (en <= st) stop("End marker must occur after start marker.", call. = FALSE)
 
-  selected <- lines[seq_along(lines) > st & seq_along(lines) < en]
+  selected <- if (en - st <= 1L) character(0) else lines[(st + 1L):(en - 1L)]
   tc <- textConnection(selected)
   on.exit(close(tc), add = TRUE)
   source(tc)
