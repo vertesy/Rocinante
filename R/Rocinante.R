@@ -823,36 +823,42 @@ sourceGitHub <- function(
 #' extracts the lines within the specified range, and then evaluates (executes) those lines.
 #'
 #' @param file_path A string specifying the path to the R script. Default: `NULL`.
-#' @param lines A numeric vector specifying the lines to source, for example, `10:200`.
+#' @param start A positive integer specifying the first line to source.
+#' @param end An integer greater than or equal to `start` specifying the last line to source.
 #'
 #' @return This function does not return a value. It executes the specified lines of the R script.
 #' @examples
 #' # Source lines 10 to 20 from the script located at "path/to/your/script.R"
-#' sourceLines("path/to/your/script.R", 10:20)
+#' sourceLines("path/to/your/script.R", 10, 20)
 #'
 #' @export
-sourceLines <- function(file_path, lines) {
+sourceLines <- function(file_path, start, end) {
   stopifnot(
-    is.character(file_path), length(file_path) == 1, file.exists(file_path),
-    is.numeric(lines), lines[1] >= 1, lines[2] >= lines[1]
+    is.character(file_path) && length(file_path) == 1 && file.exists(file_path),
+    is.numeric(start) && length(start) == 1 && is.finite(start) && start == floor(start) && start >= 1,
+    is.numeric(end) && length(end) == 1 && is.finite(end) && end == floor(end) && end >= start
   )
 
   # Read the entire script into R as a vector of strings (1 for each line).
   script_all_lines <- readLines(file_path)
 
-  # Ensure end_line does not exceed the number of lines in the script
-  if (lines[2] > length(script_all_lines)) {
-    lines[2] <- length(script_all_lines)
-    message("end_line exceeds the number of lines in the script. Clipping to the last line, ", lines[2])
+  if (start > length(script_all_lines)) {
+    stop("start exceeds the number of lines in the script (", length(script_all_lines), ").")
+  }
+
+  # Ensure end does not exceed the number of lines in the script.
+  if (end > length(script_all_lines)) {
+    end <- length(script_all_lines)
+    message("end exceeds the number of lines in the script. Clipping to the last line, ", end)
   }
 
   # Source the extracted lines using textConnection()
-  source(textConnection(script_all_lines[lines]))
+  source(textConnection(script_all_lines[start:end]))
 }
 # pathX <- "~/GitHub/TheCorvinas/R/Test.for.sourceLines.function.R"
 # sourceLines(pathX, 1, 15)
-# sourceLines(pathX, 15,20)
-# sourceLines(pathX, 1,222)
+# sourceLines(pathX, 15, 20)
+# sourceLines(pathX, 1, 222)
 
 
 # ____________________________________________________________
