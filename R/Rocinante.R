@@ -104,10 +104,6 @@ d <- pDocAndLoad <- list(
     devtools::document(path)
     devtools::load_all(path)
   },
-  ReadWriter = function(..., path = "~/GitHub/Packages/ReadWriter") {
-    devtools::document(path)
-    devtools::load_all(path)
-  },
   PackageTools = function(..., path = "~/GitHub/Packages/PackageTools") {
     devtools::document(path)
     devtools::load_all(path)
@@ -164,9 +160,6 @@ r <- pReload <- list(
     devtools::load_all(path)
   },
   CodeAndRoll2 = function(..., path = "~/GitHub/Packages/CodeAndRoll2") {
-    devtools::load_all(path)
-  },
-  ReadWriter = function(..., path = "~/GitHub/Packages/ReadWriter") {
     devtools::load_all(path)
   },
   PackageTools = function(..., path = "~/GitHub/Packages/PackageTools") {
@@ -1238,7 +1231,7 @@ open_dev_repos <- function() {
 
   for (url in urls) {
     browseURL(url)
-    Sys.sleep(2)
+    Sys.sleep(0.5)
   }
   invisible(NULL)
 }
@@ -1266,7 +1259,7 @@ open_repo_PRs <- function() {
 
   for (url in urls) {
     browseURL(url)
-    Sys.sleep(2)
+    Sys.sleep(0.5)
   }
   invisible(NULL)
 }
