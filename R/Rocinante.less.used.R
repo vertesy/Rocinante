@@ -38,7 +38,7 @@ getMemoryInfo <- function() {
   } else if (os_type == "Linux") {
     warning("Not tested on Linux", immediate. = TRUE)
 
-    if(exists("onCBE") )  { if (isTRUE(onCBE)) {
+    if (isTRUE(get0("onCBE", envir = .GlobalEnv, inherits = FALSE))) {
       message("on CBE")
       job.details <- getSLURMjobDetails(user_name = "abel.vertesy")
       print("job.details")
@@ -48,13 +48,15 @@ getMemoryInfo <- function() {
       total_memory <- job.details$mem_in_gb
       mem_used <- sum(sapply(ls(envir = .GlobalEnv), function(x) object.size(get(x))))/1e9
       mem_free <- total_memory - mem_used
+    } else {
+      mem_info <- system("free -m", intern = TRUE)
+      mem_line <- grep("^\\s*Mem:", mem_info, value = TRUE)
+      stopifnot(length(mem_line) == 1)
+      mem_values <- strsplit(trimws(mem_line), "\\s+")[[1]]
+      stopifnot(length(mem_values) >= 4)
 
-    }} else {
-      stop()
-      # mem_info <- system("free -m", intern = TRUE)
-      # mem_lines <- strsplit(mem_info, " +")[[2]]
-      # mem_used <- as.numeric(mem_lines[3]) / 1024  # Convert MB to GB
-      # mem_free <- as.numeric(mem_lines[4]) / 1024  # Convert MB to GB
+      mem_used <- as.numeric(mem_values[3]) / 1024  # Convert MB to GB
+      mem_free <- as.numeric(mem_values[4]) / 1024  # Convert MB to GB
     }
 
 
