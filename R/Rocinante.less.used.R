@@ -38,7 +38,7 @@ getMemoryInfo <- function() {
   } else if (os_type == "Linux") {
     warning("Not tested on Linux", immediate. = TRUE)
 
-    if(exists("onCBE") )  { if (isTRUE(onCBE)) {
+    if (isTRUE(get0("onCBE", envir = .GlobalEnv, inherits = FALSE))) {
       message("on CBE")
       job.details <- getSLURMjobDetails(user_name = "abel.vertesy")
       print("job.details")
@@ -48,13 +48,15 @@ getMemoryInfo <- function() {
       total_memory <- job.details$mem_in_gb
       mem_used <- sum(sapply(ls(envir = .GlobalEnv), function(x) object.size(get(x))))/1e9
       mem_free <- total_memory - mem_used
+    } else {
+      mem_info <- system("free -m", intern = TRUE)
+      mem_line <- grep("^\\s*Mem:", mem_info, value = TRUE)
+      stopifnot(length(mem_line) == 1)
+      mem_values <- strsplit(trimws(mem_line), "\\s+")[[1]]
+      stopifnot(length(mem_values) >= 4)
 
-    }} else {
-      stop()
-      # mem_info <- system("free -m", intern = TRUE)
-      # mem_lines <- strsplit(mem_info, " +")[[2]]
-      # mem_used <- as.numeric(mem_lines[3]) / 1024  # Convert MB to GB
-      # mem_free <- as.numeric(mem_lines[4]) / 1024  # Convert MB to GB
+      mem_used <- as.numeric(mem_values[3]) / 1024  # Convert MB to GB
+      mem_free <- as.numeric(mem_values[4]) / 1024  # Convert MB to GB
     }
 
 
@@ -332,8 +334,9 @@ getMemoryInfoSimple <- function() {
   } else if (os_type == "Linux") { # Implementation for Linux
     mem_info <- system("free -m", intern = TRUE)
     mem_lines <- strsplit(mem_info, " +")[[2]]
+    mem_total <- as.numeric(mem_lines[2])
     mem_used <- as.numeric(mem_lines[3])
-    mem_free <- as.numeric(mem_lines[4])
+    mem_free <- mem_total - mem_used # Total minus used, so Used + Free partitions total memory (the "free" column alone excludes buff/cache)
 
   } else if (os_type == "Darwin") { # Implementation for macOS
     warning("Maybe does not work correctly on macOS yet.")
@@ -357,9 +360,9 @@ getMemoryInfoSimple <- function() {
     pages_active <- extract_pages("Pages active")
     pages_wired <- extract_pages("Pages wired down")
 
-    # Convert the page counts to memory totals.
-    mem_free <- (pages_free + pages_inactive + pages_speculative) * page_size / 1024
-    mem_used <- (pages_active + pages_wired) * page_size / 1024
+    # Convert the page counts (bytes) to MB, consistent with the other OS branches.
+    mem_free <- (pages_free + pages_inactive + pages_speculative) * page_size / 1024^2
+    mem_used <- (pages_active + pages_wired) * page_size / 1024^2
 
   } else {
     stop("Unsupported OS")
@@ -379,8 +382,8 @@ getMemoryInfoSimple <- function() {
 #' The plot includes the total memory as a subtitle and the operating system with the current time/date as a caption.
 #'
 #' @details
-#' The function calls `getMemoryInfo` to retrieve memory information and then uses `ggplot2` to plot the data.
-#' Memory values are converted to GB and percentages are calculated for plotting.
+#' The function calls `getMemoryInfoSimple` to retrieve memory information in MB and then uses `ggplot2` to plot the data.
+#' Memory values are converted from MB to GB and percentages are calculated for plotting.
 #'
 #' @importFrom ggplot2 ggplot geom_bar geom_text aes labs theme_minimal scale_fill_brewer
 #' @export
@@ -391,8 +394,8 @@ getMemoryInfoSimple <- function() {
 plotMemoryUsageSimple <- function() {
   require(ggplot2)
 
-  mem_info <- getMemoryInfo()
-  mem_df <- data.frame(Type = names(mem_info), Memory = mem_info)
+  mem_info_mb <- getMemoryInfoSimple()
+  mem_df <- data.frame(Type = names(mem_info_mb), Memory = mem_info_mb / 1024)
 
   # Calculate total memory and the percentage for each type
   total_memory <- sum(mem_df$Memory)
@@ -439,9 +442,14 @@ lm_equation_formatter2 <- function(lm) { # Renders the lm() function's output in
 }
 
 lm_equation_formatter3 <- function(lm, y.var.name = "y", x.var.name = "x") { # Renders the lm() function's output into a human readable text. (e.g. for subtitles)
-  eq = signif(lm$coefficients, digits = 3);
-  plusSign = if (sign(eq[1] == 1)) "" else "-"
-  kollapse(y.var.name, " = ", eq[2], "*",x.var.name," ",plusSign,"", eq[1]);
+  stopifnot(is.numeric(lm$coefficients), length(lm$coefficients) >= 2,
+            is.character(y.var.name), length(y.var.name) == 1, !is.na(y.var.name),
+            is.character(x.var.name), length(x.var.name) == 1, !is.na(x.var.name))
+  eq <- signif(lm$coefficients, digits = 3)
+  intercept <- eq[1]
+  operator <- if (is.na(intercept)) "" else if (intercept < 0) "-" else "+"
+  magnitude <- abs(intercept)
+  paste0(y.var.name, " = ", eq[2], "*", x.var.name, " ", operator, magnitude)
 }
 
 
@@ -466,6 +474,7 @@ getSequences.DNAStringSet <- function(DNAStringSet.obj = dnaSS.HEK.s175239.1e4) 
 }
 
 
+# Database links — possible destination: DatabaseLinke.R __________________________________________ ----
 # _________________________________________________________________________________________________
 # Possible destination: DatabaseLinke.R, as the following helpers build database links.
 #' @title link_SNPedia_clip2clip

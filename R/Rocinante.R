@@ -16,6 +16,7 @@ try(library(DatabaseLinke.R, include.only = c("qHGNC", "link_google", "link_bing
 debuggingState(on = FALSE)
 print("Depends on CodeAndRoll2, MarkdownReports, gtools, readr, gdata, clipr. Some functions depend on other libraries.")
 
+# Interactive setup
 # Params _______________________________________________________________
 wA4 <- 8.27 # A4 inches
 hA4 <- 11.69
@@ -45,8 +46,6 @@ kk <- keepalive <- function() {
   }
 }
 
-toclip <- clipr::write_clip
-fromclip <- clipr::read_clip
 
 stry <- function(...) {
   try(..., silent = TRUE)
@@ -60,6 +59,215 @@ rocinanteSource <- function() source("~/GitHub/Packages/Rocinante/R/Rocinante.R"
 lock_current_file <- function() system2("chmod", c("u-w", shQuote(rstudioapi::getActiveDocumentContext()$path)))
 unlock_current_file <- function() system2("chmod", c("u+w", shQuote(rstudioapi::getActiveDocumentContext()$path)))
 
+# Memory ____________________________________________________________ ----
+#' @title Show biggest object in memory
+#'
+#' @description Show distribution of the largest objects and return their names.
+#' Based on https://stackoverflow.com/questions/17218404/should-i-get-a-habit-of-removing-unused-variables-in-r
+
+memory.biggest.objects <- function(n = 5, plot = TRUE, saveplot = FALSE) {
+  try(dev.off(), silent = TRUE)
+  gc()
+  ls.mem <- ls(envir = .GlobalEnv)
+  ls.obj <- lapply(ls.mem, get)
+  Sizes.of.objects.in.mem <- CodeAndRoll2::unlapply(ls.obj, object.size)
+  names(Sizes.of.objects.in.mem) <- ls.mem
+  topX <- sort(Sizes.of.objects.in.mem, decreasing = TRUE)[1:n]
+
+  Memorty.usage.stat <- c(topX, "Other" = sum(sort(Sizes.of.objects.in.mem, decreasing = TRUE)[-(1:n)]))
+
+  top.names <- head(names(topX), n = 5)
+  # strX <- as.character(capture.output(dput(top.names)))
+  strX <- kollapse(top.names, collapseby = "', '")
+  # strX <- gsub('[^A-Za-z0-9 ,._/()]', '', strX)
+  message("rm(list = c('", strX, "'))\n")
+
+  if (plot) {
+    pie(
+      x = Memorty.usage.stat, cex = .5, sub = date(),
+      col = grDevices::terrain.colors(length(Memorty.usage.stat))
+    )
+    # dput(names(topX))
+  }
+}
+# memory.biggest.objects()
+
+
+# _________________________________________________________________________________________________
+
+
+# Generic ____________________________________________________________ ----
+# printEveryN <- function(i, N = 1000) { if ((i %% N) == 0 ) iprint(i) } # Report at every e.g. 1000
+
+
+say <- function(...) { # Use system voice to notify (after a long task is done)
+  sys <- Sys.info()["sysname"]
+  if (sys == "Darwin") system("say Ready!") # say -v Samantha 'Ready!'
+  if (sys == "Linux") system("echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'") # For UNIX servers.
+}
+sayy <- function(...) {
+  system("say 'Ready to roll!'")
+} # Use system voice to notify (after a long task is done)
+
+
+oo <- function(samba = "smb://storage.imp.ac.at/", loc_path = "/Volumes/") {
+  stopifnot(
+    is.character(samba), length(samba) == 1,
+    is.character(loc_path), length(loc_path) == 1
+  )
+
+  message("WD\n", getwd(), "\n")
+  out_dir_defined <- exists("OutDir", inherits = TRUE)
+  local_path <- getwd()
+
+  if (out_dir_defined) {
+    out_dir <- get("OutDir", inherits = TRUE)
+    local_path <- out_dir
+    if (!getwd() == RemoveFinalSlash(out_dir)) {
+      message("OutDir different to WD:\n", RemoveFinalSlash(out_dir), "\n")
+    }
+  } else {
+    message("Outdir not defined.\n")
+  }
+
+  on_cbe <- exists("onCBE", inherits = TRUE) && isTRUE(get("onCBE", inherits = TRUE))
+  if (on_cbe && out_dir_defined) {
+    attach <- paste0(sub("/$", "", samba), out_dir)
+    message("Attach in Finder:\n", attach, "\n")
+  }
+
+  message("open ", spps(loc_path, basename(local_path)))
+}
+
+
+view.head <- function(matrix, enn = 10) {
+  matrix[1:min(NROW(matrix), enn), 1:min(NCOL(matrix), enn)]
+} # view the head of an object by console.
+view.head2 <- function(matrix, enn = 10) {
+  View(head(matrix, n = min(NROW(matrix), NCOL(matrix), enn)))
+} # view the head of an object by View().
+
+
+# detach_package <-
+unload <- function(pkg, character.only = FALSE) { # Unload a package. Source: https://stackoverflow.com/questions/6979917/how-to-unload-a-package-without-restarting-r
+  if (!character.only) {
+    pkg <- deparse(substitute(pkg))
+  }
+  search_item <- paste("package", pkg, sep = ":")
+  while (search_item %in% search()) {
+    detach(search_item, unload = TRUE, character.only = TRUE)
+  }
+}
+
+backup <- function(obj, overwrite = FALSE) { # make a backup of an object into global env. Scheme: obj > obj.bac
+  varname <- as.character(substitute(obj))
+  bac.varname <- ppp(varname, "bac")
+  if (exists(bac.varname) & !overwrite) {
+    print(" Backup already exists.")
+  } else {
+    iprint(varname, "is backep up into:", bac.varname)
+    assign(x = bac.varname, value = obj, envir = as.environment(1))
+  }
+}
+# backup(combined.obj)
+
+
+list.dirs.depth.n <- function(dir = ".", depth = 2) { # list dirs recursive up to a certain level in R https://stackoverflow.com/questions/48297440/list-files-recursive-up-to-a-certain-level-in-r
+  iprint("Scanning directories. Depth:", depth)
+  res <- list.dirs(dir, recursive = FALSE)
+  if (depth > 1) {
+    add <- list.dirs.depth.n(res, depth - 1)
+    c(res, add)
+  } else {
+    res
+  }
+}
+
+
+list_subdirectories_at_depth <- function(path = ".", depth = 2) {
+  path <- path.expand(path)
+  num_slashes <- stringr::str_count(path, "/")
+  target_depth <- depth + num_slashes
+
+  subdirs <- list.dirs(path, recursive = TRUE)
+  subdirs[stringr::str_count(subdirs, "/") == target_depth]
+}
+# list_subdirectories_at_depth(path = '~/Downloads', depth = 2)
+
+
+iidentical.names <- function(v1, v2) { # Test if names of two objects for being exactly equal
+  nv1 <- names(v1)
+  nv2 <- names(v2)
+  len.eq <- (length(nv1) == length(nv2))
+  if (!len.eq) iprint("Lenghts differ by:", (length(nv1) - length(nv2)))
+  Check <- identical(nv1, nv2)
+  if (!Check) {
+    diff <- setdiff(nv1, nv2)
+    ld <- length(diff)
+    iprint(ld, "elements differ: ", head(diff))
+  }
+  Check
+}
+
+iidentical <- function(v1, v2) { # Test if two objects for being exactly equal
+  len.eq <- (length(v1) == length(v2))
+  if (!len.eq) iprint("Lenghts differ by:", (length(v1) - length(v2)))
+  Check <- identical(v1, v2)
+  if (!Check) {
+    diff <- setdiff(v1, v2)
+    ld <- length(diff)
+    iprint(ld, "elements differ: ", head(diff))
+  }
+  Check
+}
+
+
+iidentical.all <- function(li) all(sapply(li, identical, li[[1]])) # Test if two objects for being exactly equal.
+
+
+#' @title Find Function Package
+#' @description Determines the package that a given function is defined in.
+#'
+#' @param functionName The name of the function (character or function object).
+#' @param searchInstalled If TRUE, searches all installed packages (default FALSE).
+#' @return The name of the package containing the function, or NULL if not found.
+#' @export
+
+
+findFunctionPackage <- function(functionName, searchInstalled = FALSE) {
+  # Handle different types of input (character or function)
+  if (is.function(functionName)) {
+    functionName <- deparse(substitute(functionName))
+  }
+
+  stopifnot(
+    "functionName must be a character" = is.character(functionName),
+    "searchInstalled must be logical" = is.logical(searchInstalled)
+  )
+
+  # Search in loaded namespaces
+  searchSpaces <- search()
+  for (space in searchSpaces) {
+    if (exists(functionName, envir = asNamespace(space), inherits = FALSE)) {
+      return(substring(space, 9)) # Remove "package:" prefix
+    }
+  }
+
+  # Optionally search in installed packages
+  if (searchInstalled) {
+    installedPkgs <- installed.packages()[, "Package"]
+    for (pkg in installedPkgs) {
+      if (exists(functionName, envir = asNamespace(pkg), inherits = FALSE)) {
+        return(pkg)
+      }
+    }
+  }
+
+  return(NULL)
+}
+
+
+# Package and repository helpers
 # Package Loaders ____________________________________________________________ ----
 
 o <- pOpen <- list(
@@ -348,6 +556,65 @@ helpPak <- function(x) {
   browseURL(paste0("https://www.rdocumentation.org/packages/", pkg))
 }
 
+open_dev_repos <- function() {
+  pkgs <- c(
+    "Stringendo",
+    "CodeAndRoll2",
+    "ReadWriter",
+    "MarkdownHelpers",
+    "MarkdownReports",
+    "ggExpress",
+    "Seurat.utils",
+    "isoENV",
+    "PackageTools",
+    "NestedMultiplexer",
+    "Connectome.tools",
+    "UVI.tools"
+  )
+
+  urls <- sprintf("https://github.com/vertesy/%s/tree/dev", pkgs)
+
+  for (url in urls) {
+    browseURL(url)
+    Sys.sleep(2)
+  }
+  invisible(NULL)
+}
+
+
+
+
+open_repo_PRs <- function() {
+  pkgs <- c(
+    "Stringendo",
+    "CodeAndRoll2",
+    "ReadWriter",
+    "MarkdownHelpers",
+    "MarkdownReports",
+    "ggExpress",
+    "Seurat.utils",
+    "isoENV",
+    "PackageTools",
+    "NestedMultiplexer",
+    "Connectome.tools",
+    "UVI.tools"
+  )
+
+  urls <- sprintf("https://github.com/vertesy/%s/pulls", pkgs)
+
+  for (url in urls) {
+    browseURL(url)
+    Sys.sleep(2)
+  }
+  invisible(NULL)
+}
+
+
+
+
+# File and clipboard I/O
+toclip <- clipr::write_clip
+fromclip <- clipr::read_clip
 # ooo <- function(...) osXpath(getwd(), ...)
 ccc <- function(...) clipr::write_clip(cbepath(clipr::read_clip()))
 oofix <- function(...) clipr::write_clip(gsub(pattern = "\\[1\\] ", replacement = "", x = clipr::read_clip()))
@@ -549,47 +816,67 @@ sourceGitHub <- function(
 #' extracts the lines within the specified range, and then evaluates (executes) those lines.
 #'
 #' @param file_path A string specifying the path to the R script. Default: `NULL`.
-#' @param lines A numeric vector specifying the lines to source, for example, `10:200`.
+#' @param start A positive integer specifying the first line to source.
+#' @param end An integer greater than or equal to `start` specifying the last line to source.
 #'
 #' @return This function does not return a value. It executes the specified lines of the R script.
 #' @examples
 #' # Source lines 10 to 20 from the script located at "path/to/your/script.R"
-#' sourceLines("path/to/your/script.R", 10:20)
+#' sourceLines("path/to/your/script.R", 10, 20)
 #'
 #' @export
-sourceLines <- function(file_path, lines) {
+sourceLines <- function(file_path, start, end) {
   stopifnot(
-    is.character(file_path), length(file_path) == 1, file.exists(file_path),
-    is.numeric(lines), lines[1] >= 1, lines[2] >= lines[1]
+    is.character(file_path) && length(file_path) == 1 && file.exists(file_path),
+    is.numeric(start) && length(start) == 1 && is.finite(start) && start == floor(start) && start >= 1,
+    is.numeric(end) && length(end) == 1 && is.finite(end) && end == floor(end) && end >= start
   )
 
   # Read the entire script into R as a vector of strings (1 for each line).
   script_all_lines <- readLines(file_path)
 
-  # Ensure end_line does not exceed the number of lines in the script
-  if (lines[2] > length(script_all_lines)) {
-    lines[2] <- length(script_all_lines)
-    message("end_line exceeds the number of lines in the script. Clipping to the last line, ", lines[2])
+  if (start > length(script_all_lines)) {
+    stop("start exceeds the number of lines in the script (", length(script_all_lines), ").")
+  }
+
+  # Ensure end does not exceed the number of lines in the script.
+  if (end > length(script_all_lines)) {
+    end <- length(script_all_lines)
+    message("end exceeds the number of lines in the script. Clipping to the last line, ", end)
   }
 
   # Source the extracted lines using textConnection()
-  source(textConnection(script_all_lines[lines]))
+  source(textConnection(script_all_lines[start:end]))
 }
 # pathX <- "~/GitHub/TheCorvinas/R/Test.for.sourceLines.function.R"
 # sourceLines(pathX, 1, 15)
-# sourceLines(pathX, 15,20)
-# sourceLines(pathX, 1,222)
+# sourceLines(pathX, 15, 20)
+# sourceLines(pathX, 1, 222)
 
 
 # ____________________________________________________________
 # Source parts of another script. Source: https://stackoverflow.com/questions/26245554/execute-a-set-of-lines-from-another-r-file
 sourcePartial <- function(fn, startTag = "#1", endTag = "#/1") {
+  stopifnot(
+    is.character(fn) && length(fn) == 1 && file.exists(fn),
+    is.character(startTag) && length(startTag) == 1 && !is.na(startTag),
+    is.character(endTag) && length(endTag) == 1 && !is.na(endTag)
+  )
+
   lines <- scan(fn, what = character(), sep = "\n", quiet = TRUE)
   st <- grep(startTag, lines)
   en <- grep(endTag, lines)
-  tc <- textConnection(lines[(st + 1):(en - 1)])
+
+  if (length(st) == 0) stop("Start marker not found: ", startTag, call. = FALSE)
+  if (length(st) > 1) stop("Start marker must occur exactly once: ", startTag, call. = FALSE)
+  if (length(en) == 0) stop("End marker not found: ", endTag, call. = FALSE)
+  if (length(en) > 1) stop("End marker must occur exactly once: ", endTag, call. = FALSE)
+  if (en <= st) stop("End marker must occur after start marker.", call. = FALSE)
+
+  selected <- if (en - st <= 1L) character(0) else lines[(st + 1L):(en - 1L)]
+  tc <- textConnection(selected)
+  on.exit(close(tc), add = TRUE)
   source(tc)
-  close(tc)
 }
 
 # ____________________________________________________________
@@ -609,203 +896,6 @@ args.2.global <- ass <- function(overwrite = FALSE, ...) {
     }
   }
   print(names(args))
-}
-
-
-# Memory ____________________________________________________________ ----
-#' @title Show biggest object in memory
-#'
-#' @description Show distribution of the largest objects and return their names.
-#' Based on https://stackoverflow.com/questions/17218404/should-i-get-a-habit-of-removing-unused-variables-in-r
-
-memory.biggest.objects <- function(n = 5, plot = TRUE, saveplot = FALSE) {
-  try(dev.off(), silent = TRUE)
-  gc()
-  ls.mem <- ls(envir = .GlobalEnv)
-  ls.obj <- lapply(ls.mem, get)
-  Sizes.of.objects.in.mem <- CodeAndRoll2::unlapply(ls.obj, object.size)
-  names(Sizes.of.objects.in.mem) <- ls.mem
-  topX <- sort(Sizes.of.objects.in.mem, decreasing = TRUE)[1:n]
-
-  Memorty.usage.stat <- c(topX, "Other" = sum(sort(Sizes.of.objects.in.mem, decreasing = TRUE)[-(1:n)]))
-
-  top.names <- head(names(topX), n = 5)
-  # strX <- as.character(capture.output(dput(top.names)))
-  strX <- kollapse(top.names, collapseby = "', '")
-  # strX <- gsub('[^A-Za-z0-9 ,._/()]', '', strX)
-  message("rm(list = c('", strX, "'))\n")
-
-  if (plot) {
-    pie(
-      x = Memorty.usage.stat, cex = .5, sub = date(),
-      col = grDevices::terrain.colors(length(Memorty.usage.stat))
-    )
-    # dput(names(topX))
-  }
-}
-# memory.biggest.objects()
-
-
-# _________________________________________________________________________________________________
-
-
-# Generic ____________________________________________________________ ----
-# printEveryN <- function(i, N = 1000) { if ((i %% N) == 0 ) iprint(i) } # Report at every e.g. 1000
-
-
-say <- function(...) { # Use system voice to notify (after a long task is done)
-  sys <- Sys.info()["sysname"]
-  if (sys == "Darwin") system("say Ready!") # say -v Samantha 'Ready!'
-  if (sys == "Linux") system("echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'; sleep 0.5s; echo -e '\a'") # For UNIX servers.
-}
-sayy <- function(...) {
-  system("say 'Ready to roll!'")
-} # Use system voice to notify (after a long task is done)
-
-
-oo <- function(samba = "smb://storage.imp.ac.at/", loc_path = "/Volumes/") {
-  message("WD\n", getwd(), "\n")
-  if (exists("OutDir")) {
-    if (!getwd() == RemoveFinalSlash(OutDir)) {
-      message("OutDir different to WD:\n", RemoveFinalSlash(OutDir), "\n")
-    }
-  } else {
-    message("Outdir not defined.\n")
-  }
-
-  if (ifExistsAndTrue("onCBE")) {
-    attach <- paste0("smb://storage.imp.ac.at", OutDir)
-    message("Attach in Finder:\n", attach, "\n")
-  }
-
-  message("open ", spps(loc_path, basename(attach)))
-}
-
-
-view.head <- function(matrix, enn = 10) {
-  matrix[1:min(NROW(matrix), enn), 1:min(NCOL(matrix), enn)]
-} # view the head of an object by console.
-view.head2 <- function(matrix, enn = 10) {
-  View(head(matrix, n = min(NROW(matrix), NCOL(matrix), enn)))
-} # view the head of an object by View().
-
-
-# detach_package <-
-unload <- function(pkg, character.only = FALSE) { # Unload a package. Source: https://stackoverflow.com/questions/6979917/how-to-unload-a-package-without-restarting-r
-  if (!character.only) {
-    pkg <- deparse(substitute(pkg))
-  }
-  search_item <- paste("package", pkg, sep = ":")
-  while (search_item %in% search()) {
-    detach(search_item, unload = TRUE, character.only = TRUE)
-  }
-}
-
-backup <- function(obj, overwrite = FALSE) { # make a backup of an object into global env. Scheme: obj > obj.bac
-  varname <- as.character(substitute(obj))
-  bac.varname <- ppp(varname, "bac")
-  if (exists(bac.varname) & !overwrite) {
-    print(" Backup already exists.")
-  } else {
-    iprint(varname, "is backep up into:", bac.varname)
-    assign(x = bac.varname, value = obj, envir = as.environment(1))
-  }
-}
-# backup(combined.obj)
-
-
-list.dirs.depth.n <- function(dir = ".", depth = 2) { # list dirs recursive up to a certain level in R https://stackoverflow.com/questions/48297440/list-files-recursive-up-to-a-certain-level-in-r
-  iprint("Scanning directories. Depth:", depth)
-  res <- list.dirs(dir, recursive = FALSE)
-  if (depth > 1) {
-    add <- list.dirs.depth.n(res, depth - 1)
-    c(res, add)
-  } else {
-    res
-  }
-}
-
-
-list_subdirectories_at_depth <- function(path = ".", depth = 2) {
-  path <- path.expand(path)
-  num_slashes <- stringr::str_count(path, "/")
-  target_depth <- depth + num_slashes
-
-  subdirs <- list.dirs(path, recursive = TRUE)
-  subdirs[stringr::str_count(subdirs, "/") == target_depth]
-}
-# list_subdirectories_at_depth(path = '~/Downloads', depth = 2)
-
-
-iidentical.names <- function(v1, v2) { # Test if names of two objects for being exactly equal
-  nv1 <- names(v1)
-  nv2 <- names(v2)
-  len.eq <- (length(nv1) == length(nv2))
-  if (!len.eq) iprint("Lenghts differ by:", (length(nv1) - length(nv2)))
-  Check <- identical(nv1, nv2)
-  if (!Check) {
-    diff <- setdiff(nv1, nv2)
-    ld <- length(diff)
-    iprint(ld, "elements differ: ", head(diff))
-  }
-  Check
-}
-
-iidentical <- function(v1, v2) { # Test if two objects for being exactly equal
-  len.eq <- (length(v1) == length(v2))
-  if (!len.eq) iprint("Lenghts differ by:", (length(v1) - length(v2)))
-  Check <- identical(v1, v2)
-  if (!Check) {
-    diff <- setdiff(v1, v2)
-    ld <- length(diff)
-    iprint(ld, "elements differ: ", head(diff))
-  }
-  Check
-}
-
-
-iidentical.all <- function(li) all(sapply(li, identical, li[[1]])) # Test if two objects for being exactly equal.
-
-
-#' @title Find Function Package
-#' @description Determines the package that a given function is defined in.
-#'
-#' @param functionName The name of the function (character or function object).
-#' @param searchInstalled If TRUE, searches all installed packages (default FALSE).
-#' @return The name of the package containing the function, or NULL if not found.
-#' @export
-
-
-findFunctionPackage <- function(functionName, searchInstalled = FALSE) {
-  # Handle different types of input (character or function)
-  if (is.function(functionName)) {
-    functionName <- deparse(substitute(functionName))
-  }
-
-  stopifnot(
-    "functionName must be a character" = is.character(functionName),
-    "searchInstalled must be logical" = is.logical(searchInstalled)
-  )
-
-  # Search in loaded namespaces
-  searchSpaces <- search()
-  for (space in searchSpaces) {
-    if (exists(functionName, envir = asNamespace(space), inherits = FALSE)) {
-      return(substring(space, 9)) # Remove "package:" prefix
-    }
-  }
-
-  # Optionally search in installed packages
-  if (searchInstalled) {
-    installedPkgs <- installed.packages()[, "Package"]
-    for (pkg in installedPkgs) {
-      if (exists(functionName, envir = asNamespace(pkg), inherits = FALSE)) {
-        return(pkg)
-      }
-    }
-  }
-
-  return(NULL)
 }
 
 
@@ -836,50 +926,44 @@ write_clip.replace.dot.with.comma <- function(var = df.markers, decimal_mark = "
 # write_clip.replace.dot.with.comma(df_markers)
 
 
-# Possible CodeAndRoll2 candidates: PCA.percent.var.explained, eucl.dist.pairwise, sign.dist.pairwise, rowACF, colACF, acf.exactLag, rowACF.exactLag, colACF.exactLag ----
-PCA.percent.var.explained <- function(prcomp.res = sPCA) { # Determine percent of variation associated with each PC. For Seurat see: scCalcPCAVarExplained().
-  PCA.w.summary.added <- summary(prcomp.res)
-  PCA.w.summary.added$importance["Proportion of Variance", ]
+# New FUN ____________________________________________________________ ----
+
+
+ssh2osX <- function(shellpath = clipr::read_clip()) { # '/groups/knoblich/users/burkard/Abel.Vertesy/R12357/R12357_merged_20211108093511/README.html'
+  newpath <- gsub(x = shellpath, pattern = "/groups/", replacement = "smb://storage.imp.ac.at/groups/")
+  clipr::write_clip(newpath)
+}
+
+osX2ssh <- function(shellpath = clipr::read_clip()) { # '/groups/knoblich/users/burkard/Abel.Vertesy/R12357/R12357_merged_20211108093511/README.html'
+  newpath <- gsub(x = shellpath, replacement = "/groups/", pattern = "smb://storage.imp.ac.at/groups/")
+  clipr::write_clip(newpath)
 }
 
 
-# __________________________________________________________________________________________________
-# Distance and correlation calculations _____________________________________________________ ----
-# Possible destination: CodeAndRoll2, as these are general calculation helpers.
-eucl.dist.pairwise <- function(df2col) { # Calculate pairwise euclidean distance
-  dist_ <- abs(df2col[, 1] - df2col[, 2]) / sqrt(2)
-  if (!is.null(rownames(df2col))) names(dist_) <- rownames(df2col)
-  dist_
-}
-
-sign.dist.pairwise <- function(df2col) { # Calculate absolute value of the pairwise euclidean distance
-  dist_ <- abs(df2col[, 1] - df2col[, 2]) / sqrt(2)
-  if (!is.null(rownames(df2col))) names(dist_) <- rownames(df2col)
-  dist_
-}
-
-# Auto correlation functions
-rowACF <- function(x, na_pass = na.pass, plot = FALSE, ...) {
-  apply(x, 1, acf, na.action = na_pass, plot = plot, ...)
-} # Returns a list containing the autocorrelation of each row.
-colACF <- function(x, na_pass = na.pass, plot = FALSE, ...) {
-  apply(x, 2, acf, na.action = na_pass, plot = plot, ...)
-} # Returns a list containing the autocorrelation of each column.
-
-acf.exactLag <- function(x, lag = 1, na_pass = na.pass, plot = FALSE, ...) { # Autocorrelation with exact lag
-  x <- acf(x, na.action = na_pass, plot = plot, ...)
-  x[["acf"]][(lag + 1)]
-}
-
-rowACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { # Return each row's autocorrelation at the requested lag.
-  signif(apply(x, 1, acf.exactLag, lag = lag, plot = plot, ...), digits = 2)
-}
-
-colACF.exactLag <- function(x, na_pass = na.pass, lag = 1, plot = FALSE, ...) { # Return each column's autocorrelation at the requested lag.
-  signif(apply(x, 2, acf.exactLag, lag = lag, plot = plot, ...), digits = 2)
+# _________________________________________________________________________________________________
+#' STRINGdb.reformat.ann.table.per.gene  > Databaselnker
+#'
+#' @param path_of_tsv input file
+#' @param column column name
+#' @param sep value separation
+#' @export
+#'
+STRINGdb.reformat.ann.table.per.gene <- function(
+  path_of_tsv = "~/Downloads/enrichment.DISEASES.tsv",
+  column = "matching proteins in your network (labels)",
+  sep = ","
+) {
+  annotation_tsv <- CodeAndRoll2::read.simple.tsv(path_of_tsv)
+  stopifnot(column %in% colnames(annotation_tsv))
+  (tbl_split <- tidyr::separate_rows(data = annotation_tsv, column, sep = sep))
+  CodeAndRoll2::write.simple.tsv(tbl_split, ManualName = paste(path_of_tsv, "per.gene.tsv", sep = "."))
+  return(tbl_split)
 }
 
 
+# _________________________________________________________________________________________________
+
+# Plotting helpers
 # ___________________________________________________________________________________________ ------
 # Plotting and Graphics ____________________________________________________________ ----
 # Possible destination: ggExpress, as these helpers create or annotate plots.
@@ -1174,38 +1258,39 @@ val2col <- function(yourdata, # This function converts a vector of values("yourd
 }
 
 
-# Path conversion and database helpers ______________________________ ----
-
-
-ssh2osX <- function(shellpath = clipr::read_clip()) { # '/groups/knoblich/users/burkard/Abel.Vertesy/R12357/R12357_merged_20211108093511/README.html'
-  newpath <- gsub(x = shellpath, pattern = "/groups/", replacement = "smb://storage.imp.ac.at/groups/")
-  clipr::write_clip(newpath)
-}
-
-osX2ssh <- function(shellpath = clipr::read_clip()) { # '/groups/knoblich/users/burkard/Abel.Vertesy/R12357/R12357_merged_20211108093511/README.html'
-  newpath <- gsub(x = shellpath, replacement = "/groups/", pattern = "smb://storage.imp.ac.at/groups/")
-  clipr::write_clip(newpath)
+# Pure calculations
+# _______________________________________________________________
+PCA.percent.var.explained <- function(prcomp.res = sPCA) { # Determine percent of variation associated with each PC. For Seurat see: scCalcPCAVarExplained().
+  PCA.w.summary.added <- summary(prcomp.res)
+  PCA.w.summary.added$importance["Proportion of Variance", ]
 }
 
 
-# _________________________________________________________________________________________________
-#' STRINGdb.reformat.ann.table.per.gene > DatabaseLinke.R
-#'
-#' @param path_of_tsv input file
-#' @param column column name
-#' @param sep value separation
-#' @export
-#'
-STRINGdb.reformat.ann.table.per.gene <- function(
-  path_of_tsv = "~/Downloads/enrichment.DISEASES.tsv",
-  column = "matching proteins in your network (labels)",
-  sep = ","
-) {
-  annotation_tsv <- CodeAndRoll2::read.simple.tsv(path_of_tsv)
-  stopifnot(column %in% colnames(annotation_tsv))
-  (tbl_split <- tidyr::separate_rows(data = annotation_tsv, column, sep = sep))
-  CodeAndRoll2::write.simple.tsv(tbl_split, ManualName = paste(path_of_tsv, "per.gene.tsv", sep = "."))
-  return(tbl_split)
+# __________________________________________________________________________________________________
+# Distance and correlation calculations _____________________________________________________ ----
+eucl.dist.pairwise <- function(df2col) { # Calculate pairwise euclidean distance
+  dist_ <- abs(df2col[, 1] - df2col[, 2]) / sqrt(2)
+  if (!is.null(rownames(df2col))) names(dist_) <- rownames(df2col)
+  dist_
+}
+
+sign.dist.pairwise <- function(df2col) { # Calculate absolute value of the pairwise euclidean distance
+  dist_ <- abs(df2col[, 1] - df2col[, 2]) / sqrt(2)
+  if (!is.null(rownames(df2col))) names(dist_) <- rownames(df2col)
+  dist_
+}
+
+# Auto correlation functions
+rowACF <- function(x, na_pass = na.pass, plot = FALSE, ...) {
+  apply(x, 1, acf, na.action = na_pass, plot = plot, ...)
+} # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+colACF <- function(x, na_pass = na.pass, plot = FALSE, ...) {
+  apply(x, 2, acf, na.action = na_pass, plot = plot, ...)
+} # RETURNS A LIST. Calculates the autocorrelation of each row of a numeric matrix / data frame.
+
+acf.exactLag <- function(x, lag = 1, na_pass = na.pass, plot = FALSE, ...) { # Autocorrelation with exact lag
+  x <- acf(x, na.action = na_pass, plot = plot, ...)
+  x[["acf"]][(lag + 1)]
 }
 
 
@@ -1263,8 +1348,6 @@ open_repo_PRs <- function() {
   }
   invisible(NULL)
 }
-
-
 
 
 #  ____________________________________________________________
